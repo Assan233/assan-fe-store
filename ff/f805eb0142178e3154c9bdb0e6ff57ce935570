@@ -1,0 +1,64 @@
+public/music-login.js
+  s_d7988ab083ca0d::t_b07d006e7bc55b 1,4,7-24,27-29,37
+  s_d7988ab083ca0d::t_448277875064b6 2-3,5-6,31,33-36
+  s_d7988ab083ca0d::t_75b2b921957759 25-26,30,32
+compose.yaml
+  s_d7988ab083ca0d::t_b07d006e7bc55b 12
+src/lib/catalog.ts
+  s_d7988ab083ca0d::t_c8b3100d94c613 15-23
+  s_d7988ab083ca0d::t_5a4e9224514ddc 14
+src/pages/MusicPage.tsx
+  s_d7988ab083ca0d::t_aa51d33a901d86 70,72,75
+  s_d7988ab083ca0d::t_c8b3100d94c613 1-52,69,71,73-74,76-86,88-90
+  s_d7988ab083ca0d::t_448277875064b6 53-54,56-57,59-68,87
+  s_d7988ab083ca0d::t_e9962e27ccf41d 55,58
+vite.config.ts
+  s_d7988ab083ca0d::t_7195a7c462fa3a 14
+  s_d7988ab083ca0d::t_b07d006e7bc55b 15-24
+src/app/App.tsx
+  s_d7988ab083ca0d::t_c8b3100d94c613 11,30-37,53
+src/styles.css
+  h_9beaa02e09d4ff 30,240
+  s_d7988ab083ca0d::t_aa51d33a901d86 29,31-32,35,40
+  s_d7988ab083ca0d::t_c8b3100d94c613 33-34,36-39
+.env.example
+  s_d7988ab083ca0d::t_75b2b921957759 8-11
+public/music-custom.css
+  s_d7988ab083ca0d::t_130932696f97e8 60
+  s_d7988ab083ca0d::t_b07d006e7bc55b 1-8,24-27
+  s_d7988ab083ca0d::t_b4620856941e29 45-46,50-59
+  h_9beaa02e09d4ff 9,22-23,28-40,42,61-81
+  s_d7988ab083ca0d::t_92ee29d648c974 41,43-44,47-49
+  s_d7988ab083ca0d::t_2ef33bb1944840 10-21
+src/lib/api.ts
+  s_d7988ab083ca0d::t_c8b3100d94c613 47-51,53-55
+README.md
+  s_d7988ab083ca0d::t_d3b59f64397336 16-19,21,38,52,58
+  s_d7988ab083ca0d::t_12f4e7073d1e5f 20
+nginx.conf
+  s_d7988ab083ca0d::t_b69046e0d059b1 6-10,55,61-62
+  s_d7988ab083ca0d::t_b07d006e7bc55b 1-5,28-54,56-60,63-71,73
+  s_d7988ab083ca0d::t_12f4e7073d1e5f 72
+  s_d7988ab083ca0d::t_7c20ec05945b84 74
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "fff805eb0142178e3154c9bdb0e6ff57ce935570",
+  "prompts": {},
+  "humans": {
+    "h_9beaa02e09d4ff": {
+      "author": "caorongsen <caorongsen@zuoyebang.com>"
+    }
+  },
+  "sessions": {
+    "s_d7988ab083ca0d": {
+      "agent_id": {
+        "tool": "opencode",
+        "id": "ses_e41f81e07ffe8cKaeluKvzXU9w",
+        "model": "gpt-6-astra"
+      },
+      "human_author": "caorongsen <caorongsen@zuoyebang.com>"
+    }
+  }
+}
