@@ -1,0 +1,81 @@
+/* Player styles served inside the proxied music document. */
+html,
+body {
+  min-height: 100%;
+}
+body {
+  --assan-music-accent: #7471e8;
+}
+
+/* 将播放器中 10–20px 的 Tailwind 固定字号放大至 1.4 倍。 */
+[class~="text-[10px]"] { font-size: 14px !important; }
+[class~="text-[11px]"] { font-size: 15.4px !important; }
+[class~="text-[12px]"] { font-size: 16.8px !important; }
+[class~="text-[13px]"] { font-size: 18.2px !important; }
+[class~="text-[14px]"] { font-size: 19.6px !important; }
+[class~="text-[15px]"] { font-size: 21px !important; }
+[class~="text-[16px]"] { font-size: 22.4px !important; }
+[class~="text-[17px]"] { font-size: 23.8px !important; }
+[class~="text-[18px]"] { font-size: 25.2px !important; }
+[class~="text-[19px]"] { font-size: 26.6px !important; }
+[class~="text-[20px]"] { font-size: 28px !important; }
+
+
+:focus-visible {
+  outline: 2px solid var(--assan-music-accent);
+  outline-offset: 3px;
+}
+
+/* 播放器菜单浮层(包含 歌曲列表/全屏等) */
+@media (hover: none) {
+  ._corner-controls_14qoa_91 {
+    opacity: 1 !important;
+    visibility: visible !important;
+    pointer-events: auto !important;
+  }
+}
+
+/* 播放器控制栏 */
+.flex.h-14.w-full.items-center.justify-between
+  button:nth-of-type(n + 2):nth-of-type(-n + 4) {
+  position: fixed !important;
+  left: 120px !important;
+  width: calc(100dvh / 3) !important;
+  height: calc(100dvh / 3) !important;
+  padding: 0 !important;
+  display: flex !important;
+  align-items: center;
+  justify-content: center;
+  z-index: 20;
+}
+/* 同步放大实际图标，覆盖 SVG 原有的固定尺寸。 */
+.flex.h-14.w-full.items-center.justify-between
+  button:nth-of-type(n + 2):nth-of-type(-n + 4)
+  svg {
+  width: calc(100dvh / 3) !important;
+  height: calc(100dvh / 3) !important;
+  max-width: none !important;
+  max-height: none !important;
+  flex-shrink: 0;
+}
+.flex.h-14.w-full.items-center.justify-between button:nth-of-type(1),
+.flex.h-14.w-full.items-center.justify-between button:nth-of-type(5) {
+  transform: scale(2);
+  transform-origin: center;
+}
+.flex.h-14.w-full.items-center.justify-between button:nth-of-type(2) {
+  top: 0 !important;
+}
+.flex.h-14.w-full.items-center.justify-between button:nth-of-type(3) {
+  top: calc(100dvh / 3) !important;
+}
+.flex.h-14.w-full.items-center.justify-between button:nth-of-type(4) {
+  top: calc(100dvh * 2 / 3) !important;
+}
+
+/* 播放器菜单浮层(包含 歌曲列表/全屏等) */
+/* ._corner-controls_14qoa_91 {
+  pointer-events: auto !important;
+  opacity: 1 !important;
+  visibility: visible !important;
+} */

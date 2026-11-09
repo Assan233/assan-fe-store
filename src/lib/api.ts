@@ -44,7 +44,15 @@ async function mutate<T>(path: string, body?: unknown): Promise<T> {
   })
 }
 
+async function remove(path: string): Promise<void> {
+  const token = await csrfToken()
+  return request<void>(path, { method: 'DELETE', headers: { 'X-CSRF-Token': token } })
+}
+
 export const api = {
+  musicCredentialStatus: () => request<{ configured: boolean }>('/api/v1/music/credential'),
+  saveMusicCredential: (username: string, password: string) => mutate<void>('/api/v1/music/credential', { username, password }),
+  deleteMusicCredential: () => remove('/api/v1/music/credential'),
   me: () => request<User>('/api/v1/auth/me'),
   signIn: (username: string, password: string) => mutate<User>('/api/v1/auth/login', { username, password }),
   setupStatus: () => request<{ needsSetup: boolean }>('/api/v1/auth/setup'),

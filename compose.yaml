@@ -9,6 +9,7 @@ services:
       DATABASE_PATH: /data/assan.db
       SECURE_COOKIES: "${SECURE_COOKIES:-true}"
       TRUST_PROXY: "true"
+      MUSIC_CREDENTIAL_KEY: "${MUSIC_CREDENTIAL_KEY:-}"
     volumes:
       - assan-data:/data
     stop_grace_period: 15s

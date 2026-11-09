@@ -26,6 +26,18 @@
 * { box-sizing: border-box; }
 html { min-width: 320px; scroll-behavior: smooth; }
 body { min-width: 320px; min-height: 100vh; margin: 0; }
+.music-page { position: relative; display: flex; height: 100dvh; min-height: 350px; flex-direction: column; background: var(--canvas); }
+.music-toolbar { position: absolute; top: 24px; right: 120px; z-index: 10; opacity: 0; transition: opacity .2s ease; }
+.music-toolbar:hover, .music-toolbar:focus-within { opacity: 1; }
+@media (hover: none) { .music-toolbar { opacity: 1; } }
+.music-toolbar button, .music-settings button, .music-message button { padding: 7px 12px; border: 1px solid var(--line); border-radius: 8px; background: var(--paper); cursor: pointer; }
+.music-player { width: 100%; min-height: 0; flex: 1; border: 0; }
+.music-settings { position: absolute; z-index: 11; top: 58px; right: 12px; max-width: min(420px, calc(100% - 24px)); padding: 16px 20px; background: var(--paper); border: 1px solid var(--line); border-radius: 12px; box-shadow: 0 12px 36px rgb(0 0 0 / .18); }
+.music-settings form { display: flex; flex-wrap: wrap; align-items: center; gap: 10px; }
+.music-settings input { min-width: 150px; max-width: 220px; padding: 6px 10px; border: 1px solid var(--line); border-radius: 8px; }
+.music-settings p { margin: 8px 0 0; color: var(--muted); font-size: .85rem; }
+.music-message { margin: auto; padding: 20px; text-align: center; }
+.music-error { position: absolute; z-index: 12; top: 58px; left: 12px; max-width: calc(100% - 24px); margin: 0; padding: 6px 20px; background: #fff0ed; color: #a33; }
 button, input { font: inherit; }
 button, a { -webkit-tap-highlight-color: transparent; }
 button { color: inherit; }
@@ -225,7 +237,7 @@ button:focus-visible, a:focus-visible, input:focus-visible { outline: 3px solid 
 .account-security-note > svg { color: #8b80d8; }
 
 :root { color-scheme: light; }
-.theme-toggle { position: fixed; right: 18px; bottom: 18px; z-index: 50; width: 42px; height: 42px; border: 1px solid var(--line); border-radius: 50%; background: var(--paper); color: var(--ink); box-shadow: var(--shadow); }
+.theme-toggle { position: fixed; right: 120px; bottom: 38px; z-index: 50; width: 42px; height: 42px; border: 1px solid var(--line); border-radius: 50%; background: var(--paper); color: var(--ink); box-shadow: var(--shadow); }
 :root[data-theme="dark"] {
   & { color-scheme: dark; --ink: #efedf8; --line: #33313f; --paper: #211f2b; --canvas: #191820; --shadow: 0 12px 34px #0003; background: #191820; color: #efedf8; }
   body, .main-area { background: #191820; }

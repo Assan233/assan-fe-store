@@ -12,6 +12,16 @@ export type Tool = {
 
 export const tools: Tool[] = [
   {
+    id: 'music',
+    name: '飞牛音乐',
+    description: '在应用库内全屏播放你的飞牛音乐。',
+    category: '音频',
+    icon: '♪',
+    accent: 'violet',
+    keywords: ['音乐', '飞牛', '播放', 'music'],
+    path: '/tools/music',
+  },
+  {
     id: 'm4a-to-flac',
     name: 'M4A 转 FLAC',
     description: '浏览器本地转换音频，文件无需上传。',

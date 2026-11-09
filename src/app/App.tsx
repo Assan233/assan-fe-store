@@ -8,6 +8,7 @@ import { lazy, Suspense } from 'react'
 import { UsersPage } from '../pages/UsersPage'
 
 const AudioConverterPage = lazy(() => import('../pages/AudioConverterPage'))
+const MusicPage = lazy(() => import('../pages/MusicPage'))
 
 function LoadingScreen() {
   return (
@@ -26,6 +27,14 @@ function ProtectedApp() {
   return <AppShell />
 }
 
+function ProtectedMusic() {
+  const { user, status } = useAuth()
+  const location = useLocation()
+  if (status === 'loading') return <LoadingScreen />
+  if (!user) return <Navigate to="/login" replace state={{ from: location }} />
+  return <Suspense fallback={<LoadingScreen />}><MusicPage /></Suspense>
+}
+
 export function App() {
   const { user, status, needsSetup } = useAuth()
   if (status === 'loading') return <LoadingScreen />
@@ -41,6 +50,7 @@ export function App() {
         <Route path="/users" element={user?.role === 'admin' ? <UsersPage /> : <Navigate to="/" replace />} />
         <Route path="/tools/m4a-to-flac" element={<Suspense fallback={<LoadingScreen />}><AudioConverterPage /></Suspense>} />
       </Route>
+      <Route path="/tools/music" element={<ProtectedMusic />} />
       <Route path="*" element={<Navigate to={user ? '/' : '/login'} replace />} />
     </Routes>
   )

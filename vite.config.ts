@@ -11,6 +11,17 @@ export default defineConfig({
         target: process.env.VITE_API_PROXY_TARGET ?? 'http://localhost:8080',
         changeOrigin: true,
       },
+      '^/music(?:/|$)': {
+        target: 'https://www.assanye.top:66',
+        changeOrigin: true,
+        secure: true,
+        configure: (proxy) => {
+          proxy.on('proxyReq', (request, incoming) => {
+            const cookie = incoming.headers.cookie?.match(/(?:^|;\s*)(music-token=[^;]+)/i)?.[1]
+            request.setHeader('Cookie', cookie ?? '')
+          })
+        },
+      },
     },
   },
   test: {

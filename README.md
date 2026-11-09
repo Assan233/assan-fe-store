@@ -13,6 +13,12 @@
 - 单文件限制 100 MiB；长音频仍可能超出设备内存，手机建议使用更小的文件。取消或离开页面会终止 Worker，下载链接在更换文件或离开页面时释放。
 - 引擎依赖 `@ffmpeg/core` 0.12.10（GPL-2.0-or-later），发布包含引擎的镜像时需遵守其许可证；源码与构建脚本见 https://github.com/ffmpegwasm/ffmpeg.wasm/tree/v0.12.10 。
 
+## 飞牛音乐
+
+登录应用库后从首页「音频」分类进入 `/tools/music`。首次使用点击「音乐账号设置」，填写你自己的飞牛音乐账号；以后进入该页面会在全屏 iframe 中尝试自动登录。可以随时更换或删除保存的账号。播放和曲库依赖 `https://www.assanye.top:66/music/` 可访问；尚未使用真实账号验证自动登录与播放，若上游登录页面改版，可能需要更新 `public/music-login.js`。
+
+音乐页面经本站 `/music/` 同域代理，HTML 注入本站维护的 `public/music-custom.css` 与自动登录脚本。Nginx 对播放器资源逐次校验应用库会话，只向上游转发 `music-token` Cookie；音频由 Nginx 直接转发并支持长连接，不经 API 内存缓存。账号按应用库用户分别加密保存于后端 SQLite，密钥单独通过环境变量提供，浏览器只在登录时从同源 API 临时读取凭据，密码不写入浏览器存储。**同域代理意味着飞牛播放器脚本与应用库页面共享浏览器源权限**；只在信任该播放器服务时启用此集成。
+
 ## 技术栈
 
 - React + TypeScript（strict）+ Vite
@@ -29,7 +35,7 @@ pnpm install
 pnpm dev
 ```
 
-默认将 `/api` 代理到 `http://localhost:8080`。先启动 `../assan-server-store`，或设置 `VITE_API_PROXY_TARGET` 覆盖目标。
+默认将 `/api` 代理到 `http://localhost:8080`，`/music` 代理到飞牛音乐。先启动 `../assan-server-store`，或设置 `VITE_API_PROXY_TARGET` 覆盖 API 目标。本地测试音乐账号时，先设置后端 `MUSIC_CREDENTIAL_KEY`；Vite 开发代理只供本机调试，正式访问控制由生产 Nginx 执行。
 
 ```sh
 pnpm lint
@@ -43,12 +49,13 @@ pnpm build
 
 ```sh
 cp .env.example .env
+# 在 .env 中填写由 openssl rand -base64 32 生成的 MUSIC_CREDENTIAL_KEY
 # 本地 HTTP 测试时编辑 .env，将 SECURE_COOKIES 改为 false
 docker compose config --quiet
 docker compose up -d --build
 ```
 
-默认只绑定 `127.0.0.1:8080`；由 NAS HTTPS 反向代理转发至该端口。请将 NAS 反向代理配置为覆盖 `X-Real-IP` 并填入真实客户端 IP；前端 Nginx 将该值传给隔离的后端容器供认证限流使用。Nginx 也会保留 `/api/` 路径与 Cookie，其余路径回退到 `index.html`。后端 SQLite 数据写入 `assan-data` Docker volume。生产部署保留 `SECURE_COOKIES=true`；本地 HTTP 测试需改为 `false`。
+默认只绑定 `127.0.0.1:8080`；由 NAS HTTPS 反向代理转发至该端口。请将 NAS 反向代理配置为覆盖 `X-Real-IP` 并填入真实客户端 IP；前端 Nginx 将该值传给隔离的后端容器供认证限流使用。NAS 代理必须保留 `/music/`、`/api/` 原始路径及 Range 请求头，并允许 WebSocket 升级（如播放器使用）。后端 SQLite 数据写入 `assan-data` Docker volume。生产部署保留 `SECURE_COOKIES=true`；本地 HTTP 测试需改为 `false`。保管好 `.env` 中的密钥，**更换或丢失密钥后已有音乐密码无法解密，需重新保存**。
 
 ### 本机账号管理
 
