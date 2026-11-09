@@ -1,0 +1,55 @@
+src/app/auth-context.ts
+  s_d7988ab083ca0d::t_585d1a5e63fdc6 6-7,9
+src/app/AuthProvider.tsx
+  s_d7988ab083ca0d::t_585d1a5e63fdc6 2,7,12-24,31,35-40,50
+src/app/App.tsx
+  s_d7988ab083ca0d::t_585d1a5e63fdc6 8,30,32-33,41
+src/pages/UsersPage.tsx
+  s_d7988ab083ca0d::t_a6ff8d4aba57e1 1-45,47-52,54-70
+  s_d7988ab083ca0d::t_156485c2715845 46,53,71
+CONTEXT.md
+  s_d7988ab083ca0d::t_31573beb852e28 7-9
+src/app/App.test.tsx
+  s_d7988ab083ca0d::t_9225f467ecc46b 22,55
+  s_d7988ab083ca0d::t_377b7cb52c9c95 29-30,33
+  s_d7988ab083ca0d::t_319f2361e6b498 1-21,23-28,31-32,34-54,56-60
+src/lib/api.ts
+  s_d7988ab083ca0d::t_585d1a5e63fdc6 1,50-54
+README.md
+  s_d7988ab083ca0d::t_52283d85cf399e 51-61,69,71
+src/lib/password.ts
+  s_d7988ab083ca0d::t_8305d039c8e9cc 1-8
+src/components/AppShell.tsx
+  h_9beaa02e09d4ff 1-3,6-7,11,13,35,41,45-54,110
+  h_9beaa02e09d4ff 21-27,32-34,36,39-40,42,58-60,66-79,87-97,99-107
+src/features/auth/LoginPage.tsx
+  s_d7988ab083ca0d::t_156485c2715845 36,62-64,77
+  s_d7988ab083ca0d::t_585d1a5e63fdc6 2,7-8,11-12,22,27,58,65,67,69
+src/lib/password.test.ts
+  s_d7988ab083ca0d::t_377b7cb52c9c95 1-10
+src/pages/users.css
+  s_d7988ab083ca0d::t_a6ff8d4aba57e1 1-14
+src/features/account/AccountPage.tsx
+  s_d7988ab083ca0d::t_156485c2715845 41,50
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "1fb7484e8649be7e701fa2dff2af35ac526af4e3",
+  "prompts": {},
+  "humans": {
+    "h_9beaa02e09d4ff": {
+      "author": "caorongsen <caorongsen@zuoyebang.com>"
+    }
+  },
+  "sessions": {
+    "s_d7988ab083ca0d": {
+      "agent_id": {
+        "tool": "opencode",
+        "id": "ses_e41f81e07ffe8cKaeluKvzXU9w",
+        "model": "gpt-6-astra"
+      },
+      "human_author": "caorongsen <caorongsen@zuoyebang.com>"
+    }
+  }
+}
