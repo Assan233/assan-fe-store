@@ -38,7 +38,7 @@ export function AccountPage() {
       <div className="account-card password-card"><div className="account-card-heading"><div className="account-icon"><KeyRound size={20} /></div><div><h2>修改密码</h2><p>修改后需要使用新密码重新登录。</p></div></div>
         <form onSubmit={handleSubmit} className="settings-form">
           <label htmlFor="current-password">当前密码</label><input id="current-password" type="password" autoComplete="current-password" required maxLength={128} value={currentPassword} onChange={(event) => setCurrentPassword(event.currentTarget.value)} />
-          <label htmlFor="new-password">新密码 <span>至少 12 位</span></label><input id="new-password" type="password" autoComplete="new-password" required minLength={12} maxLength={128} value={newPassword} onChange={(event) => setNewPassword(event.currentTarget.value)} />
+          <label htmlFor="new-password">新密码</label><p>{passwordRequirement}</p><input id="new-password" type="password" autoComplete="new-password" required {...newPasswordAttributes} value={newPassword} onChange={(event) => setNewPassword(event.currentTarget.value)} />
           {error && <div className="form-error" role="alert">{error}</div>}{message && <div className="form-success" role="status">{message}</div>}
           <button type="submit" className="submit-button settings-submit" disabled={submitting}>{submitting ? '保存中…' : '更新密码'}</button>
         </form>
@@ -47,3 +47,4 @@ export function AccountPage() {
     </section>
   )
 }
+import { newPasswordAttributes, passwordRequirement } from '../../lib/password'

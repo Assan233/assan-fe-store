@@ -5,6 +5,7 @@ import { HomePage } from '../pages/HomePage'
 import { LoginPage } from '../features/auth/LoginPage'
 import { AccountPage } from '../features/account/AccountPage'
 import { lazy, Suspense } from 'react'
+import { UsersPage } from '../pages/UsersPage'
 
 const AudioConverterPage = lazy(() => import('../pages/AudioConverterPage'))
 
@@ -26,8 +27,10 @@ function ProtectedApp() {
 }
 
 export function App() {
-  const { user, status } = useAuth()
+  const { user, status, needsSetup } = useAuth()
   if (status === 'loading') return <LoadingScreen />
+  if (status === 'error') return <main className="loading-screen"><p role="alert">无法连接本地账号服务，请检查 NAS 服务后重试。</p><button onClick={() => window.location.reload()}>重新连接</button></main>
+  if (needsSetup) return <LoginPage key="setup" initializing />
 
   return (
     <Routes>
@@ -35,6 +38,7 @@ export function App() {
       <Route element={<ProtectedApp />}>
         <Route path="/" element={<HomePage />} />
         <Route path="/account" element={<AccountPage />} />
+        <Route path="/users" element={user?.role === 'admin' ? <UsersPage /> : <Navigate to="/" replace />} />
         <Route path="/tools/m4a-to-flac" element={<Suspense fallback={<LoadingScreen />}><AudioConverterPage /></Suspense>} />
       </Route>
       <Route path="*" element={<Navigate to={user ? '/' : '/login'} replace />} />

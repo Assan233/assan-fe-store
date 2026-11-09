@@ -1,4 +1,4 @@
-export type User = { id: string; username: string }
+export type User = { id: number; username: string; role: 'admin' | 'member'; disabled: boolean }
 type Envelope<T> = { data: T }
 type ErrorEnvelope = { error?: { code?: string; message?: string } }
 
@@ -47,7 +47,11 @@ async function mutate<T>(path: string, body?: unknown): Promise<T> {
 export const api = {
   me: () => request<User>('/api/v1/auth/me'),
   signIn: (username: string, password: string) => mutate<User>('/api/v1/auth/login', { username, password }),
-  signUp: (username: string, password: string) => mutate<User>('/api/v1/auth/signup', { username, password }),
+  setupStatus: () => request<{ needsSetup: boolean }>('/api/v1/auth/setup'),
+  setup: (username: string, password: string) => mutate<User>('/api/v1/auth/setup', { username, password }),
+  users: () => request<User[]>('/api/v1/admin/users'),
+  createMember: (username: string, password: string) => mutate<void>('/api/v1/admin/users', { username, password }),
+  manageMember: (id: number, action: 'disable' | 'enable' | 'delete' | 'reset-password', password?: string) => mutate<void>(`/api/v1/admin/users/${id}`, { action, password }),
   signOut: () => mutate<void>('/api/v1/auth/logout'),
   changePassword: (currentPassword: string, newPassword: string) =>
     mutate<void>('/api/v1/auth/password', { currentPassword, newPassword }),

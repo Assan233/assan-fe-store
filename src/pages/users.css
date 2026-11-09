@@ -1,0 +1,14 @@
+.users-page { max-width: 1000px; margin: auto; }
+.users-page h1 { font-size: 32px; margin-bottom: 12px; }
+.users-page h2 { font-size: 22px; margin-bottom: 16px; }
+.users-page p { margin: 8px 0 20px; overflow-wrap: anywhere; }
+.users-panel { background: var(--paper); border: 1px solid var(--line); border-radius: 20px; padding: 28px; margin: 28px 0; }
+.users-panel form { max-width: 520px; }
+.users-list { list-style: none; padding: 0; display: grid; gap: 16px; }
+.users-list li { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 16px; border: 1px solid var(--line); border-radius: 16px; padding: 24px; background: var(--paper); }
+.users-list strong { overflow-wrap: anywhere; }
+.users-list p { margin-bottom: 0; }
+.users-actions { display: flex; flex-wrap: wrap; gap: 12px; }
+.users-actions button, .users-panel button[type="button"] { min-height: 44px; padding: 8px 16px; border: 1px solid var(--line); border-radius: 10px; }
+.users-page button:disabled { opacity: .55; cursor: wait; }
+@media (max-width: 600px) { .users-panel, .users-list li { padding: 20px; } }

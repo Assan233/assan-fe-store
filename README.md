@@ -48,7 +48,17 @@ docker compose config --quiet
 docker compose up -d --build
 ```
 
-默认只绑定 `127.0.0.1:8080`；由 NAS HTTPS 反向代理转发至该端口。请将 NAS 反向代理配置为覆盖 `X-Real-IP` 并填入真实客户端 IP；前端 Nginx 将该值传给隔离的后端容器供认证限流使用。Nginx 也会保留 `/api/` 路径与 Cookie，其余路径回退到 `index.html`。后端 SQLite 数据写入 `assan-data` Docker volume。生产部署保留 `SECURE_COOKIES=true`；本地 HTTP 测试需改为 `false`。首次访问可注册账户，忘记密码时参考 `../assan-server-store/README.md` 的管理员重置命令。
+默认只绑定 `127.0.0.1:8080`；由 NAS HTTPS 反向代理转发至该端口。请将 NAS 反向代理配置为覆盖 `X-Real-IP` 并填入真实客户端 IP；前端 Nginx 将该值传给隔离的后端容器供认证限流使用。Nginx 也会保留 `/api/` 路径与 Cookie，其余路径回退到 `index.html`。后端 SQLite 数据写入 `assan-data` Docker volume。生产部署保留 `SECURE_COOKIES=true`；本地 HTTP 测试需改为 `false`。
+
+### 本机账号管理
+
+账号及 Argon2id 密码哈希保存在 NAS 的数据卷中，验证由本机 API 完成，不依赖外部认证服务；各设备连接同一个 NAS 即可共享账号。更新镜像保留账号，请保留数据卷。
+
+- 空安装首次访问自动进入「设置管理员」，创建后关闭初始化入口；没有公开注册。
+- 管理员可在「用户管理」添加、禁用、启用、删除子账号或重置密码。禁用、删除、重置会撤销子账号的所有会话。
+- 子账号可以使用全部工具，在账户设置修改自己的密码，不能访问用户管理。
+- 管理员忘记密码可使用 `docker compose exec -it api /usr/local/bin/reset-password USERNAME`，输入不会回显。
+- 首次初始化应由部署者在开放 NAS 访问前完成。已有安装升级及清空旧账号的步骤见 `../assan-server-store/docs/api.md`，更新镜像本身不会清空数据。
 
 ## 项目结构
 
@@ -56,8 +66,8 @@ docker compose up -d --build
 src/
   app/         路由与认证边界
   components/  应用壳和共享 UI
-  features/    登录、注册、账户设置与本地音频转换
+  features/    登录、管理员初始化、账户设置与本地音频转换
   lib/         API 客户端
-  pages/       首页和工具预览
+  pages/       首页、用户管理和工具页面
   test/        测试初始化
 ```
