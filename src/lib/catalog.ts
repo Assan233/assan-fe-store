@@ -1,4 +1,4 @@
-export type ToolCategory = '效率' | '文本' | '开发'
+export type ToolCategory = '效率' | '文本' | '开发' | '音频'
 export type Tool = {
   id: string
   name: string
@@ -7,9 +7,20 @@ export type Tool = {
   icon: string
   accent: 'violet' | 'mint' | 'amber'
   keywords: string[]
+  path?: string
 }
 
 export const tools: Tool[] = [
+  {
+    id: 'm4a-to-flac',
+    name: 'M4A 转 FLAC',
+    description: '浏览器本地转换音频，文件无需上传。',
+    category: '音频',
+    icon: '♫',
+    accent: 'mint',
+    keywords: ['m4a', 'flac', '音频', '转换', '音乐'],
+    path: '/tools/m4a-to-flac',
+  },
   {
     id: 'json-beautifier',
     name: 'JSON 格式化',

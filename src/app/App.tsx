@@ -4,6 +4,9 @@ import { AppShell } from '../components/AppShell'
 import { HomePage } from '../pages/HomePage'
 import { LoginPage } from '../features/auth/LoginPage'
 import { AccountPage } from '../features/account/AccountPage'
+import { lazy, Suspense } from 'react'
+
+const AudioConverterPage = lazy(() => import('../pages/AudioConverterPage'))
 
 function LoadingScreen() {
   return (
@@ -32,6 +35,7 @@ export function App() {
       <Route element={<ProtectedApp />}>
         <Route path="/" element={<HomePage />} />
         <Route path="/account" element={<AccountPage />} />
+        <Route path="/tools/m4a-to-flac" element={<Suspense fallback={<LoadingScreen />}><AudioConverterPage /></Suspense>} />
       </Route>
       <Route path="*" element={<Navigate to={user ? '/' : '/login'} replace />} />
     </Routes>
