@@ -1,0 +1,95 @@
+eslint.config.js
+  s_d7988ab083ca0d::t_08c36296b8b09b 1-19
+tsconfig.json
+  s_d7988ab083ca0d::t_08c36296b8b09b 1-7
+src/test/setup.ts
+  s_d7988ab083ca0d::t_892ac51d1d71f7 1
+src/pages/HomePage.tsx
+  s_d7988ab083ca0d::t_fa876c1e14de06 1-71
+src/styles.css
+  s_d7988ab083ca0d::t_892ac51d1d71f7 1-306
+src/lib/catalog.test.ts
+  s_d7988ab083ca0d::t_892ac51d1d71f7 1-17
+.env.example
+  s_d7988ab083ca0d::t_08c36296b8b09b 2
+  s_d7988ab083ca0d::t_52de5b20cfcbbe 1,3-7
+src/app/AuthProvider.tsx
+  s_d7988ab083ca0d::t_fa876c1e14de06 2,4-41
+  s_d7988ab083ca0d::t_f2db4471a4a948 1,3
+src/lib/api.ts
+  s_d7988ab083ca0d::t_fa876c1e14de06 1-54
+src/components/AppShell.tsx
+  s_d7988ab083ca0d::t_f2db4471a4a948 3
+  s_d7988ab083ca0d::t_fa876c1e14de06 1-2,4-60
+src/app/App.tsx
+  s_d7988ab083ca0d::t_ada7d83c636de2 1,19,21
+  s_d7988ab083ca0d::t_fa876c1e14de06 3-18,20,22-39
+  s_d7988ab083ca0d::t_f2db4471a4a948 2
+src/features/account/AccountPage.tsx
+  s_d7988ab083ca0d::t_f2db4471a4a948 5
+  s_d7988ab083ca0d::t_fa876c1e14de06 1-4,6-49
+README.md
+  s_d7988ab083ca0d::t_08c36296b8b09b 1-11,13-30,41-52
+  s_d7988ab083ca0d::t_52de5b20cfcbbe 12,31-39
+  s_d7988ab083ca0d::t_4758b7d97fde90 40
+src/app/useAuth.ts
+  s_d7988ab083ca0d::t_f2db4471a4a948 1-8
+.dockerignore
+  s_d7988ab083ca0d::t_d37cab1f84d75d 1-5
+compose.yaml
+  s_d7988ab083ca0d::t_52de5b20cfcbbe 11
+  s_d7988ab083ca0d::t_d37cab1f84d75d 1-10,12-46
+Dockerfile
+  s_d7988ab083ca0d::t_08c36296b8b09b 1-9,11-15
+  s_d7988ab083ca0d::t_d37cab1f84d75d 10
+index.html
+  s_d7988ab083ca0d::t_08c36296b8b09b 1-14
+tsconfig.node.json
+  s_d7988ab083ca0d::t_ada7d83c636de2 14
+  s_d7988ab083ca0d::t_08c36296b8b09b 1-13,15-20
+src/main.tsx
+  s_d7988ab083ca0d::t_fa876c1e14de06 1-16
+package.json
+  s_d7988ab083ca0d::t_08c36296b8b09b 1-4,6-28,30-41
+  s_d7988ab083ca0d::t_f2db4471a4a948 29
+  s_d7988ab083ca0d::t_52de5b20cfcbbe 5
+vite.config.ts
+  s_d7988ab083ca0d::t_08c36296b8b09b 1-20
+src/app/auth-context.ts
+  s_d7988ab083ca0d::t_f2db4471a4a948 1-13
+nginx.conf
+  s_d7988ab083ca0d::t_08c36296b8b09b 1-7,9-10,14-28
+  s_d7988ab083ca0d::t_e183a5a9b81f7b 8
+  s_d7988ab083ca0d::t_4758b7d97fde90 11-13
+src/lib/catalog.ts
+  s_d7988ab083ca0d::t_fa876c1e14de06 1-53
+tsconfig.app.json
+  s_d7988ab083ca0d::t_08c36296b8b09b 1-21
+src/features/auth/LoginPage.tsx
+  s_d7988ab083ca0d::t_fa876c1e14de06 1-4,6-72
+  s_d7988ab083ca0d::t_f2db4471a4a948 5
+AGENTS.md
+  s_d7988ab083ca0d::t_08c36296b8b09b 1-19
+.gitignore
+  s_d7988ab083ca0d::t_08c36296b8b09b 1-8
+CONTEXT.md
+  s_d7988ab083ca0d::t_7e0216f03c6652 1-7
+pnpm-lock.yaml
+  s_d7988ab083ca0d::t_661a9faa496063 1-2921
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "28fd06fcc346f15544f51f6e58db688f385bcd7c",
+  "prompts": {},
+  "sessions": {
+    "s_d7988ab083ca0d": {
+      "agent_id": {
+        "tool": "opencode",
+        "id": "ses_e41f81e07ffe8cKaeluKvzXU9w",
+        "model": "gpt-6-astra"
+      },
+      "human_author": "caorongsen <caorongsen@zuoyebang.com>"
+    }
+  }
+}
