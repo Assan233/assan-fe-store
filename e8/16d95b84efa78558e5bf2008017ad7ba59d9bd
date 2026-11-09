@@ -1,0 +1,69 @@
+src/features/audio/archive.test.ts
+  s_d7988ab083ca0d::t_ff86089f6b9886 1-17
+src/pages/HomePage.tsx
+  s_d7988ab083ca0d::t_504763d943ad49 2,6,13,19
+src/pages/AudioConverterPage.test.tsx
+  s_d7988ab083ca0d::t_ff86089f6b9886 6,8-9,32-52
+  s_d7988ab083ca0d::t_de2fa31eb66950 1-5,7,10-31,53-88
+src/components/ThemeToggle.tsx
+  s_d7988ab083ca0d::t_c5ee402548a6c0 1-33
+vite.config.ts
+  s_d7988ab083ca0d::t_504763d943ad49 7
+src/lib/catalog.ts
+  s_d7988ab083ca0d::t_504763d943ad49 1,10,14-23
+src/pages/AudioConverterPage.tsx
+  s_d7988ab083ca0d::t_ff86089f6b9886 146-147
+  s_d7988ab083ca0d::t_3f0685b83dd7ca 5,13-14,24-30,35-36,44-69,73,90,122,144-145,148,150-152,157-161
+  s_d7988ab083ca0d::t_b592e2d3c1bdee 3,111,113-117,120,129-133,142-143,149,155
+  s_d7988ab083ca0d::t_504763d943ad49 1-2,4,6-7,17-18,20-22,31-33,37-39,42-43,70,74-76,80,95,97-110,112,121,128,134-137,140-141,166-167,169-174
+  s_d7988ab083ca0d::t_91c385b438827e 168
+  s_d7988ab083ca0d::t_ac8a2cf5ef1446 8-12,15-16,19,23,34,40-41,71-72,77-79,81-89,91-94,96,118-119,123-127,138-139,153-154,156,162-165
+src/styles.css
+  s_d7988ab083ca0d::t_ee87ede074dcb0 13-14,251-296,298-320,331-337,343-344,349,353,355-356,360,363-364,367-369,373-375,377,379,382,386-387,391
+  s_d7988ab083ca0d::t_c5ee402548a6c0 227-230
+  s_d7988ab083ca0d::t_89ed1a0dfb2b82 297,376
+  s_d7988ab083ca0d::t_bd1106b0c2bc7b 321-330
+src/features/audio/convert.ts
+  s_d7988ab083ca0d::t_504763d943ad49 1-39,48-57
+  s_d7988ab083ca0d::t_91c385b438827e 40-43,47
+  s_d7988ab083ca0d::t_4f010b18982cd9 44-46
+src/main.tsx
+  s_d7988ab083ca0d::t_c5ee402548a6c0 7,11
+src/app/App.tsx
+  s_d7988ab083ca0d::t_504763d943ad49 7-9,38
+src/features/audio/archive.ts
+  s_d7988ab083ca0d::t_3f0685b83dd7ca 1-19
+README.md
+  s_d7988ab083ca0d::t_ac8a2cf5ef1446 9
+  s_d7988ab083ca0d::t_3f0685b83dd7ca 7-8
+  s_d7988ab083ca0d::t_91c385b438827e 11
+  s_d7988ab083ca0d::t_504763d943ad49 3-6,10,12-14,59
+package.json
+  s_d7988ab083ca0d::t_47b16d7fc521c5 15-16,30
+  s_d7988ab083ca0d::t_f1cb8ddd3dd262 18
+src/components/ThemeToggle.test.tsx
+  s_d7988ab083ca0d::t_d6ea43a52e9b22 1-31
+src/pages/audio-converter.css
+  s_d7988ab083ca0d::t_4e24daf82318b7 4-20,23-24,27-40,43-54,57-59
+  s_d7988ab083ca0d::t_ee87ede074dcb0 1,3,42
+  s_d7988ab083ca0d::t_cc8c8461a71a75 41,55-56
+  s_d7988ab083ca0d::t_504763d943ad49 2,21-22,25-26
+src/vite-env.d.ts
+  s_d7988ab083ca0d::t_40286eb7d73864 1
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "e816d95b84efa78558e5bf2008017ad7ba59d9bd",
+  "prompts": {},
+  "sessions": {
+    "s_d7988ab083ca0d": {
+      "agent_id": {
+        "tool": "opencode",
+        "id": "ses_e41f81e07ffe8cKaeluKvzXU9w",
+        "model": "gpt-6-astra"
+      },
+      "human_author": "caorongsen <caorongsen@zuoyebang.com>"
+    }
+  }
+}
