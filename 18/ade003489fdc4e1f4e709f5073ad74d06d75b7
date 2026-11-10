@@ -1,0 +1,16 @@
+src/styles.css
+  h_9beaa02e09d4ff 30,240,332
+public/music-custom.css
+  h_9beaa02e09d4ff 80-86
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "18ade003489fdc4e1f4e709f5073ad74d06d75b7",
+  "prompts": {},
+  "humans": {
+    "h_9beaa02e09d4ff": {
+      "author": "caorongsen <caorongsen@zuoyebang.com>"
+    }
+  }
+}
