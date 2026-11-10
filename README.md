@@ -55,7 +55,7 @@ docker compose config --quiet
 docker compose up -d --build
 ```
 
-默认只绑定 `127.0.0.1:8080`；由 NAS HTTPS 反向代理转发至该端口。请将 NAS 反向代理配置为覆盖 `X-Real-IP` 并填入真实客户端 IP；前端 Nginx 将该值传给隔离的后端容器供认证限流使用。NAS 代理必须保留 `/music/`、`/api/` 原始路径及 Range 请求头，并允许 WebSocket 升级（如播放器使用）。后端 SQLite 数据写入 `assan-data` Docker volume。生产部署保留 `SECURE_COOKIES=true`；本地 HTTP 测试需改为 `false`。保管好 `.env` 中的密钥，**更换或丢失密钥后已有音乐密码无法解密，需重新保存**。
+Compose 默认将 `web` 映射到 NAS 本机 `127.0.0.1:3280`（容器端口 8080），`api` 映射到 `127.0.0.1:3290`（容器端口 9090）；外部站点入口应转发到前端 3280。`HOST_PORT`、`API_HOST_PORT` 可分别覆盖宿主机端口，已有 `.env` 需同步修改，单独修改 `.env.example` 不会改变实际部署。请将 NAS 反向代理配置为覆盖 `X-Real-IP` 并填入真实客户端 IP；前端 Nginx 将该值传给隔离的后端容器供认证限流使用。NAS 代理必须保留 `/music/`、`/api/` 原始路径及 Range 请求头，并允许 WebSocket 升级（如播放器使用）。后端 SQLite 数据写入 `assan-data` Docker volume。生产部署保留 `SECURE_COOKIES=true`；本地 HTTP 测试需改为 `false`。保管好 `.env` 中的密钥，**更换或丢失密钥后已有音乐密码无法解密，需重新保存**。
 
 ### 本机账号管理
 
