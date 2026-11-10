@@ -1,0 +1,25 @@
+docs/docker-deployment.md
+  s_d7988ab083ca0d::t_5542856cc0c144 20,35-36,41,57-59,66,73
+compose.yaml
+  s_d7988ab083ca0d::t_5542856cc0c144 16,34
+.env.example
+  s_d7988ab083ca0d::t_5542856cc0c144 6-7
+README.md
+  s_d7988ab083ca0d::t_5542856cc0c144 58
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "1fb358d401779f28cf69fd68aac827bed310ce70",
+  "prompts": {},
+  "sessions": {
+    "s_d7988ab083ca0d": {
+      "agent_id": {
+        "tool": "opencode",
+        "id": "ses_e41f81e07ffe8cKaeluKvzXU9w",
+        "model": "gpt-6-astra"
+      },
+      "human_author": "caorongsen <caorongsen@zuoyebang.com>"
+    }
+  }
+}
