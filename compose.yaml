@@ -39,6 +39,11 @@ services:
       - /tmp:size=8m
     cap_drop:
       - ALL
+    # Nginx master initializes its tmpfs directories and switches workers to nginx (UID 101).
+    cap_add:
+      - CHOWN
+      - SETGID
+      - SETUID
     security_opt:
       - no-new-privileges:true
     logging:

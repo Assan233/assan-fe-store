@@ -81,6 +81,7 @@ curl http://127.0.0.1:29090/healthz
 - **站点可打开但无法登录**：检查域名是否使用 HTTPS、`SECURE_COOKIES` 设置、`/api/` 路径和后端日志。
 - **容器不断重启**：在前端仓库目录运行 `docker compose ps -a` 和 `docker compose logs --tail=100 --no-color web api`，优先按日志中第一条启动错误排查。`web` 启动时需要能解析 `api` 和飞牛音乐域名；`api` 启动时需要可写的 `/data` 卷及合法的 `MUSIC_CREDENTIAL_KEY`。只有 `docker compose config --quiet` 成功并不能证明服务已经启动。
 - **飞牛 OS Docker 应用的项目名不同**：应用管理器可能将项目命名为 `assan-store`，直接在 `assan-fe-store` 目录运行 `docker compose ps` 会查看另一个项目而返回空列表。用 `docker logs --tail=100 assan-store-web-1` 查看实际容器，或运行 `docker compose -p assan-store ps -a`。若日志显示 `invalid number of the map parameters in /etc/nginx/conf.d/default.conf:3`，请同步已修复的 `nginx.conf` 并在飞牛 OS 中重新构建和创建该应用容器；只重启旧容器不会更新镜像。`can not modify ... (read-only file system?)` 是 Nginx 入口脚本的提示，不是这里的退出原因。
+- **`web` 日志显示 `chown("/var/cache/nginx/client_temp", 101) failed (1: Operation not permitted)`**：使用已更新的 `compose.yaml`，为 `web` 在 `cap_drop: [ALL]` 之外增加 `CHOWN`、`SETGID`、`SETUID` 权限；Nginx 启动时需要设置临时目录所有者并切换工作进程用户。然后运行 `docker compose -p assan-store up -d --force-recreate api web`，确认 `ps -a` 显示两项均运行。若仅用 `--no-deps` 启动 `web` 而没有 `api`，还会出现 `host not found in upstream "api"`。
 - **音乐工具无法使用**：确认 NAS 能访问 `https://www.assanye.top:66/music/`，检查密钥是否与保存凭据时一致，并查看 `web`、`api` 日志。上游播放器脚本经本站同域代理运行；只在信任该服务时启用音乐集成。
 - **管理员忘记密码**：在前端目录运行 `docker compose exec -it api /usr/local/bin/reset-password USERNAME`，按提示输入新密码。
 
