@@ -1,19 +1,21 @@
-# Repository instructions
+# 仓库协作规则
 
-## Product and architecture
-- This is the React + TypeScript frontend for a personal, Chinese-language utilities library deployed beside `../assan-server-store`.
-- Use strict TypeScript and functional React components. Keep route-level pages in `src/pages`, user workflows in `src/features`, and shared UI in `src/components`.
-- The authenticated app shell protects all library routes. Authentication uses same-origin HTTP-only server sessions; keep credentials and session tokens out of browser storage.
-- Use `/api` for backend requests. Preserve the API's `{data: ...}` success and `{error:{code,message}}` error envelopes.
-- Keep the initial catalog honest: preview cards are not working tools unless a complete utility is implemented.
+- 优先使用中文与用户交流，并使用中文编写面向用户的文案和文档；代码标识符遵循项目现有约定。
 
-## Changes and documentation
-- Inspect the working tree and nearby code before editing; preserve unrelated work.
-- Keep visible UI accessible: semantic landmarks, keyboard-operable controls, associated labels, focus states, and responsive layouts.
-- Update `README.md` when setup, scripts, architecture, or deployment changes. Record substantial, hard-to-reverse design tradeoffs as ADRs; keep `CONTEXT.md` a glossary only.
-- Use Conventional Commit messages if commits are explicitly requested. Never commit or push unless asked.
+## 产品与架构
+- 本仓库是个人中文应用库的 React + TypeScript 前端，与 `../assan-server-store` 配套部署。
+- 使用严格 TypeScript 和函数式 React 组件。路由页面放在 `src/pages`，用户流程放在 `src/features`，共享界面放在 `src/components`。
+- 受保护的应用布局覆盖所有应用库路由。认证使用同源、HttpOnly 的服务端会话；浏览器存储中不要保存凭据或会话令牌。
+- 后端请求使用 `/api`，保持成功响应 `{data: ...}` 和错误响应 `{error:{code,message}}` 的结构。
+- 如实标记工具状态：只有完整实现的工具才能提供可用入口，预览卡片不能冒充可用工具。
 
-## Verification
-- Run `pnpm lint`, `pnpm test`, and `pnpm build` for frontend changes.
-- For API changes, read `../assan-server-store/docs/api.md` and verify request paths, CSRF behavior, cookies, and response envelopes against the backend.
-- Keep `AGENTS.md` focused on repository conventions; package scripts and config remain the source of truth for commands and tool versions.
+## 修改与文档
+- 修改前检查工作区状态和相关代码，保留无关改动。
+- 界面需兼顾无障碍与响应式布局：使用语义化区域、键盘可操作的控件、关联的标签和清晰的焦点状态。
+- 安装步骤、脚本、架构或部署方式变化时更新 `README.md`。重要且难以逆转的设计取舍写入 ADR；`CONTEXT.md` 只记录术语定义。
+- 仅在明确要求提交时使用 Conventional Commits 格式的提交信息；未经要求不要提交或推送。
+
+## 验证
+- 前端改动运行 `pnpm lint`、`pnpm test` 和 `pnpm build`。
+- 修改接口调用前阅读 `../assan-server-store/docs/api.md`，并与后端核对请求路径、CSRF 行为、Cookie 及响应结构。
+- `AGENTS.md` 只记录仓库约定；具体命令和工具版本以项目脚本与配置为准。

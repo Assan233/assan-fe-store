@@ -73,9 +73,8 @@ body {
   top: calc(100dvh * 2 / 3) !important;
 }
 
-/* 播放器菜单浮层(包含 歌曲列表/全屏等) */
-/* ._corner-controls_14qoa_91 {
-  pointer-events: auto !important;
-  opacity: 1 !important;
-  visibility: visible !important;
-} */
+/* 播放器 底部 工具栏 */
+.music-player-glass {
+  transform: scale(2);
+  transform-origin: center bottom;
+}
