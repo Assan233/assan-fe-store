@@ -31,7 +31,6 @@ body {
   ._corner-controls_14qoa_91 {
     opacity: 1 !important;
     visibility: visible !important;
-    pointer-events: auto !important;
   }
 }
 
@@ -77,4 +76,11 @@ body {
 .music-player-glass {
   transform: scale(2);
   transform-origin: center bottom;
+}
+
+/* 播放器菜单浮层(包含 歌曲列表/全屏等) */
+._corner-controls_14qoa_91 {
+  zoom: 4 !important;
+  opacity: 1 !important;
+  visibility: visible !important;
 }

@@ -27,7 +27,7 @@
 html { min-width: 320px; scroll-behavior: smooth; }
 body { min-width: 320px; min-height: 100vh; margin: 0; }
 .music-page { position: relative; display: flex; height: 100dvh; min-height: 350px; flex-direction: column; background: var(--canvas); }
-.music-toolbar { position: absolute; top: 24px; right: 120px; z-index: 10; opacity: 0; transition: opacity .2s ease; }
+.music-toolbar { position: absolute; top: 24px; right: 220px; z-index: 10; opacity: 0; transition: opacity .2s ease; zoom: 2;}
 .music-toolbar:hover, .music-toolbar:focus-within { opacity: 1; }
 @media (hover: none) { .music-toolbar { opacity: 1; } }
 .music-toolbar button, .music-settings button, .music-message button { padding: 7px 12px; border: 1px solid var(--line); border-radius: 8px; background: var(--paper); cursor: pointer; }
@@ -237,7 +237,7 @@ button:focus-visible, a:focus-visible, input:focus-visible { outline: 3px solid 
 .account-security-note > svg { color: #8b80d8; }
 
 :root { color-scheme: light; }
-.theme-toggle { position: fixed; right: 120px; bottom: 38px; z-index: 50; width: 42px; height: 42px; border: 1px solid var(--line); border-radius: 50%; background: var(--paper); color: var(--ink); box-shadow: var(--shadow); }
+.theme-toggle { position: fixed; right: 220px; bottom: 38px; z-index: 50; width: 80px; height: 80px; border: 1px solid var(--line); border-radius: 50%; background: var(--paper); color: var(--ink); box-shadow: var(--shadow); }
 :root[data-theme="dark"] {
   & { color-scheme: dark; --ink: #efedf8; --line: #33313f; --paper: #211f2b; --canvas: #191820; --shadow: 0 12px 34px #0003; background: #191820; color: #efedf8; }
   body, .main-area { background: #191820; }
@@ -329,7 +329,7 @@ button:focus-visible, a:focus-visible, input:focus-visible { outline: 3px solid 
 .settings-form { max-width: 520px; margin-top: 28px; }
 .settings-form > label:not(:first-child) { margin-top: 24px; }
 .settings-submit { width: auto; justify-self: start; min-width: 160px; }
-.theme-toggle { width: 48px; height: 48px; }
+.theme-toggle { width: 80px; height: 80px; }
 :root[data-theme="dark"] .tool-card,
 :root[data-theme="dark"] .search-box,
 :root[data-theme="dark"] .status-pill { border-color: #3a3749; }
