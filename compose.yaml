@@ -13,7 +13,7 @@ services:
       TRUST_PROXY: "true"
       MUSIC_CREDENTIAL_KEY: "${MUSIC_CREDENTIAL_KEY:-}"
     ports:
-      - "${BIND_ADDRESS:-127.0.0.1}:${API_HOST_PORT:-3290}:9090"
+      - "${BIND_ADDRESS:-127.0.0.1}:${API_HOST_PORT:-29090}:9090"
     volumes:
       - assan-data:/data
     stop_grace_period: 15s
@@ -31,7 +31,7 @@ services:
     depends_on:
       - api
     ports:
-      - "${BIND_ADDRESS:-127.0.0.1}:${HOST_PORT:-3280}:8080"
+      - "${BIND_ADDRESS:-127.0.0.1}:${HOST_PORT:-28080}:8080"
     read_only: true
     tmpfs:
       - /var/cache/nginx:size=8m
