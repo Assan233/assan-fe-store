@@ -1,0 +1,30 @@
+CONTEXT.md
+  s_d7988ab083ca0d::t_74ddc2267d43d7 1,3-6,10
+AGENTS.md
+  s_d7988ab083ca0d::t_74ddc2267d43d7 1,5-10,12-21
+  s_d7988ab083ca0d::t_e72afd68536630 3
+public/music-custom.css
+  h_9beaa02e09d4ff 76-79
+  h_9beaa02e09d4ff 80
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "5f681d9f1562564f9fb794d915f742fc112ffff6",
+  "prompts": {},
+  "humans": {
+    "h_9beaa02e09d4ff": {
+      "author": "caorongsen <caorongsen@zuoyebang.com>"
+    }
+  },
+  "sessions": {
+    "s_d7988ab083ca0d": {
+      "agent_id": {
+        "tool": "opencode",
+        "id": "ses_e41f81e07ffe8cKaeluKvzXU9w",
+        "model": "gpt-6-astra"
+      },
+      "human_author": "caorongsen <caorongsen@zuoyebang.com>"
+    }
+  }
+}
