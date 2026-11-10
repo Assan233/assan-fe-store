@@ -6,6 +6,9 @@ COPY package.json pnpm-lock.yaml ./
 RUN pnpm install --frozen-lockfile
 COPY . .
 RUN pnpm build
+# Vite copies public/ files as-is; NAS checkout permissions may be restrictive.
+# Normalize the entire static output so the unprivileged Nginx worker can read it.
+RUN chmod -R a+rX /app/dist
 
 FROM nginx:1.29-alpine
 COPY nginx.conf /etc/nginx/conf.d/default.conf
