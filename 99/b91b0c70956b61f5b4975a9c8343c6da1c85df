@@ -1,0 +1,34 @@
+README.md
+  s_d7988ab083ca0d::t_1a286c309fdf3a 48
+.env.example
+  s_d7988ab083ca0d::t_987236eab5c665 12-14
+docs/docker-deployment.md
+  s_d7988ab083ca0d::t_1a286c309fdf3a 1-81
+  s_d7988ab083ca0d::t_2bd585dbd46f5c 82-95
+  s_d7988ab083ca0d::t_987236eab5c665 96-107
+public/music-custom.css
+  h_9beaa02e09d4ff 42
+compose.yaml
+  s_d7988ab083ca0d::t_987236eab5c665 5-6
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "99b91b0c70956b61f5b4975a9c8343c6da1c85df",
+  "prompts": {},
+  "humans": {
+    "h_9beaa02e09d4ff": {
+      "author": "caorongsen <caorongsen@zuoyebang.com>"
+    }
+  },
+  "sessions": {
+    "s_d7988ab083ca0d": {
+      "agent_id": {
+        "tool": "opencode",
+        "id": "ses_e41f81e07ffe8cKaeluKvzXU9w",
+        "model": "gpt-6-astra"
+      },
+      "human_author": "caorongsen <caorongsen@zuoyebang.com>"
+    }
+  }
+}
