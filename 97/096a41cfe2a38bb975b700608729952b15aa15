@@ -1,0 +1,21 @@
+Dockerfile
+  s_d7988ab083ca0d::t_dc8043a2d830c2 9-11
+docs/docker-deployment.md
+  s_d7988ab083ca0d::t_dc8043a2d830c2 86
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "97096a41cfe2a38bb975b700608729952b15aa15",
+  "prompts": {},
+  "sessions": {
+    "s_d7988ab083ca0d": {
+      "agent_id": {
+        "tool": "opencode",
+        "id": "ses_e41f81e07ffe8cKaeluKvzXU9w",
+        "model": "gpt-6-astra"
+      },
+      "human_author": "caorongsen <caorongsen@zuoyebang.com>"
+    }
+  }
+}
