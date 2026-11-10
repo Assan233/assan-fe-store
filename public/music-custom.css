@@ -39,7 +39,7 @@ body {
 .flex.h-14.w-full.items-center.justify-between
   button:nth-of-type(n + 2):nth-of-type(-n + 4) {
   position: fixed !important;
-  left: 120px !important;
+  left: 300px !important;
   width: calc(100dvh / 3) !important;
   height: calc(100dvh / 3) !important;
   padding: 0 !important;

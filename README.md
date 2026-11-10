@@ -45,7 +45,7 @@ pnpm build
 
 ## Docker / NAS
 
-从前端仓库根目录启动完整应用和相邻后端：
+完整的 NAS 部署、HTTPS 反向代理、验证和备份步骤见 [Docker Compose 部署文档](docs/docker-deployment.md)。从前端仓库根目录启动完整应用和相邻后端：
 
 ```sh
 cp .env.example .env
