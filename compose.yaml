@@ -13,7 +13,7 @@ services:
       TRUST_PROXY: "true"
       MUSIC_CREDENTIAL_KEY: "${MUSIC_CREDENTIAL_KEY:-}"
     ports:
-      - "${BIND_ADDRESS:-127.0.0.1}:${API_HOST_PORT:-29090}:9090"
+      - "127.0.0.1:${API_HOST_PORT:-29090}:9090"
     volumes:
       - assan-data:/data
     stop_grace_period: 15s

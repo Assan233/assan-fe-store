@@ -70,7 +70,7 @@ curl http://127.0.0.1:29090/healthz
 - 转发 `Range` 请求头以支持音频分段请求，并允许 WebSocket 升级。
 - 对外使用 HTTPS，保持 `.env` 中 `SECURE_COOKIES=true`。
 
-如果 NAS 反向代理也运行在另一个容器中，其 `127.0.0.1` 指向代理容器自身，不能直接访问上面的宿主机监听地址。可将代理接入同一 Docker 网络并访问 `web:8080`；或将 `BIND_ADDRESS` 改成 NAS 可访问的网卡地址，仅允许反向代理访问 28080、29090 端口。不要将 `api:9090` 作为站点入口，否则页面及 `/music/` 代理无法使用。变更 `BIND_ADDRESS` 会同时改变前后端的宿主机监听地址。
+如果 NAS 反向代理也运行在另一个容器中，其 `127.0.0.1` 指向代理容器自身，不能直接访问上面的宿主机监听地址。可将代理接入同一 Docker 网络并访问 `web:8080`；或将 `BIND_ADDRESS` 改成 NAS 可访问的网卡地址，仅允许反向代理访问前端的 28080 端口。不要将 `api:9090` 作为站点入口，否则页面及 `/music/` 代理无法使用。`BIND_ADDRESS` 仅改变前端监听地址；后端宿主机端口始终绑定 `127.0.0.1`，容器网络内的 `web` 仍可访问 `api:9090`。
 
 确认 HTTPS 站点可访问后，**先由部署者完成首次「设置管理员」**，再向其他人开放访问。安装后没有公开注册，管理员在「用户管理」中创建其他账号。
 
@@ -79,6 +79,8 @@ curl http://127.0.0.1:29090/healthz
 - **更新**：拉取或复制两个仓库的新代码，保持原 `.env` 和 Compose 项目目录，然后在前端目录运行 `docker compose up -d --build`。使用 `docker compose ps`、`docker compose logs --tail=100 web api` 检查运行状态。
 - **备份**：定期备份 Compose 命名卷 `assan-data`（其中有 `/data/assan.db`）及单独安全保存的 `.env` 密钥。数据库备份应在停止写入后进行，或采用可靠的 SQLite 在线备份方案。`docker compose down` 保留命名卷；`docker compose down -v` 会删除数据卷，不能用于常规更新。
 - **站点可打开但无法登录**：检查域名是否使用 HTTPS、`SECURE_COOKIES` 设置、`/api/` 路径和后端日志。
+- **容器不断重启**：在前端仓库目录运行 `docker compose ps -a` 和 `docker compose logs --tail=100 --no-color web api`，优先按日志中第一条启动错误排查。`web` 启动时需要能解析 `api` 和飞牛音乐域名；`api` 启动时需要可写的 `/data` 卷及合法的 `MUSIC_CREDENTIAL_KEY`。只有 `docker compose config --quiet` 成功并不能证明服务已经启动。
+- **飞牛 OS Docker 应用的项目名不同**：应用管理器可能将项目命名为 `assan-store`，直接在 `assan-fe-store` 目录运行 `docker compose ps` 会查看另一个项目而返回空列表。用 `docker logs --tail=100 assan-store-web-1` 查看实际容器，或运行 `docker compose -p assan-store ps -a`。若日志显示 `invalid number of the map parameters in /etc/nginx/conf.d/default.conf:3`，请同步已修复的 `nginx.conf` 并在飞牛 OS 中重新构建和创建该应用容器；只重启旧容器不会更新镜像。`can not modify ... (read-only file system?)` 是 Nginx 入口脚本的提示，不是这里的退出原因。
 - **音乐工具无法使用**：确认 NAS 能访问 `https://www.assanye.top:66/music/`，检查密钥是否与保存凭据时一致，并查看 `web`、`api` 日志。上游播放器脚本经本站同域代理运行；只在信任该服务时启用音乐集成。
 - **管理员忘记密码**：在前端目录运行 `docker compose exec -it api /usr/local/bin/reset-password USERNAME`，按提示输入新密码。
 
