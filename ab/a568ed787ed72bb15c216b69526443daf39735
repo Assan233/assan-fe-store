@@ -1,0 +1,24 @@
+src/features/atmosphere/sound.test.ts
+  s_d7988ab083ca0d::t_5ae83bbf45d33c 9,12,16-20,40-45,47-48,51
+  s_d7988ab083ca0d::t_efd8e22557d696 46
+src/features/atmosphere/sound.ts
+  s_d7988ab083ca0d::t_259cbccf01efea 6-7,16-25,27-35,37,39-41,43,46,49-50,61-62,77-80,93
+  s_d7988ab083ca0d::t_aec97f500057a5 26,36,38,47
+  s_d7988ab083ca0d::t_324c5ff164022d 51-56
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "aba568ed787ed72bb15c216b69526443daf39735",
+  "prompts": {},
+  "sessions": {
+    "s_d7988ab083ca0d": {
+      "agent_id": {
+        "tool": "opencode",
+        "id": "ses_e41f81e07ffe8cKaeluKvzXU9w",
+        "model": "gpt-6-astra"
+      },
+      "human_author": "caorongsen <caorongsen@zuoyebang.com>"
+    }
+  }
+}
