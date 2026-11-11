@@ -63,6 +63,9 @@ export default function MusicPage() {
       const script = doc.createElement('script')
       script.src = '/music-login.js'
       doc.head.append(script)
+      const gestures = doc.createElement('script')
+      gestures.src = '/music-gestures.js'
+      doc.head.append(gestures)
     } catch { /* The production proxy injects the assets into the HTML response. */ }
   }
 
