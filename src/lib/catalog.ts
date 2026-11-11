@@ -1,4 +1,4 @@
-export type ToolCategory = '效率' | '文本' | '开发' | '音频'
+export type ToolCategory = '效率' | '文本' | '开发' | '音频' | '游戏'
 export type Tool = {
   id: string
   name: string
@@ -11,6 +11,16 @@ export type Tool = {
 }
 
 export const tools: Tool[] = [
+  {
+    id: 'tower-defense',
+    name: '星港塔防',
+    description: '布置四种防御塔，阻止八波敌人突破星港。',
+    category: '游戏',
+    icon: '✦',
+    accent: 'violet',
+    keywords: ['塔防', '游戏', '策略', '防御', '星港'],
+    path: '/tools/tower-defense',
+  },
   {
     id: 'atmosphere',
     name: '车内氛围生成器',

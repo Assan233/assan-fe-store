@@ -3,20 +3,20 @@ import { Link } from 'react-router-dom'
 import { ArrowUpRight, Search, WandSparkles } from 'lucide-react'
 import { filterTools, tools, type CategoryFilter, type Tool } from '../lib/catalog'
 
-const categories: CategoryFilter[] = ['全部', '效率', '文本', '开发', '音频']
+const categories: CategoryFilter[] = ['全部', '效率', '文本', '开发', '音频', '游戏']
 
 function ToolCard({ tool }: { tool: Tool }) {
   return (
-    <article className="tool-card">
+    <article className={`tool-card${tool.path ? ' tool-card-clickable' : ''}`}>
       <div className="tool-card-top">
         <div className={`tool-icon ${tool.accent}`} aria-hidden="true">{tool.icon}</div>
         <span className="status-pill"><span />{tool.path ? '可使用' : '筹备中'}</span>
       </div>
       <div className="tool-card-copy">
-        <div className="tool-title-row"><h3>{tool.name}</h3><span className="card-arrow" aria-hidden="true"><ArrowUpRight size={16} /></span></div>
+        <div className="tool-title-row"><h3>{tool.name}</h3>{tool.path && <span className="card-arrow" aria-hidden="true"><ArrowUpRight size={16} /></span>}</div>
         <p>{tool.description}</p>
       </div>
-      <div className="tool-card-bottom"><span className="category-tag">{tool.category}</span>{tool.path ? <Link className="hero-link" to={tool.path}>打开工具 →</Link> : <span className="preview-label">功能预览</span>}</div>
+      <div className="tool-card-bottom"><span className="category-tag">{tool.category}</span>{tool.path ? <Link className="hero-link tool-card-link" to={tool.path} aria-label={`打开${tool.name}`}>打开工具 →</Link> : <span className="preview-label">功能预览</span>}</div>
     </article>
   )
 }

@@ -133,7 +133,10 @@ button:focus-visible, a:focus-visible, input:focus-visible { outline: 3px solid 
 .result-count { color: #a5a4ae; font-size: 9px; }
 .tool-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 13px; }
 .tool-card { display: flex; min-height: 170px; flex-direction: column; padding: 15px 15px 12px; border: 1px solid #ebebf0; border-radius: 11px; background: #fff; box-shadow: 0 3px 12px #27273304; transition: transform .18s ease, border-color .18s ease, box-shadow .18s ease; }
-.tool-card:hover { transform: translateY(-2px); border-color: #ddd9f4; box-shadow: 0 9px 24px #3932510b; }
+.tool-card-clickable { position: relative; cursor: pointer; }
+.tool-card-clickable:hover { transform: translateY(-2px); border-color: #ddd9f4; box-shadow: 0 9px 24px #3932510b; }
+.tool-card-clickable:focus-within { outline: 3px solid #7566d6; outline-offset: 3px; }
+.tool-card-link::after { position: absolute; inset: 0; content: ''; }
 .tool-card-top { display: flex; align-items: center; justify-content: space-between; }
 .tool-icon { display: grid; width: 38px; height: 38px; place-items: center; border-radius: 11px; font-family: ui-monospace, SFMono-Regular, monospace; font-size: 14px; font-weight: 600; letter-spacing: -1px; }
 .tool-icon.violet { background: #f0edff; color: #7566d6; }
@@ -246,6 +249,9 @@ button:focus-visible, a:focus-visible, input:focus-visible { outline: 3px solid 
   .profile-copy strong, .breadcrumb strong, .section-heading h2, .tool-title-row h3, .account-page > h1, .account-card-heading h2, .account-identity > div:nth-child(2) > strong { color: #e8e5f2; }
   .nav-item { color: #aaa7b7; }
   .nav-item.active { background: #332e50; color: #bbb2ff; }
+  .sidebar-note { border-color: #494160; background: linear-gradient(140deg, #302b48, #29243d); }
+  .note-icon { background: #393450; color: #b5a9ff; box-shadow: 0 2px 8px #0002; }
+  .sidebar-note > p { color: #a4a1b1; }
   .hero-card { border-color: #39344f; background: radial-gradient(ellipse at 86% 46%, #302b48 0%, transparent 39%), linear-gradient(112deg, #211f2b 5%, #242130 54%, #29243d 100%); }
   .hero-copy h1, .auth-intro h1, .auth-form-heading h2 { color: #ece9f7; }
   .hero-copy > p, .auth-intro > p, .account-lead, .account-card-heading p { color: #a4a1b1; }

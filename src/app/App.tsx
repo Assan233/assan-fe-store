@@ -10,6 +10,7 @@ import { UsersPage } from '../pages/UsersPage'
 const AudioConverterPage = lazy(() => import('../pages/AudioConverterPage'))
 const MusicPage = lazy(() => import('../pages/MusicPage'))
 const AtmospherePage = lazy(() => import('../pages/AtmospherePage'))
+const TowerDefensePage = lazy(() => import('../pages/TowerDefensePage'))
 
 function LoadingScreen() {
   return (
@@ -51,6 +52,7 @@ export function App() {
         <Route path="/users" element={user?.role === 'admin' ? <UsersPage /> : <Navigate to="/" replace />} />
         <Route path="/tools/m4a-to-flac" element={<Suspense fallback={<LoadingScreen />}><AudioConverterPage /></Suspense>} />
         <Route path="/tools/atmosphere" element={<Suspense fallback={<LoadingScreen />}><AtmospherePage /></Suspense>} />
+        <Route path="/tools/tower-defense" element={<Suspense fallback={<LoadingScreen />}><TowerDefensePage /></Suspense>} />
       </Route>
       <Route path="/tools/music" element={<ProtectedMusic />} />
       <Route path="*" element={<Navigate to={user ? '/' : '/login'} replace />} />
