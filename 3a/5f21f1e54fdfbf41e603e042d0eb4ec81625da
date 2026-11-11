@@ -1,0 +1,33 @@
+src/lib/catalog.ts
+  s_d7988ab083ca0d::t_8000d719d738b4 15-23
+  s_d7988ab083ca0d::t_f17086fab41d11 14
+src/features/atmosphere/sound.test.ts
+  s_d7988ab083ca0d::t_9dcd9296a7e2f9 1-42
+src/pages/AtmospherePage.tsx
+  s_d7988ab083ca0d::t_53501ae677d668 1-133
+src/features/atmosphere/sound.ts
+  s_d7988ab083ca0d::t_53501ae677d668 1-73
+src/app/App.tsx
+  s_d7988ab083ca0d::t_8000d719d738b4 12,53
+README.md
+  s_d7988ab083ca0d::t_8000d719d738b4 5-8
+src/pages/atmosphere.css
+  s_d7988ab083ca0d::t_f75a5151da8098 28
+  s_d7988ab083ca0d::t_8000d719d738b4 1-27,29-63
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "3a5f21f1e54fdfbf41e603e042d0eb4ec81625da",
+  "prompts": {},
+  "sessions": {
+    "s_d7988ab083ca0d": {
+      "agent_id": {
+        "tool": "opencode",
+        "id": "ses_e41f81e07ffe8cKaeluKvzXU9w",
+        "model": "gpt-6-astra"
+      },
+      "human_author": "caorongsen <caorongsen@zuoyebang.com>"
+    }
+  }
+}
