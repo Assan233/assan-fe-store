@@ -12,6 +12,16 @@ export type Tool = {
 
 export const tools: Tool[] = [
   {
+    id: 'atmosphere',
+    name: '车内氛围生成器',
+    description: '混合雨声、微风与篝火，给旅途配上自己的声音。',
+    category: '音频',
+    icon: '◉',
+    accent: 'amber',
+    keywords: ['氛围', '车内', '白噪音', '雨声', '露营', '音乐'],
+    path: '/tools/atmosphere',
+  },
+  {
     id: 'music',
     name: '飞牛音乐',
     description: '在应用库内全屏播放你的飞牛音乐。',

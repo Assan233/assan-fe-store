@@ -1,0 +1,63 @@
+.atmosphere-page { max-width: 880px; margin: 0 auto; color: var(--ink); }
+.atmosphere-back { display: inline-flex; margin-bottom: 20px; color: var(--purple); font-size: .9rem; font-weight: 600; }
+.atmosphere-back:hover { text-decoration: underline; }
+.atmosphere-hero { position: relative; overflow: hidden; padding: clamp(28px, 5vw, 50px); border-radius: 25px; background: radial-gradient(circle at 90% 10%, #a79bcc88, transparent 42%), linear-gradient(120deg, #273b4c, #35345e 66%, #42335a); color: #fff; box-shadow: 0 20px 50px #31385824; }
+.atmosphere-kicker { color: #c5d5ea; font-size: .85rem; letter-spacing: .12em; }
+.atmosphere-hero h1 { margin: 13px 0 8px; font-size: clamp(1.9rem, 5vw, 2.9rem); line-height: 1.2; }
+.atmosphere-hero > p { max-width: 510px; margin: 0; color: #d7daec; font-size: .95rem; line-height: 1.8; }
+.atmosphere-player { display: flex; align-items: center; gap: 16px; margin-top: 38px; padding: 18px 20px; border: 1px solid #ffffff33; border-radius: 18px; background: #ffffff17; backdrop-filter: blur(12px); }
+.atmosphere-play { display: grid; width: 58px; height: 58px; flex: none; place-items: center; border: 0; border-radius: 50%; background: #f5f3ff; color: #494168; cursor: pointer; }
+.atmosphere-play:hover { background: #fff; }
+.atmosphere-play:disabled { opacity: .6; cursor: wait; }
+.atmosphere-playing-copy { display: grid; gap: 2px; }
+.atmosphere-playing-copy strong { font-size: 1rem; }
+.atmosphere-playing-copy span { color: #cfd5e7; font-size: .84rem; }
+.atmosphere-indicator { display: flex; height: 28px; align-items: center; gap: 4px; margin-left: auto; }
+.atmosphere-indicator i { width: 4px; height: 5px; border-radius: 4px; background: #c4e2df; }
+.atmosphere-indicator.is-playing i { animation: atmosphere-pulse .9s ease-in-out infinite alternate; }
+.atmosphere-indicator.is-playing i:nth-child(2) { animation-delay: -.3s; }
+.atmosphere-indicator.is-playing i:nth-child(3) { animation-delay: -.65s; }
+.atmosphere-indicator.is-playing i:nth-child(4) { animation-delay: -.2s; }
+@keyframes atmosphere-pulse { to { height: 27px; } }
+.atmosphere-error { margin-top: 14px !important; color: #fff1c2 !important; }
+.atmosphere-section { margin-top: 36px; }
+.atmosphere-heading { display: flex; align-items: baseline; justify-content: space-between; gap: 12px; margin-bottom: 16px; }
+.atmosphere-heading h2 { display: flex; align-items: center; gap: 9px; margin: 0; font-size: 1.24rem; }
+.atmosphere-heading > span { color: var(--muted); font-size: .84rem; }
+.atmosphere-presets { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; }
+.atmosphere-preset { display: grid; justify-items: start; gap: 6px; min-height: 155px; padding: 20px; border: 1px solid var(--line); border-radius: 16px; background: var(--paper); color: var(--ink); text-align: left; cursor: pointer; }
+.atmosphere-preset:hover, .atmosphere-preset.active { border-color: #a99de6; box-shadow: 0 8px 28px #7263d81c; }
+.atmosphere-preset.active { background: var(--purple-wash); }
+.atmosphere-preset-symbol { color: var(--purple); font-size: 1.7rem; line-height: 1; }
+.atmosphere-preset strong { font-size: 1rem; }
+.atmosphere-preset small { color: var(--muted); font-size: .82rem; }
+.atmosphere-mixer, .atmosphere-music { padding: 12px 22px; border: 1px solid var(--line); border-radius: 17px; background: var(--paper); }
+.atmosphere-track { display: flex; min-height: 83px; align-items: center; gap: 15px; border-bottom: 1px solid var(--line); }
+.atmosphere-track:last-child { border-bottom: 0; }
+.atmosphere-track-icon { display: grid; width: 42px; height: 42px; flex: none; place-items: center; border-radius: 12px; background: var(--purple-wash); color: var(--purple); }
+.atmosphere-track-copy { display: grid; min-width: 140px; flex: 1; }
+.atmosphere-track-copy label { font-weight: 650; }
+.atmosphere-track-copy small { color: var(--muted); font-size: .79rem; }
+.atmosphere-track input[type="range"] { width: min(36%, 245px); min-width: 80px; accent-color: var(--purple); cursor: pointer; }
+.atmosphere-track output { width: 40px; color: var(--muted); font-variant-numeric: tabular-nums; font-size: .82rem; text-align: right; }
+.atmosphere-master { margin-top: 8px; }
+.atmosphere-music { padding: 24px; }
+.atmosphere-music > p { color: var(--muted); font-size: .88rem; }
+.atmosphere-file { display: inline-block; max-width: 100%; overflow: hidden; padding: 10px 16px; border: 1px solid var(--purple); border-radius: 10px; color: var(--purple); cursor: pointer; text-overflow: ellipsis; white-space: nowrap; }
+.atmosphere-file:hover { background: var(--purple-wash); }
+.atmosphere-file:has(+ input:focus-visible) { outline: 3px solid #a59bff; outline-offset: 3px; }
+.atmosphere-music-controls { display: flex; flex-wrap: wrap; align-items: center; gap: 12px; margin-top: 18px; }
+.atmosphere-music-controls audio { width: min(100%, 450px); }
+.atmosphere-music-controls button { padding: 8px 12px; border: 0; background: transparent; color: var(--purple); cursor: pointer; }
+.atmosphere-note { margin: 28px 0; color: var(--muted); font-size: .84rem; }
+@media (max-width: 650px) {
+  .atmosphere-presets { grid-template-columns: 1fr; }
+  .atmosphere-preset { min-height: 105px; grid-template-columns: 38px 1fr; align-content: center; }
+  .atmosphere-preset-symbol { grid-row: span 2; align-self: center; }
+  .atmosphere-heading { align-items: flex-start; flex-direction: column; gap: 2px; }
+  .atmosphere-track { flex-wrap: wrap; gap: 6px 12px; padding: 14px 0; }
+  .atmosphere-track-copy { min-width: 0; }
+  .atmosphere-track input[type="range"] { width: calc(100% - 58px); }
+  .atmosphere-track output { width: 46px; }
+}
+@media (prefers-reduced-motion: reduce) { .atmosphere-indicator.is-playing i { animation: none; } }
