@@ -1,0 +1,14 @@
+塔防素材署名与许可
+
+防御塔：Stone Tower Defense Game Art，作者 CraftPix.net 2D Game Assets
+原始来源：https://opengameart.org/content/stone-tower-defense-game-art
+怪物：Monster Game Sprites，作者 CraftPix.net 2D Game Assets
+原始来源：https://opengameart.org/content/monster-game-sprites
+许可：OGA-BY 3.0（署名许可）https://static.opengameart.org/OGA-BY-3.0.txt
+本项目使用四座防御塔和四种怪物的部分图像，裁剪透明边缘、缩放、重新排列动画帧并生成弹丸特效。
+请保留作者署名与许可链接。以上素材不代表原作者认可本项目。
+
+沙地：Tower Defense Dirt Background，作者 hassekf
+原始来源：https://opengameart.org/content/tower-defense-dirt-background
+许可：CC0 1.0 https://creativecommons.org/publicdomain/zero/1.0/
+本项目将原始 JPG 缩放并转换为 WebP。

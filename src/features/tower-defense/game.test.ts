@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest'
 import { buildTower, lastWave, newGame, onPath, positionAt, routeLength, sellTower, startWave, tick, upgradeTower, waveEnemy, waveSize, type Game } from './game'
 
-describe('星港塔防规则', () => {
+describe('荒漠塔防规则', () => {
   it('保护通道、边界、空地及资源约束，升级和出售按投入结算', () => {
     const initial = newGame()
     expect(onPath(2, 2)).toBe(true)

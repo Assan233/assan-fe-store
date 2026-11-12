@@ -3,6 +3,7 @@ import { ArrowRight, Eye, EyeOff, Sparkles } from 'lucide-react'
 import { Link, useLocation, useNavigate } from 'react-router-dom'
 import { ApiError } from '../../lib/api'
 import { useAuth } from '../../app/useAuth'
+import { BrandMark } from '../../components/BrandMark'
 
 export function LoginPage({ initializing = false }: { initializing?: boolean }) {
   const { signIn, setup } = useAuth()
@@ -44,7 +45,7 @@ export function LoginPage({ initializing = false }: { initializing?: boolean }) 
   return (
     <main className="auth-page">
       <div className="auth-backdrop" aria-hidden="true"><div /><div /><div /></div>
-      <Link to="/" className="auth-brand"><span className="brand-mark">A<span>.</span></span><span>assan <i>应用库</i></span></Link>
+      <Link to="/" className="auth-brand"><BrandMark /><span>Assan <i>应用库</i></span></Link>
       <div className="auth-layout">
         <section className="auth-intro">
           <div className="auth-intro-kicker"><Sparkles size={14} /> YOUR PERSONAL TOOLKIT</div>

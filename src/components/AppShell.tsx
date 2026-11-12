@@ -1,6 +1,7 @@
 import { NavLink, Outlet, useNavigate } from "react-router-dom";
 import { Command, Grid2X2, LogOut, Settings2, Sparkles } from "lucide-react";
 import { useAuth } from "../app/useAuth";
+import { BrandMark } from "./BrandMark";
 
 export function AppShell() {
   const { user, signOut } = useAuth();
@@ -18,11 +19,9 @@ export function AppShell() {
     <div className="app-frame">
       <aside className="sidebar" aria-label="主导航">
         <NavLink className="brand" to="/" aria-label="Assan 应用库首页">
-          <span className="brand-mark">
-            A<span>.</span>
-          </span>
+          <BrandMark />
           <span className="brand-copy">
-            <strong>assan</strong>
+            <strong>Assan</strong>
             <small>应用库</small>
           </span>
         </NavLink>

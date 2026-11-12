@@ -20,10 +20,10 @@ export const towerSpecs: Record<TowerKind, { name: string; cost: number; damage:
 }
 
 export const enemySpecs: Record<EnemyKind, { name: string; hp: number; speed: number; armor: number; reward: number; leak: number }> = {
-  runner: { name: '疾行者', hp: 46, speed: 1.85, armor: 0, reward: 14, leak: 1 },
-  swarm: { name: '虫群', hp: 32, speed: 2.4, armor: 0, reward: 11, leak: 1 },
-  guard: { name: '装甲兽', hp: 115, speed: 1.05, armor: 6, reward: 26, leak: 2 },
-  boss: { name: '巨像', hp: 440, speed: 0.72, armor: 9, reward: 90, leak: 4 },
+  runner: { name: '赤焰魔', hp: 46, speed: 1.85, armor: 0, reward: 14, leak: 1 },
+  swarm: { name: '暗影魔', hp: 32, speed: 2.4, armor: 0, reward: 11, leak: 1 },
+  guard: { name: '重甲魔', hp: 115, speed: 1.05, armor: 6, reward: 26, leak: 2 },
+  boss: { name: '荒原巨魔', hp: 440, speed: 0.72, armor: 9, reward: 90, leak: 4 },
 }
 
 export type Tower = { id: number; kind: TowerKind; x: number; y: number; level: number; cooldown: number; spent: number }

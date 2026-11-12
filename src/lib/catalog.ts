@@ -13,12 +13,12 @@ export type Tool = {
 export const tools: Tool[] = [
   {
     id: 'tower-defense',
-    name: '星港塔防',
-    description: '布置四种防御塔，阻止八波敌人突破星港。',
+    name: '荒漠塔防',
+    description: '在荒原布置四种防御塔，守住八波魔物进攻。',
     category: '游戏',
     icon: '✦',
     accent: 'violet',
-    keywords: ['塔防', '游戏', '策略', '防御', '星港'],
+    keywords: ['塔防', '游戏', '策略', '防御', '荒漠'],
     path: '/tools/tower-defense',
   },
   {

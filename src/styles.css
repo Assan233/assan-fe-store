@@ -48,8 +48,8 @@ button:focus-visible, a:focus-visible, input:focus-visible { outline: 3px solid 
 .app-frame { min-height: 100vh; }
 .sidebar { position: fixed; inset: 0 auto 0 0; z-index: 5; display: flex; width: 246px; flex-direction: column; padding: 29px 17px 18px; border-right: 1px solid #ececf0; background: #fff; }
 .brand { display: flex; align-items: center; gap: 10px; width: fit-content; margin: 0 0 52px 6px; }
-.brand-mark { display: grid; width: 37px; height: 37px; place-items: center; border-radius: 13px; background: #7263d8; color: white; font-family: Georgia, serif; font-size: 21px; font-weight: 700; letter-spacing: -2px; box-shadow: 0 5px 12px #7263d83a; }
-.brand-mark > span { color: #c7c0ff; }
+.brand-mark { display: grid; width: 37px; height: 37px; flex: 0 0 auto; place-items: center; color: #5948ae; }
+.brand-mark svg { display: block; width: 100%; height: 100%; }
 .brand-copy { display: grid; line-height: 1.2; }
 .brand-copy strong { font-size: 15px; letter-spacing: -.3px; }
 .brand-copy small { margin-top: 3px; color: #9998a5; font-size: 10px; letter-spacing: 1.2px; }
@@ -245,6 +245,7 @@ button:focus-visible, a:focus-visible, input:focus-visible { outline: 3px solid 
   & { color-scheme: dark; --ink: #efedf8; --line: #33313f; --paper: #211f2b; --canvas: #191820; --shadow: 0 12px 34px #0003; background: #191820; color: #efedf8; }
   body, .main-area { background: #191820; }
   .sidebar, .topbar, .tool-card, .search-box, .auth-panel, .account-card { border-color: #33313f; background: #211f2b; }
+  .brand-mark { color: #8e7ae2; }
   .sidebar-label, .profile-copy > span, .topbar-greeting, .breadcrumb, .tool-card-copy > p, .app-footer, .catalog-footnote, .result-count { color: #9b98a9; }
   .profile-copy strong, .breadcrumb strong, .section-heading h2, .tool-title-row h3, .account-page > h1, .account-card-heading h2, .account-identity > div:nth-child(2) > strong { color: #e8e5f2; }
   .nav-item { color: #aaa7b7; }
@@ -366,7 +367,7 @@ button:focus-visible, a:focus-visible, input:focus-visible { outline: 3px solid 
 @media (max-width: 720px) {
   .sidebar { position: sticky; inset: 0 0 auto; width: 100%; min-height: 72px; flex-direction: row; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 8px; padding: 12px 16px; border-right: 0; border-bottom: 1px solid #ececf0; }
   .brand { gap: 8px; margin: 0; }
-  .brand-mark { width: 32px; height: 32px; border-radius: 11px; font-size: 18px; }
+  .brand-mark { width: 32px; height: 32px; }
   .brand-copy { display: flex; align-items: baseline; gap: 6px; }
   .brand-copy small { display: none; }
   .sidebar-label, .sidebar-note { display: none; }
