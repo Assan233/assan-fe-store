@@ -1,0 +1,87 @@
+src/styles.css
+  s_9da47b99127034::t_1ac1d8c41bf7ac 51-52,83,107,219
+src/pages/TimestampPage.tsx
+  s_5763f0627d224e::t_ad8051af943cc0 14,22
+  s_5763f0627d224e::t_f23a7f4e0402f5 1-13,15-21,23
+src/pages/community-tools.css
+  s_5763f0627d224e::t_f23a7f4e0402f5 1-36
+src/pages/HomePage.tsx
+  s_9da47b99127034::t_2ff7af86e211a7 43
+  s_9da47b99127034::t_1ac1d8c41bf7ac 5
+src/app/App.tsx
+  s_5763f0627d224e::t_f23a7f4e0402f5 15-17,60-62
+  s_9da47b99127034::t_1ac1d8c41bf7ac 9,22
+src/pages/TextDiffPage.tsx
+  s_5763f0627d224e::t_ad8051af943cc0 13,23
+  s_5763f0627d224e::t_f23a7f4e0402f5 1-12,14-22,24
+src/features/tower-defense/game.test.ts
+  s_2f536da2158244::t_b032720352d617 2,101-142
+src/features/tower-defense/arena.ts
+  s_2f536da2158244::t_907130da8be3cc 3,9,36,50,116,118-125,127,136,189,193,203,209
+  s_2f536da2158244::t_a9bb8b9a212333 148
+  s_2f536da2158244::t_5554b676380f3c 178,246-247
+src/lib/communityTools.test.ts
+  s_5763f0627d224e::t_e5f752aeb84c00 1-38
+README.md
+  s_2f536da2158244::t_5554b676380f3c 17,19
+  s_5763f0627d224e::t_e5f752aeb84c00 5-14
+index.html
+  s_9da47b99127034::t_1ac1d8c41bf7ac 8
+src/features/tower-defense/game.ts
+  s_2f536da2158244::t_5554b676380f3c 167,174
+  s_2f536da2158244::t_a9bb8b9a212333 12-14,16,20,24
+  s_2f536da2158244::t_094225512bcccf 6-7,10-11,15,17-19,21-23,25-30,37-38,46-48,52,56,69-71,74-77,79,86-91,93-95,97-99,104,110,138-139,141-147,160,164-165,173,179-181,188,190-192,198,206-207
+src/features/tower-defense/assets.ts
+  s_2f536da2158244::t_3d7881ac19a4b7 3-6,12,15,18
+src/pages/TowerDefensePage.tsx
+  s_2f536da2158244::t_983ce74fc727a3 4-5,32,65-66,77-78,81-85,89,95,99,104,111,114,118,120
+src/components/AppShell.tsx
+  s_9da47b99127034::t_1ac1d8c41bf7ac 2,103
+src/lib/catalog.ts
+  s_5763f0627d224e::t_f23a7f4e0402f5 62,72,82
+src/pages/tower-defense.css
+  s_2f536da2158244::t_a9bb8b9a212333 22
+  s_2f536da2158244::t_be699d2207c999 13-21,23-24,43-45,74-77,94-96,104,106
+src/lib/communityTools.ts
+  s_5763f0627d224e::t_f23a7f4e0402f5 1-50,63-65
+  s_5763f0627d224e::t_e5f752aeb84c00 51-62
+src/components/BrandMark.tsx
+  s_9da47b99127034::t_1ac1d8c41bf7ac 4
+public/brand-mark.svg
+  s_9da47b99127034::t_1ac1d8c41bf7ac 1-8
+src/pages/JsonFormatterPage.tsx
+  s_5763f0627d224e::t_f23a7f4e0402f5 1-18,20-32,34
+  s_5763f0627d224e::t_ad8051af943cc0 19,33
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "82f2696ecbad495406df025dce40c1b7944bdbd9",
+  "prompts": {},
+  "sessions": {
+    "s_2f536da2158244": {
+      "agent_id": {
+        "tool": "opencode",
+        "id": "ses_e3168e5d0ffefphSrWr5JbjA3Q",
+        "model": "gpt-6-astra"
+      },
+      "human_author": "caorongsen <caorongsen@zuoyebang.com>"
+    },
+    "s_5763f0627d224e": {
+      "agent_id": {
+        "tool": "opencode",
+        "id": "ses_e3294277cffeqRlybge4zipbZG",
+        "model": "gpt-6-astra"
+      },
+      "human_author": "caorongsen <caorongsen@zuoyebang.com>"
+    },
+    "s_9da47b99127034": {
+      "agent_id": {
+        "tool": "opencode",
+        "id": "ses_e3170f660ffeo4ugpilYfLVjMn",
+        "model": "gpt-6-astra"
+      },
+      "human_author": "caorongsen <caorongsen@zuoyebang.com>"
+    }
+  }
+}
