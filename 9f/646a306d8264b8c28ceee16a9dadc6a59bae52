@@ -1,0 +1,75 @@
+src/features/tower-defense/game.ts
+  s_d7988ab083ca0d::t_f0a343c4d10c4c 23-26
+README.md
+  s_d7988ab083ca0d::t_7a688705f4dce3 5,9
+  s_d7988ab083ca0d::t_feee5cf1638fbe 7
+src/styles.css
+  s_5763f0627d224e::t_39863547115c81 52
+  s_5763f0627d224e::t_a88b3e5013d68b 51,248,370
+src/components/BrandMark.tsx
+  s_5763f0627d224e::t_a88b3e5013d68b 5-10
+  s_5763f0627d224e::t_39863547115c81 1-4,11-14
+src/features/tower-defense/arena.ts
+  s_d7988ab083ca0d::t_4f24802978d942 4,19,43,48,114-125,160-161,184-185,193-197,252
+  s_d7988ab083ca0d::t_51c59693c04bf4 78,86
+  s_d7988ab083ca0d::t_0ce724c6ead02d 9,100-103,136
+  s_d7988ab083ca0d::t_7cabaa8169fc5e 13
+  s_d7988ab083ca0d::t_fa9ed8a3942587 15-16
+  s_d7988ab083ca0d::t_e9ac0a2a94e503 11,14,17,24,40-42,50,52,149-150,162,182-183,192,198,200-202,208,221,233-239
+  s_d7988ab083ca0d::t_4c2762bcbfbe29 18
+src/components/AppShell.tsx
+  s_5763f0627d224e::t_39863547115c81 4,22
+  h_9beaa02e09d4ff 24
+src/pages/tower-defense.css
+  s_d7988ab083ca0d::t_feee5cf1638fbe 4-5,7,10-11,15,19,23-24,31,41,45,47,64,66-69,71-72
+  s_d7988ab083ca0d::t_51c59693c04bf4 22,53-54
+  s_d7988ab083ca0d::t_2be8470644cb58 3,9,34,37-38,43-44,77
+  s_d7988ab083ca0d::t_0ce724c6ead02d 74
+  s_d7988ab083ca0d::t_e6cf0eb907b560 1,6,13-14,20,26-27,39,56-58,81
+src/features/tower-defense/assets.ts
+  s_d7988ab083ca0d::t_bb46469c302e80 3-4,7-8,10-11,13-14,18-19
+  s_d7988ab083ca0d::t_4f24802978d942 6,9,12,15-16,20
+src/features/auth/LoginPage.tsx
+  s_5763f0627d224e::t_39863547115c81 6,48
+public/tower-defense/LICENSE.txt
+  s_d7988ab083ca0d::t_bb46469c302e80 2
+  s_d7988ab083ca0d::t_7a688705f4dce3 1,3-14
+src/features/tower-defense/game.test.ts
+  s_d7988ab083ca0d::t_d666c1f5766bd4 4
+src/pages/TowerDefensePage.tsx
+  s_d7988ab083ca0d::t_f0a343c4d10c4c 77,90,94,106,109,115
+  s_d7988ab083ca0d::t_0ce724c6ead02d 83,91,93,113
+src/features/tower-defense/sprites.tsx
+  s_d7988ab083ca0d::t_bb46469c302e80 2,4,6,9,11
+src/lib/catalog.ts
+  s_d7988ab083ca0d::t_7a688705f4dce3 16-17,21
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "9f646a306d8264b8c28ceee16a9dadc6a59bae52",
+  "prompts": {},
+  "humans": {
+    "h_9beaa02e09d4ff": {
+      "author": "caorongsen <caorongsen@zuoyebang.com>"
+    }
+  },
+  "sessions": {
+    "s_5763f0627d224e": {
+      "agent_id": {
+        "tool": "opencode",
+        "id": "ses_e3294277cffeqRlybge4zipbZG",
+        "model": "gpt-6-astra"
+      },
+      "human_author": "caorongsen <caorongsen@zuoyebang.com>"
+    },
+    "s_d7988ab083ca0d": {
+      "agent_id": {
+        "tool": "opencode",
+        "id": "ses_e41f81e07ffe8cKaeluKvzXU9w",
+        "model": "gpt-6-astra"
+      },
+      "human_author": "caorongsen <caorongsen@zuoyebang.com>"
+    }
+  }
+}
