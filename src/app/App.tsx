@@ -6,16 +6,20 @@ import { LoginPage } from '../features/auth/LoginPage'
 import { AccountPage } from '../features/account/AccountPage'
 import { lazy, Suspense } from 'react'
 import { UsersPage } from '../pages/UsersPage'
+import { BrandMark } from '../components/BrandMark'
 
 const AudioConverterPage = lazy(() => import('../pages/AudioConverterPage'))
 const MusicPage = lazy(() => import('../pages/MusicPage'))
 const AtmospherePage = lazy(() => import('../pages/AtmospherePage'))
 const TowerDefensePage = lazy(() => import('../pages/TowerDefensePage'))
+const JsonFormatterPage = lazy(() => import('../pages/JsonFormatterPage'))
+const TimestampPage = lazy(() => import('../pages/TimestampPage'))
+const TextDiffPage = lazy(() => import('../pages/TextDiffPage'))
 
 function LoadingScreen() {
   return (
     <main className="loading-screen" aria-live="polite" aria-label="正在载入应用">
-      <span className="loading-mark" aria-hidden="true">A</span>
+      <BrandMark />
       <span>正在准备你的应用库…</span>
     </main>
   )
@@ -53,6 +57,9 @@ export function App() {
         <Route path="/tools/m4a-to-flac" element={<Suspense fallback={<LoadingScreen />}><AudioConverterPage /></Suspense>} />
         <Route path="/tools/atmosphere" element={<Suspense fallback={<LoadingScreen />}><AtmospherePage /></Suspense>} />
         <Route path="/tools/tower-defense" element={<Suspense fallback={<LoadingScreen />}><TowerDefensePage /></Suspense>} />
+        <Route path="/tools/json-beautifier" element={<Suspense fallback={<LoadingScreen />}><JsonFormatterPage /></Suspense>} />
+        <Route path="/tools/timestamp" element={<Suspense fallback={<LoadingScreen />}><TimestampPage /></Suspense>} />
+        <Route path="/tools/text-diff" element={<Suspense fallback={<LoadingScreen />}><TextDiffPage /></Suspense>} />
       </Route>
       <Route path="/tools/music" element={<ProtectedMusic />} />
       <Route path="*" element={<Navigate to={user ? '/' : '/login'} replace />} />

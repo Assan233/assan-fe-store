@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { buildTower, lastWave, newGame, onPath, positionAt, routeLength, sellTower, startWave, tick, upgradeTower, waveEnemy, waveSize, type Game } from './game'
+import { buildTower, lastWave, lengthOf, newGame, onPath, positionAt, routeLength, sellTower, stageIds, stages, startWave, tick, upgradeTower, waveEnemy, waveSize, type Game } from './game'
 
 describe('荒漠塔防规则', () => {
   it('保护通道、边界、空地及资源约束，升级和出售按投入结算', () => {
@@ -97,5 +97,47 @@ describe('荒漠塔防规则', () => {
     const final = tick({ ...newGame(), phase: 'running', wave: lastWave, spawned: waveSize(lastWave) }, 0.1)
     expect(final.phase).toBe('won')
     expect(buildTower(final, 'arrow', 1, 4)).toBe(final)
+  })
+
+  it('每张地图的路线、起点终点与建造限制相符，并配置独立敌群', () => {
+    expect(stageIds).toHaveLength(4)
+    for (const stage of stageIds) {
+      const game = newGame(stage)
+      const start = stages[stage].path[0]
+      const end = stages[stage].path.at(-1)!
+      expect(positionAt(0, stage)).toEqual(start)
+      expect(positionAt(lengthOf(stage), stage)).toEqual(end)
+      for (const point of stages[stage].path) expect(onPath(point.x, point.y, stage)).toBe(true)
+      expect(buildTower(game, 'arrow', start.x, start.y)).toBe(game)
+      expect(game.lives).toBe(stages[stage].lives)
+      expect(waveEnemy(4, waveSize(4, stage) - 1, stage)).toBe('boss')
+    }
+    expect(onPath(3, 4, 'oasis')).toBe(true)
+    expect(onPath(3, 4, 'outpost')).toBe(false)
+    expect(waveEnemy(1, 2, 'oasis')).toBe('scout')
+    expect(waveEnemy(2, 4, 'canyon')).toBe('siege')
+    expect(waveEnemy(3, 5, 'ruins')).toBe('shaman')
+  })
+
+  it('毒雾造成持续伤害，雷暴只连锁附近至多三名敌人', () => {
+    const enemy = { id: 21, kind: 'guard' as const, progress: 1, hp: 100, maxHp: 100, slow: 0 }
+    const venom = buildTower(newGame(), 'venom', 1, 4).towers[0]
+    const poisoned = tick({ ...newGame(), phase: 'running', towers: [venom], enemies: [enemy], spawned: 1, spawnTimer: 100 }, 0.1)
+    expect(poisoned.enemies[0].poison).toBeGreaterThan(0)
+    const after = tick(poisoned, 0.1)
+    expect(after.enemies[0].hp).toBeLessThan(poisoned.enemies[0].hp)
+    const storm = buildTower(newGame(), 'storm', 1, 4).towers[0]
+    const crowd = [1, 1.2, 1.4, 1.6].map((progress, id) => ({ ...enemy, id: id + 30, progress }))
+    const shocked = tick({ ...newGame(), phase: 'running', towers: [storm], enemies: crowd, spawned: 1, spawnTimer: 100 }, 0.1)
+    expect(shocked.enemies.filter((unit) => unit.hp < 100)).toHaveLength(3)
+  })
+
+  it('祭司治疗附近受伤同伴，但不会超过生命上限', () => {
+    const shaman = { id: 40, kind: 'shaman' as const, progress: 1, hp: 88, maxHp: 88, slow: 0 }
+    const ally = { id: 41, kind: 'guard' as const, progress: 1.5, hp: 99, maxHp: 100, slow: 0 }
+    const distant = { ...ally, id: 42, progress: 5 }
+    const healed = tick({ ...newGame('ruins'), phase: 'running', enemies: [shaman, ally, distant], spawned: 1, spawnTimer: 100 }, .2)
+    expect(healed.enemies.find((unit) => unit.id === 41)?.hp).toBe(100)
+    expect(healed.enemies.find((unit) => unit.id === 42)?.hp).toBe(99)
   })
 })

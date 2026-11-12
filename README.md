@@ -2,11 +2,21 @@
 
 个人效率工具集的 React 前端，配套 API 位于 `../assan-server-store`。认证用户可访问应用首页和工具；可用工具提供入口，规划中的工具标记为预览。
 
+## 社区工具灵感
+
+首页的「开发」「效率」「文本」分类现可进入以下三个浏览器本地工具：
+
+- [JSON 格式化](/tools/json-beautifier)：校验 JSON、按 2 或 4 空格缩进或压缩，并复制结果。
+- [时间戳转换](/tools/timestamp)：输入整数 Unix 秒/毫秒时间戳，查看本地及 UTC 时间；也可将设备时区下的日期时间转换为秒/毫秒时间戳。
+- [文本比较](/tools/text-diff)：粘贴两段文本并排查看逐行增删改；每侧最多 300 行。
+
+功能选择参考社区项目 [IT-Tools](https://github.com/CorentinTh/it-tools) 中的 [JSON Viewer](https://github.com/CorentinTh/it-tools/tree/main/src/tools/json-viewer)、[Date and Time Converter](https://github.com/CorentinTh/it-tools/tree/main/src/tools/date-time-converter) 和 [Text Diff](https://github.com/CorentinTh/it-tools/tree/main/src/tools/text-diff)。IT-Tools 源码采用 GPL-3.0 许可；本站页面及处理逻辑为基于需求独立编写的 React/TypeScript 实现，未复制其源码。
+
 ## 荒漠塔防
 
-登录后从首页「游戏」分类进入 `/tools/tower-defense`。在地图空地放置连弩、霜冻、火炮、光束四种塔，抵御八波赤焰魔、暗影魔、重甲魔与荒原巨魔；击败敌人获得金币，可升级防御塔（最高三级）或出售返还部分投入。每波清空后获得补给；生命归零则失败，守住第八波即获胜。支持暂停、双倍速及重新挑战，手机上可横向滑动战场并点击建塔；切换标签页会自动暂停。游戏完全在浏览器中运行，刷新后重新开始。
+登录后从首页「游戏」分类进入 `/tools/tower-defense`。可选择荒原前哨（沙丘）、绿洲迷径（绿洲）、赤岩峡谷（峡谷）、失落古城（遗迹）四关；各关有独立路线、起始资源与敌群组合，每关八波，切换关卡会重新开始。空地可建造连弩、霜冻、火炮、光束、毒雾（持续腐蚀）与雷暴（连锁攻击）六种塔，抵御赤焰魔、暗影魔、重甲魔、荒原巨魔及沙蜥斥候（高速）、绿洲祭司（治疗同伴）、岩甲攻城兽（厚甲高破坏）；每波开场前显示敌群预告。击败敌人获得金币，可升级防御塔（最高三级）或出售返还部分投入。每波清空后获得补给；生命归零则失败，守住第八波即获胜。支持暂停、双倍速及重新挑战，手机上可横向滑动战场并点击建塔；切换标签页会自动暂停。游戏完全在浏览器中运行，刷新后重新开始。
 
-战场使用按需加载的 Phaser 3 渲染。防御塔、动态魔物和商店图鉴采用 [CraftPix 防御塔](https://opengameart.org/content/stone-tower-defense-game-art)与[怪物动画](https://opengameart.org/content/monster-game-sprites)素材，地面采用 [hassekf 的沙漠背景](https://opengameart.org/content/tower-defense-dirt-background)，全部作为本地贴图部署。素材作者、授权与裁剪/缩放说明见[素材许可](public/tower-defense/LICENSE.txt)。Phaser 绘制沙路、弹道及命中粒子，GSAP 编排命中爆发、火炮震屏和波次开场动效。游戏规则由浏览器内的 TypeScript 模拟，地图上的交互按钮保留键盘操作与无障碍标签。启用系统「减少动态效果」时会收敛装饰动画，暂停和双倍速会同步作用于战场动效。
+战场使用按需加载的 Phaser 3 渲染。防御塔、动态魔物和商店图鉴采用 [CraftPix 防御塔](https://opengameart.org/content/stone-tower-defense-game-art)与[怪物动画](https://opengameart.org/content/monster-game-sprites)素材，地面采用 [hassekf 的沙漠背景](https://opengameart.org/content/tower-defense-dirt-background)，全部作为本地贴图部署；新增敌塔复用已有本地贴图并以色调与尺寸区分。素材作者、授权与裁剪/缩放说明见[素材许可](public/tower-defense/LICENSE.txt)。Phaser 绘制不同地形的道路、弹道及命中粒子，GSAP 编排命中爆发、火炮震屏和波次开场动效。游戏规则由浏览器内的 TypeScript 模拟，地图上的交互按钮保留键盘操作与无障碍标签。启用系统「减少动态效果」时会收敛装饰动画，暂停和双倍速会同步作用于战场动效。
 
 ## 车内氛围生成器
 

@@ -1,5 +1,5 @@
 import { NavLink, Outlet, useNavigate } from "react-router-dom";
-import { Command, Grid2X2, LogOut, Settings2, Sparkles } from "lucide-react";
+import { Grid2X2, LogOut, Settings2, Sparkles } from "lucide-react";
 import { useAuth } from "../app/useAuth";
 import { BrandMark } from "./BrandMark";
 
@@ -100,7 +100,7 @@ export function AppShell() {
         </div>
         <footer className="app-footer">
           <span>
-            <Command size={13} /> Assan 应用库
+            <span className="footer-brand-mark"><BrandMark /></span> Assan 应用库
           </span>
           <span>让日常小事，简单一点。</span>
         </footer>

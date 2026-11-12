@@ -1,12 +1,12 @@
 import Phaser from 'phaser'
 import { gsap } from 'gsap'
-import { columns, path, positionAt, rows, type Enemy, type Game, type Shot, type Tower } from './game'
+import { columns, positionAt, rows, stages, type Enemy, type Game, type Shot, type StageId, type Tower } from './game'
 import { effectAssets, enemyKinds, enemyRunAsset, sceneAsset, terrainAssets, towerAsset, towerKinds } from './assets'
 
 const TILE = 100
 const WIDTH = columns * TILE
 const HEIGHT = rows * TILE
-const colors = { arrow: 0xffdf87, frost: 0x9feaff, cannon: 0xff995a, beam: 0xe8adff }
+const colors = { arrow: 0xffdf87, frost: 0x9feaff, cannon: 0xff995a, beam: 0xe8adff, venom: 0x8de888, storm: 0xffe76c }
 const center = (value: number) => (value + 0.5) * TILE
 const faceTarget = (from: { x: number; y: number }, to: { x: number; y: number }) => Math.atan2(to.y - from.y, to.x - from.x)
 
@@ -33,6 +33,7 @@ class Battlefield extends Phaser.Scene {
   private reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches
   private ready = false
   private pending?: { game: Game; selected: number | null; paused: boolean; speed: number }
+  private stage: StageId = 'outpost'
 
   constructor() { super('battlefield') }
 
@@ -46,6 +47,7 @@ class Battlefield extends Phaser.Scene {
   create() {
     this.events.once(Phaser.Scenes.Events.SHUTDOWN, () => this.clearEffects())
     for (const kind of enemyKinds) this.anims.create({ key: `run-${kind}`, frames: this.anims.generateFrameNumbers(`enemy-${kind}`, { start: 0, end: 9 }), frameRate: kind === 'swarm' ? 16 : 11, repeat: -1 })
+    this.stage = this.pending?.game.stage ?? 'outpost'
     this.drawTerrain()
     this.sparkles = this.add.particles(0, 0, 'bullet-arrow', {
       emitting: false, speed: { min: 70, max: 250 }, lifespan: { min: 240, max: 650 },
@@ -111,9 +113,18 @@ class Battlefield extends Phaser.Scene {
   }
 
   private drawTerrain() {
+    const { path, color, terrain } = stages[this.stage]
     this.add.image(WIDTH / 2, HEIGHT / 2, 'sand').setDisplaySize(WIDTH, HEIGHT)
+    this.add.rectangle(WIDTH / 2, HEIGHT / 2, WIDTH, HEIGHT, color, 0.3)
+    const decoration = this.add.graphics().setDepth(1)
+    for (let i = 0; i < 15; i++) {
+      const x = ((i * 347 + 97) % WIDTH), y = ((i * 241 + 179) % HEIGHT)
+      if (terrain === '绿洲') decoration.fillStyle(0x367662, 0.45).fillEllipse(x, y, 90, 37)
+      if (terrain === '峡谷') decoration.fillStyle(0x703e33, 0.55).fillRoundedRect(x, y, 46, 27, 7)
+      if (terrain === '遗迹') decoration.lineStyle(7, 0xd4c1a4, 0.55).strokeRect(x, y, 38, 32)
+    }
     const road = this.add.graphics().setDepth(1)
-    const points = [{ x: -TILE / 2, y: center(3) }, ...path.map(({ x, y }) => ({ x: center(x), y: center(y) })), { x: WIDTH + TILE / 2, y: center(2) }]
+    const points = [{ x: -TILE / 2, y: center(path[0].y) }, ...path.map(({ x, y }) => ({ x: center(x), y: center(y) })), { x: WIDTH + TILE / 2, y: center(path[path.length - 1].y) }]
     road.lineStyle(99, 0x5d3624, 0.42).strokePoints(points)
     road.lineStyle(86, 0xb6753b, 0.85).strokePoints(points)
     road.lineStyle(72, 0xd2a05a, 0.62).strokePoints(points)
@@ -122,7 +133,7 @@ class Battlefield extends Phaser.Scene {
     grid.lineStyle(1, 0x51301b, 0.13)
     for (let x = 1; x < columns; x++) grid.lineBetween(x * TILE, 0, x * TILE, HEIGHT)
     for (let y = 1; y < rows; y++) grid.lineBetween(0, y * TILE, WIDTH, y * TILE)
-    this.add.circle(center(11), center(2), 39, 0x562c22, 0.72).setStrokeStyle(5, 0xf9d47e, 0.8).setDepth(2)
+    this.add.circle(center(11), center(path[path.length - 1].y), 39, 0x562c22, 0.72).setStrokeStyle(5, 0xf9d47e, 0.8).setDepth(2)
   }
 
   /** Mirrors an immutable simulation snapshot without changing game rules. */
@@ -134,7 +145,7 @@ class Battlefield extends Phaser.Scene {
     this.tweens.timeScale = this.motionPaused ? 0 : speed
     for (const animation of this.effects.keys()) animation.timeScale(speed).paused(this.motionPaused)
     this.sparkles.active = !this.motionPaused
-    if (game.phase === 'ready' && game.wave === 1 && this.previous?.phase !== 'ready') {
+    if (game.phase === 'ready' && game.wave === 1 && (this.previous?.phase !== 'ready' || this.previous.wave !== 1)) {
       this.clearEffects()
       this.seenShots.clear()
     }
@@ -164,7 +175,7 @@ class Battlefield extends Phaser.Scene {
         this.towers.set(tower.id, unit)
         if (!this.reduced) { container.setScale(0.15); this.tweens.add({ targets: container, scale: 1, duration: 300, ease: 'Back.Out' }) }
       }
-      unit.image.setTint(tower.level === 3 ? 0xfff2bb : 0xffffff)
+      unit.image.setTint(tower.level === 3 ? 0xfff2bb : tower.kind === 'venom' ? 0x98ec7e : tower.kind === 'storm' ? 0xffd96d : 0xffffff)
     }
   }
 
@@ -175,11 +186,11 @@ class Battlefield extends Phaser.Scene {
       unit.container.destroy(); this.enemies.delete(id)
     }
     for (const enemy of enemies) {
-      const pos = positionAt(enemy.progress)
+      const pos = positionAt(enemy.progress, this.stage)
       const x = center(pos.x), y = center(pos.y)
       let unit = this.enemies.get(enemy.id)
       if (!unit) {
-        const size = enemy.kind === 'boss' ? 90 : enemy.kind === 'swarm' ? 53 : 64
+        const size = enemy.kind === 'boss' || enemy.kind === 'siege' ? 90 : enemy.kind === 'swarm' || enemy.kind === 'scout' ? 53 : 64
         const shadow = this.add.ellipse(0, 22, size * 0.7, 18, 0x291d18, 0.3)
         const image = fit(this.add.sprite(0, -6, `enemy-${enemy.kind}`), size)
         if (!this.reduced) image.play(`run-${enemy.kind}`)
@@ -189,13 +200,13 @@ class Battlefield extends Phaser.Scene {
         this.enemies.set(enemy.id, unit)
       }
       unit.container.setPosition(x, y)
-      const ahead = positionAt(enemy.progress + 0.025)
+      const ahead = positionAt(enemy.progress + 0.025, this.stage)
       unit.image.setFlipX(ahead.x < pos.x)
       if (unit.image instanceof Phaser.GameObjects.Sprite) {
         if (this.motionPaused) unit.image.anims.pause()
         else if (!this.reduced) unit.image.anims.resume()
       }
-      unit.image.setTint(enemy.hit ? 0xff9696 : enemy.slow > 0 ? 0xa3d9ff : 0xffffff)
+      unit.image.setTint(enemy.hit ? 0xff9696 : enemy.slow > 0 ? 0xa3d9ff : enemy.poison ? 0x9bed8a : enemy.kind === 'scout' ? 0xf8d078 : enemy.kind === 'shaman' ? 0x7cf5bc : enemy.kind === 'siege' ? 0xbfb5aa : 0xffffff)
       unit.image.setAlpha(enemy.hit ? 0.75 : 1)
       unit.health?.clear().fillStyle(0x2e2922).fillRoundedRect(-33, -48, 66, 8, 3)
         .fillStyle(enemy.hp / enemy.maxHp < 0.3 ? 0xef6658 : 0x97d56f)
@@ -232,7 +243,8 @@ class Battlefield extends Phaser.Scene {
       }
       let projectile = this.projectiles.get(shot.id)
       if (!projectile) {
-        projectile = fit(this.add.image(x, y, `bullet-${shot.kind}`).setDepth(11), shot.kind === 'beam' ? 52 : shot.kind === 'cannon' ? 38 : 26)
+        const texture = shot.kind === 'venom' ? 'bullet-frost' : shot.kind === 'storm' ? 'bullet-beam' : `bullet-${shot.kind}`
+        projectile = fit(this.add.image(x, y, texture).setDepth(11), shot.kind === 'beam' || shot.kind === 'storm' ? 52 : shot.kind === 'cannon' ? 38 : 26)
         this.projectiles.set(shot.id, projectile)
       }
       projectile.setPosition(shot.kind === 'beam' ? to.x : x, shot.kind === 'beam' ? to.y : y)

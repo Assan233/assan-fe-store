@@ -2,6 +2,7 @@ import { useMemo, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { ArrowUpRight, Search, WandSparkles } from 'lucide-react'
 import { filterTools, tools, type CategoryFilter, type Tool } from '../lib/catalog'
+import { BrandMark } from '../components/BrandMark'
 
 const categories: CategoryFilter[] = ['全部', '效率', '文本', '开发', '音频', '游戏']
 
@@ -39,7 +40,7 @@ export function HomePage() {
           <div className="orbit orbit-one" /><div className="orbit orbit-two" />
           <div className="hero-spark spark-one">✳</div><div className="hero-spark spark-two">✦</div>
           <div className="hero-tile tile-back"><span>01</span><i>✧</i></div>
-          <div className="hero-tile tile-front"><div className="tile-window"><span /><span /><span /></div><div className="tile-glyph">✳</div><div className="tile-lines"><i /><i /><i /></div></div>
+          <div className="hero-tile tile-front"><div className="tile-window"><span /><span /><span /></div><div className="tile-glyph"><BrandMark /></div><div className="tile-lines"><i /><i /><i /></div></div>
           <div className="floating-chip"><WandSparkles size={15} /><span>简单一点</span></div>
           <span className="art-caption">A LITTLE MORE<br />FLOW, EVERY DAY</span>
         </div>

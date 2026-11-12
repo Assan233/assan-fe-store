@@ -59,6 +59,7 @@ export const tools: Tool[] = [
     icon: '{ }',
     accent: 'violet',
     keywords: ['json', '格式化', '开发', 'format'],
+    path: '/tools/json-beautifier',
   },
   {
     id: 'timestamp',
@@ -68,6 +69,7 @@ export const tools: Tool[] = [
     icon: '◷',
     accent: 'mint',
     keywords: ['时间', '日期', 'timestamp', '效率'],
+    path: '/tools/timestamp',
   },
   {
     id: 'text-diff',
@@ -77,6 +79,7 @@ export const tools: Tool[] = [
     icon: '≠',
     accent: 'amber',
     keywords: ['文本', '比较', 'diff', '差异'],
+    path: '/tools/text-diff',
   },
 ]
 
