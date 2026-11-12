@@ -1,6 +1,6 @@
 import Phaser from 'phaser'
 import { gsap } from 'gsap'
-import { columns, positionAt, rows, stages, type Enemy, type Game, type Shot, type StageId, type Tower } from './game'
+import { columns, onPath, positionAt, rows, stages, type Enemy, type Game, type Shot, type StageId, type Tower } from './game'
 import { effectAssets, enemyKinds, enemyRunAsset, sceneAsset, terrainAssets, towerAsset, towerKinds } from './assets'
 
 const TILE = 100
@@ -117,11 +117,40 @@ class Battlefield extends Phaser.Scene {
     this.add.image(WIDTH / 2, HEIGHT / 2, 'sand').setDisplaySize(WIDTH, HEIGHT)
     this.add.rectangle(WIDTH / 2, HEIGHT / 2, WIDTH, HEIGHT, color, 0.3)
     const decoration = this.add.graphics().setDepth(1)
-    for (let i = 0; i < 15; i++) {
-      const x = ((i * 347 + 97) % WIDTH), y = ((i * 241 + 179) % HEIGHT)
-      if (terrain === '绿洲') decoration.fillStyle(0x367662, 0.45).fillEllipse(x, y, 90, 37)
-      if (terrain === '峡谷') decoration.fillStyle(0x703e33, 0.55).fillRoundedRect(x, y, 46, 27, 7)
-      if (terrain === '遗迹') decoration.lineStyle(7, 0xd4c1a4, 0.55).strokeRect(x, y, 38, 32)
+    for (let y = 0; y < rows; y++) for (let x = 0; x < columns; x++) {
+      if (onPath(x, y, this.stage)) continue
+      const seed = (x * 73 + y * 137 + x * y * 31 + stages[this.stage].waves) % 13
+      const px = center(x) + (seed % 3 - 1) * 13
+      const py = center(y) + (seed % 4 - 2) * 9
+      if (terrain === '绿洲' && seed < 3) {
+        decoration.fillStyle(0x325f65, 0.8).fillEllipse(px, py + 12, 84, 44)
+        decoration.fillStyle(0x67afad, 0.65).fillEllipse(px, py + 10, 62, 26)
+      }
+      if (terrain === '峡谷' && seed < 5) {
+        decoration.fillStyle(0x6e4036, 0.75).fillRoundedRect(px - 32, py - 6, 62, 31, 7)
+        decoration.lineStyle(3, 0xd09470, 0.7).lineBetween(px - 28, py - 8, px + 20, py - 8)
+      }
+      if (terrain === '遗迹' && seed < 4) {
+        decoration.fillStyle(0x544e55, 0.65).fillRoundedRect(px - 24, py - 14, 48, 38, 5)
+        decoration.lineStyle(5, 0xd4c1a4, 0.7).strokeRect(px - 22, py - 15, 40, 29)
+      }
+      if (seed > 9) continue
+      // Repeated silhouettes are drawn only on buildable ground; towers remain visible above them.
+      if (terrain === '沙丘' && seed < 3) {
+        decoration.lineStyle(8, 0x406c42, 0.85).lineBetween(px, py + 22, px, py - 15)
+        decoration.lineStyle(5, 0x406c42, 0.85).lineBetween(px, py, px - 12, py - 7)
+        decoration.lineBetween(px, py + 7, px + 11, py - 3)
+      } else if (terrain === '绿洲' && seed > 2 && seed < 6) {
+        decoration.lineStyle(6, 0x725137, 0.9).lineBetween(px, py + 23, px + 5, py - 16)
+        decoration.fillStyle(0x315e3f, 0.92).fillEllipse(px - 10, py - 17, 35, 12)
+        decoration.fillEllipse(px + 14, py - 22, 36, 12)
+        decoration.fillStyle(0x4a8753, 0.9).fillEllipse(px, py - 24, 39, 13)
+      } else {
+        const leaf = terrain === '遗迹' ? 0x5c8760 : terrain === '峡谷' ? 0x7c864c : 0x687644
+        decoration.lineStyle(3, leaf, 0.85)
+        for (let i = -2; i <= 2; i++) decoration.lineBetween(px, py + 18, px + i * 8, py - 6 - (seed % 3) * 4)
+        decoration.fillStyle(leaf, 0.65).fillEllipse(px, py + 16, 42, 14)
+      }
     }
     const road = this.add.graphics().setDepth(1)
     const points = [{ x: -TILE / 2, y: center(path[0].y) }, ...path.map(({ x, y }) => ({ x: center(x), y: center(y) })), { x: WIDTH + TILE / 2, y: center(path[path.length - 1].y) }]
@@ -133,7 +162,7 @@ class Battlefield extends Phaser.Scene {
     grid.lineStyle(1, 0x51301b, 0.13)
     for (let x = 1; x < columns; x++) grid.lineBetween(x * TILE, 0, x * TILE, HEIGHT)
     for (let y = 1; y < rows; y++) grid.lineBetween(0, y * TILE, WIDTH, y * TILE)
-    this.add.circle(center(11), center(path[path.length - 1].y), 39, 0x562c22, 0.72).setStrokeStyle(5, 0xf9d47e, 0.8).setDepth(2)
+    this.add.circle(center(columns - 1), center(path[path.length - 1].y), 39, 0x562c22, 0.72).setStrokeStyle(5, 0xf9d47e, 0.8).setDepth(2)
   }
 
   /** Mirrors an immutable simulation snapshot without changing game rules. */

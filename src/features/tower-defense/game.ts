@@ -1,6 +1,6 @@
-export const columns = 12
-export const rows = 8
-export const lastWave = 8
+export const columns = 20
+export const rows = 10
+export const lastWave = 12
 
 export type Point = { x: number; y: number }
 export type TowerKind = 'arrow' | 'frost' | 'cannon' | 'beam' | 'venom' | 'storm'
@@ -9,21 +9,26 @@ export type Phase = 'ready' | 'running' | 'won' | 'lost'
 
 export type StageId = 'outpost' | 'oasis' | 'canyon' | 'ruins'
 export const stages: Record<StageId, { name: string; terrain: string; description: string; color: number; path: Point[]; waves: number; gold: number; lives: number }> = {
-  outpost: { name: '荒原前哨', terrain: '沙丘', description: '曲折沙路 · 基础防线', color: 0xb9874b, waves: lastWave, gold: 240, lives: 18, path: [
+  outpost: { name: '荒原前哨', terrain: '沙丘', description: '盘旋沙路 · 12 波攻势', color: 0xb9874b, waves: lastWave, gold: 240, lives: 18, path: [
     { x: 0, y: 3 }, { x: 2, y: 3 }, { x: 2, y: 1 }, { x: 5, y: 1 },
-    { x: 5, y: 5 }, { x: 8, y: 5 }, { x: 8, y: 2 }, { x: 11, y: 2 },
+    { x: 5, y: 5 }, { x: 9, y: 5 }, { x: 9, y: 2 }, { x: 12, y: 2 },
+    { x: 12, y: 7 }, { x: 15, y: 7 }, { x: 15, y: 3 }, { x: 19, y: 3 },
   ] },
-  oasis: { name: '绿洲迷径', terrain: '绿洲', description: '长距离折返 · 快速敌群', color: 0x668c75, waves: lastWave, gold: 260, lives: 16, path: [
-    { x: 0, y: 5 }, { x: 3, y: 5 }, { x: 3, y: 2 }, { x: 6, y: 2 },
-    { x: 6, y: 6 }, { x: 9, y: 6 }, { x: 9, y: 3 }, { x: 11, y: 3 },
+  oasis: { name: '绿洲迷径', terrain: '绿洲', description: '棕榈水道 · 14 波快攻', color: 0x668c75, waves: 14, gold: 260, lives: 16, path: [
+    { x: 0, y: 6 }, { x: 3, y: 6 }, { x: 3, y: 2 }, { x: 6, y: 2 },
+    { x: 6, y: 8 }, { x: 10, y: 8 }, { x: 10, y: 3 }, { x: 13, y: 3 },
+    { x: 13, y: 6 }, { x: 16, y: 6 }, { x: 16, y: 1 }, { x: 19, y: 1 },
   ] },
-  canyon: { name: '赤岩峡谷', terrain: '峡谷', description: '短线急弯 · 重甲攻势', color: 0xb06b52, waves: lastWave, gold: 285, lives: 14, path: [
-    { x: 0, y: 1 }, { x: 3, y: 1 }, { x: 3, y: 4 }, { x: 7, y: 4 },
-    { x: 7, y: 2 }, { x: 10, y: 2 }, { x: 10, y: 6 }, { x: 11, y: 6 },
+  canyon: { name: '赤岩峡谷', terrain: '峡谷', description: '断崖回弯 · 16 波重甲', color: 0xb06b52, waves: 16, gold: 285, lives: 14, path: [
+    { x: 0, y: 1 }, { x: 3, y: 1 }, { x: 3, y: 5 }, { x: 7, y: 5 },
+    { x: 7, y: 2 }, { x: 10, y: 2 }, { x: 10, y: 8 }, { x: 14, y: 8 },
+    { x: 14, y: 4 }, { x: 17, y: 4 }, { x: 17, y: 7 }, { x: 19, y: 7 },
   ] },
-  ruins: { name: '失落古城', terrain: '遗迹', description: '纵深回廊 · 混合精英', color: 0x847b91, waves: lastWave, gold: 310, lives: 12, path: [
-    { x: 0, y: 6 }, { x: 2, y: 6 }, { x: 2, y: 2 }, { x: 5, y: 2 },
-    { x: 5, y: 5 }, { x: 8, y: 5 }, { x: 8, y: 1 }, { x: 11, y: 1 },
+  ruins: { name: '失落古城', terrain: '遗迹', description: '荒草回廊 · 18 波精英', color: 0x847b91, waves: 18, gold: 310, lives: 12, path: [
+    { x: 0, y: 8 }, { x: 2, y: 8 }, { x: 2, y: 2 }, { x: 5, y: 2 },
+    { x: 5, y: 6 }, { x: 8, y: 6 }, { x: 8, y: 1 }, { x: 11, y: 1 },
+    { x: 11, y: 7 }, { x: 15, y: 7 }, { x: 15, y: 3 }, { x: 18, y: 3 },
+    { x: 18, y: 5 }, { x: 19, y: 5 },
   ] },
 }
 export const stageIds = Object.keys(stages) as StageId[]

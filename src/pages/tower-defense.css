@@ -1,4 +1,13 @@
 .td-page { --td-panel: #302620; --td-border: #755943; --td-muted: #dbc8ae; width: min(100%, 1600px); margin-inline: auto; padding-bottom: 44px; color: #fff1d9; }
+.td-page:fullscreen { width: 100%; max-width: none; height: 100dvh; padding: 12px; overflow: auto; background: #191513; }
+.td-page:fullscreen .td-back, .td-page:fullscreen .td-header p { display: none; }
+.td-page:fullscreen .td-header { padding: 10px 20px; }
+.td-page:fullscreen .td-header h1 { margin: 0; font-size: 1.6rem; }
+.td-page:fullscreen .td-stage-select { padding: 10px 16px; }
+.td-page:fullscreen .td-stage-select h2, .td-page:fullscreen .td-stage-card small { display: none; }
+.td-page:fullscreen .td-stage-card { min-height: 66px; padding: 8px 12px; }
+.td-page:fullscreen .td-stat { padding-block: 10px; }
+.td-page:fullscreen .td-layout { min-height: 0; padding: 10px; }
 .td-page button { font: inherit; }
 .td-page button:focus-visible, .td-page a:focus-visible { outline: 3px solid #ffd47b; outline-offset: 3px; }
 .td-back { display: inline-flex; padding: 8px 0; color: #906445; font-weight: 650; text-decoration: none; }
@@ -8,6 +17,7 @@
 .td-header h1 { margin: 8px 0 6px; color: #fff; font-size: clamp(2rem, 4vw, 3.15rem); letter-spacing: -.055em; }
 .td-header h1 span { color: #f8ce79; }
 .td-header p { max-width: 60ch; margin: 0; color: #e4d1b6; line-height: 1.65; }
+.td-header-actions { display: flex; align-items: center; flex-wrap: wrap; gap: 10px; }
 .td-reset { display: inline-flex; flex-shrink: 0; align-items: center; gap: 8px; min-height: 44px; padding: 0 16px; border: 1px solid #b28b6c; border-radius: 12px; background: #fff1; color: #fff1d9; cursor: pointer; }
 .td-reset:hover { background: #fff2; }
 .td-stage-select { padding: 18px; border-inline: 1px solid var(--td-border); background: #2b211d; }
@@ -34,8 +44,9 @@
 .td-arena-top { display: flex; align-items: center; gap: 10px; min-height: 52px; padding-inline: 18px; color: #f3f8ed; font-size: .9rem; font-weight: 750; }
 .td-arena-dot { width: 8px; height: 8px; border-radius: 50%; background: #ffcd72; box-shadow: 0 0 14px #ffcd72; }
 .td-arena-tip { margin-left: auto; color: #d6bd9f; font-size: .8rem; font-weight: 500; text-align: right; }
-.td-board-scroll { overflow-x: auto; overscroll-behavior-inline: contain; }
-.td-board { position: relative; width: 100%; min-width: 690px; aspect-ratio: 3 / 2; overflow: hidden; background: #b9874b; }
+.td-board-scroll { overflow-x: auto; overscroll-behavior-inline: contain; cursor: grab; }
+.td-board-scroll.is-dragging, .td-board-scroll.is-dragging .td-cell { cursor: grabbing; }
+.td-board { position: relative; width: max(100%, 960px); overflow: hidden; background: #b9874b; user-select: none; }
 .td-board::before { position: absolute; inset: 0; z-index: 2; background: radial-gradient(ellipse at center, transparent 47%, #35211169); content: ''; pointer-events: none; }
 .td-phaser { position: absolute; z-index: 1; inset: 0; pointer-events: none; }
 .td-phaser canvas { display: block; width: 100%; height: 100%; }
@@ -43,9 +54,9 @@
 .td-gate { position: absolute; z-index: 3; transform: translateY(-50%); padding: 3px 7px; border: 1px solid #fff8c399; border-radius: 6px; background: #4b3024e6; color: #fff; font-size: .75rem; font-weight: 750; pointer-events: none; }
 .td-gate-start { left: 0; }
 .td-gate-end { right: 0; color: #ffc4c4; }
-.td-cells { position: absolute; z-index: 3; inset: 0; display: grid; grid-template-columns: repeat(12, 1fr); grid-template-rows: repeat(8, 1fr); }
+.td-cells { position: absolute; z-index: 3; inset: 0; display: grid; }
 .td-cell { min-width: 0; min-height: 0; padding: 0; border: 1px solid transparent; background: transparent; cursor: pointer; }
-.td-cell:disabled { cursor: default; }
+.td-cell:disabled { cursor: default; pointer-events: none; }
 .td-cell.can-build:hover, .td-cell.can-build:focus-visible { border: 3px solid #ffed9c; border-radius: 8px; background: #f9db6a44; }
 .td-cell.has-tower:hover, .td-cell.selected { border: 3px solid #ffe28d; border-radius: 8px; background: #ffed9c26; }
 .td-sprite { display: block; width: 100%; height: 100%; object-fit: contain; }

@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { buildTower, lastWave, lengthOf, newGame, onPath, positionAt, routeLength, sellTower, stageIds, stages, startWave, tick, upgradeTower, waveEnemy, waveSize, type Game } from './game'
+import { buildTower, columns, lastWave, lengthOf, newGame, onPath, positionAt, routeLength, rows, sellTower, stageIds, stages, startWave, tick, upgradeTower, waveEnemy, waveSize, type Game } from './game'
 
 describe('荒漠塔防规则', () => {
   it('保护通道、边界、空地及资源约束，升级和出售按投入结算', () => {
@@ -20,10 +20,10 @@ describe('荒漠塔防规则', () => {
     expect(sellTower(upgraded, built.towers[0].id).gold).toBe(191)
   })
 
-  it('敌人沿道路行进，第 4 和 8 波各有最终巨像', () => {
+  it('敌人沿道路行进，每四波出现一只首领', () => {
     expect(positionAt(0)).toEqual({ x: 0, y: 3 })
     expect(positionAt(3)).toEqual({ x: 2, y: 2 })
-    expect(positionAt(routeLength)).toEqual({ x: 11, y: 2 })
+    expect(positionAt(routeLength)).toEqual({ x: columns - 1, y: 3 })
     expect(waveEnemy(4, waveSize(4) - 1)).toBe('boss')
     expect(waveEnemy(8, waveSize(8) - 1)).toBe('boss')
     expect(waveEnemy(2, 3)).toBe('guard')
@@ -101,16 +101,28 @@ describe('荒漠塔防规则', () => {
 
   it('每张地图的路线、起点终点与建造限制相符，并配置独立敌群', () => {
     expect(stageIds).toHaveLength(4)
+    expect([columns, rows]).toEqual([20, 10])
+    expect(stageIds.map((stage) => stages[stage].waves)).toEqual([12, 14, 16, 18])
     for (const stage of stageIds) {
       const game = newGame(stage)
       const start = stages[stage].path[0]
       const end = stages[stage].path.at(-1)!
       expect(positionAt(0, stage)).toEqual(start)
       expect(positionAt(lengthOf(stage), stage)).toEqual(end)
+      expect(start.x).toBe(0)
+      expect(end.x).toBe(columns - 1)
+      expect(lengthOf(stage)).toBeGreaterThan(35)
+      for (let distance = 0; distance <= lengthOf(stage); distance++) {
+        const position = positionAt(distance, stage)
+        expect(onPath(position.x, position.y, stage)).toBe(true)
+      }
       for (const point of stages[stage].path) expect(onPath(point.x, point.y, stage)).toBe(true)
       expect(buildTower(game, 'arrow', start.x, start.y)).toBe(game)
+      expect(buildTower(game, 'arrow', columns - 1, rows)).toBe(game)
       expect(game.lives).toBe(stages[stage].lives)
       expect(waveEnemy(4, waveSize(4, stage) - 1, stage)).toBe('boss')
+      const final = tick({ ...game, phase: 'running', wave: stages[stage].waves, spawned: waveSize(stages[stage].waves, stage) }, .1)
+      expect(final.phase).toBe('won')
     }
     expect(onPath(3, 4, 'oasis')).toBe(true)
     expect(onPath(3, 4, 'outpost')).toBe(false)
