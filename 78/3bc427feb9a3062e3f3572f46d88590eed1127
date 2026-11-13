@@ -1,0 +1,28 @@
+public/music-gestures.js
+  s_c9da21729585c9::t_025e01ee7276a8 30,34,57
+  s_c9da21729585c9::t_c7654052e92b11 10-21,23-29,31-33,35-36
+  h_9beaa02e09d4ff 22,67
+public/music-custom.css
+  s_c9da21729585c9::t_c7654052e92b11 39-63
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "783bc427feb9a3062e3f3572f46d88590eed1127",
+  "prompts": {},
+  "humans": {
+    "h_9beaa02e09d4ff": {
+      "author": "caorongsen <caorongsen@zuoyebang.com>"
+    }
+  },
+  "sessions": {
+    "s_c9da21729585c9": {
+      "agent_id": {
+        "tool": "opencode",
+        "id": "ses_e2b87d4f0ffe1h7qsJw9DJSGqx",
+        "model": "gpt-6-astra"
+      },
+      "human_author": "caorongsen <caorongsen@zuoyebang.com>"
+    }
+  }
+}
