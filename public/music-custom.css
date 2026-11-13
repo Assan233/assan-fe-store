@@ -36,6 +36,31 @@ body {
   outline: 3px solid #fff;
   outline-offset: 3px;
 }
+.assan-remote-toast {
+  position: fixed;
+  left: 50%;
+  bottom: 104px;
+  z-index: 110;
+  max-width: calc(100vw - 40px);
+  padding: 12px 20px;
+  border: 1px solid rgba(255, 255, 255, .22);
+  border-radius: 999px;
+  background: rgba(24, 28, 56, .86);
+  box-shadow: 0 12px 32px rgba(17, 25, 50, .28);
+  color: #fff;
+  font-size: 16px;
+  line-height: 1.4;
+  opacity: 0;
+  pointer-events: none;
+  transform: translate(-50%, 12px);
+  transition: opacity .2s ease, transform .2s ease;
+  -webkit-backdrop-filter: blur(16px);
+  backdrop-filter: blur(16px);
+}
+.assan-remote-toast-visible {
+  opacity: 1;
+  transform: translate(-50%, 0);
+}
 .assan-gesture-item {
   position: relative;
   display: flex;

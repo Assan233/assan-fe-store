@@ -7,8 +7,33 @@
     next: `${controls} button:nth-of-type(4)`,
   };
 
-  const activate = (action) =>
-    document.querySelector(selectors[action])?.click();
+  const labels = {
+    previous: "上一首",
+    toggle: "播放 / 暂停",
+    next: "下一首",
+  };
+  let toastTimer;
+  const showToast = (action) => {
+    const toast = document.createElement("div");
+    toast.className = "assan-remote-toast";
+    toast.textContent = `远程控制：${labels[action]}`;
+    document.body.append(toast);
+    requestAnimationFrame(() =>
+      toast.classList.add("assan-remote-toast-visible"),
+    );
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(() => {
+      toast.classList.remove("assan-remote-toast-visible");
+      setTimeout(() => toast.remove(), 220);
+    }, 1800);
+  };
+  const activate = (action, remote = false) => {
+    const button = document.querySelector(selectors[action]);
+    if (!button) return false;
+    button.click();
+    if (remote) showToast(action);
+    return true;
+  };
   // Poll only while the player's controls exist. The server removes a command
   // when it returns it, so there is deliberately no client acknowledgement.
   let polling = false;
@@ -29,7 +54,7 @@
       });
       if (response.ok) {
         const { data } = await response.json();
-        if (Object.hasOwn(selectors, data.action)) activate(data.action);
+        if (Object.hasOwn(selectors, data.action)) activate(data.action, true);
       }
     } catch {
       /* A later poll can resume when connectivity returns. */
@@ -39,7 +64,7 @@
   };
   const pollTimer = setInterval(() => {
     void poll();
-  }, 3000);
+  }, 2000);
   window.addEventListener("pagehide", () => clearInterval(pollTimer));
   const mobile = matchMedia("(hover: none) and (pointer: coarse)");
   let zone;
