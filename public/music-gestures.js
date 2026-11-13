@@ -9,6 +9,26 @@
 
   const activate = (action) =>
     document.querySelector(selectors[action])?.click();
+  // Poll only while the player's controls exist. The server removes a command
+  // when it returns it, so there is deliberately no client acknowledgement.
+  let polling = false;
+  const poll = async () => {
+    if (polling || location.pathname === "/music/login" ||
+        !Object.values(selectors).every((selector) => document.querySelector(selector))) return;
+    polling = true;
+    try {
+      const response = await fetch("/api/v1/music/commands/next", {
+        credentials: "same-origin", cache: "no-store",
+      });
+      if (response.ok) {
+        const { data } = await response.json();
+        if (Object.hasOwn(selectors, data.action)) activate(data.action);
+      }
+    } catch { /* A later poll can resume when connectivity returns. */ }
+    finally { polling = false; }
+  };
+  const pollTimer = setInterval(() => { void poll(); }, 1500);
+  window.addEventListener("pagehide", () => clearInterval(pollTimer));
   const mobile = matchMedia("(hover: none) and (pointer: coarse)");
   let zone;
   let scheduled = false;
