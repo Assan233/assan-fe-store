@@ -1,0 +1,19 @@
+README.md
+  s_c9da21729585c9::t_772419fb95a7cf 44
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "99e1cf40f5e1a38c5c249f2fd58b96411e0905cb",
+  "prompts": {},
+  "sessions": {
+    "s_c9da21729585c9": {
+      "agent_id": {
+        "tool": "opencode",
+        "id": "ses_e2b87d4f0ffe1h7qsJw9DJSGqx",
+        "model": "gpt-6-astra"
+      },
+      "human_author": "caorongsen <caorongsen@zuoyebang.com>"
+    }
+  }
+}
