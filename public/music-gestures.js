@@ -13,21 +13,33 @@
   // when it returns it, so there is deliberately no client acknowledgement.
   let polling = false;
   const poll = async () => {
-    if (polling || location.pathname === "/music/login" ||
-        !Object.values(selectors).every((selector) => document.querySelector(selector))) return;
+    if (
+      polling ||
+      location.pathname === "/music/login" ||
+      !Object.values(selectors).every((selector) =>
+        document.querySelector(selector),
+      )
+    )
+      return;
     polling = true;
     try {
       const response = await fetch("/api/v1/music/commands/next", {
-        credentials: "same-origin", cache: "no-store",
+        credentials: "same-origin",
+        cache: "no-store",
       });
       if (response.ok) {
         const { data } = await response.json();
         if (Object.hasOwn(selectors, data.action)) activate(data.action);
       }
-    } catch { /* A later poll can resume when connectivity returns. */ }
-    finally { polling = false; }
+    } catch {
+      /* A later poll can resume when connectivity returns. */
+    } finally {
+      polling = false;
+    }
   };
-  const pollTimer = setInterval(() => { void poll(); }, 1500);
+  const pollTimer = setInterval(() => {
+    void poll();
+  }, 3000);
   window.addEventListener("pagehide", () => clearInterval(pollTimer));
   const mobile = matchMedia("(hover: none) and (pointer: coarse)");
   let zone;
