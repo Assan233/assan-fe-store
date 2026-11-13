@@ -1,0 +1,14 @@
+AGENTS.md
+  h_9beaa02e09d4ff 22-25
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "48d7bae1bb299820dda99dd80d123a2683778982",
+  "prompts": {},
+  "humans": {
+    "h_9beaa02e09d4ff": {
+      "author": "caorongsen <caorongsen@zuoyebang.com>"
+    }
+  }
+}
