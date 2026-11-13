@@ -19,3 +19,7 @@
 - 前端改动运行 `pnpm lint`、`pnpm test` 和 `pnpm build`。
 - 修改接口调用前阅读 `../assan-server-store/docs/api.md`，并与后端核对请求路径、CSRF 行为、Cookie 及响应结构。
 - `AGENTS.md` 只记录仓库约定；具体命令和工具版本以项目脚本与配置为准。
+
+## 配套项目
+- `/Users/zyb/Code/AssanCode/assan-server-store`：后端服务，提供 API、数据库和音乐账号管理。
+- `/Users/zyb/Code/native-tools`：安卓客户端, 使用kotlin 原生实现, 用来作为应用库在移动端落地的配套项目. 未来可能会有一些工具在这里落地
