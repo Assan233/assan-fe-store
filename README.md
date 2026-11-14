@@ -45,6 +45,8 @@ Native Tools Android 客户端还可通过无需鉴权的服务端队列远程�
 
 音乐页面经本站 `/music/` 同域代理，HTML 注入本站维护的 `public/music-custom.css`、自动登录脚本和手势脚本。Nginx 对播放器资源逐次校验应用库会话，只向上游转发 `music-token` Cookie；音频由 Nginx 直接转发并支持长连接，不经 API 内存缓存。账号按应用库用户分别加密保存于后端 SQLite，密钥单独通过环境变量提供，浏览器只在登录时从同源 API 临时读取凭据，密码不写入浏览器存储。**同域代理意味着飞牛播放器脚本与应用库页面共享浏览器源权限**；只在信任该播放器服务时启用此集成。
 
+Docker 部署使用 Nginx 1.29，通过 Docker 内置 DNS 动态解析音乐上游，DNS 缓存有效期为 30 秒，避免上游公网 IP 变化后持续连接旧地址。出现 `/music/` 504 时的诊断与恢复步骤见 [部署排查文档](docs/docker-deployment.md#音乐页面-504连接了旧的上游-ip)。
+
 ## 技术栈
 
 - React + TypeScript（strict）+ Vite

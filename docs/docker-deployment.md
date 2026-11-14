@@ -61,6 +61,12 @@ curl http://127.0.0.1:29090/healthz
 
 第二条请求应返回包含 `"message":"pong"` 的 JSON，第三条用于检查直接映射的后端健康状态。若修改了 `HOST_PORT` 或 `API_HOST_PORT`，相应替换检查命令中的端口。
 
+### 音乐上游 DNS
+
+`nginx.conf` 使用带共享内存区的 `music_backend` 上游和 `resolve` 参数，经 Compose 网络的内置 DNS `127.0.0.11` 动态解析 `www.assanye.top`，缓存有效期为 30 秒。该功能要求开源 Nginx 1.27.3 及以上，本项目镜像为 1.29。上游公网 IP 变化后，无需重启容器即可更新新请求的目标地址；已有连接不迁移。
+
+此 DNS 地址适用于当前 Docker Compose 网络；若把配置用于宿主机 Nginx 或其他网络环境，必须改为该环境可访问的可信 DNS 服务器。
+
 ## 配置 HTTPS 反向代理
 
 将域名的 HTTPS 入口转发到 NAS 宿主机 `http://127.0.0.1:28080`。反向代理需要：
@@ -85,6 +91,30 @@ curl http://127.0.0.1:29090/healthz
 - **音乐工具无法使用**：确认 NAS 能访问 `https://www.assanye.top:66/music/`，检查密钥是否与保存凭据时一致，并查看 `web`、`api` 日志。上游播放器脚本经本站同域代理运行；只在信任该服务时启用音乐集成。
 - **`/music/assan-custom.css`、`/music/assan-login.js` 或 `/music/assan-gestures.js` 返回 403**：若 `web` 日志含 `open() "/usr/share/nginx/html/music-custom.css" failed (13: Permission denied)`（或对应 JS），说明文件对 Nginx worker 不可读，和音乐接口鉴权无关。Vite 会直接复制 `public/` 文件，NAS 源文件权限可能传入产物；更新后的前端 `Dockerfile` 在构建阶段统一为整个静态输出增加读取和目录遍历权限。同步文件后运行 `docker compose -p assan-store up -d --build web`；在已登录浏览器检查资源都返回 200。用 `docker exec assan-store-web-1 ls -l /usr/share/nginx/html/music-custom.css /usr/share/nginx/html/music-login.js /usr/share/nginx/html/music-gestures.js` 查看镜像文件权限。
 - **管理员忘记密码**：在前端目录运行 `docker compose exec -it api /usr/local/bin/reset-password USERNAME`，按提示输入新密码。
+
+### 音乐页面 504：连接了旧的上游 IP
+
+若 `web` 错误日志包含 `upstream timed out ... while connecting to upstream`，表示连接上游阶段超时；查看同一行的 `upstream: "https://IP:66/..."`，与容器中的当前 DNS 结果比较：
+
+```sh
+sudo docker logs --since 10m --tail=200 assan-store-web-1
+sudo docker exec assan-store-web-1 nslookup www.assanye.top
+```
+
+旧版配置直接使用静态 `proxy_pass https://www.assanye.top:66`，域名在配置加载时解析，公网 IP 变化后可能仍连接旧地址。临时恢复可检查配置并平滑重载，让旧版 Nginx 重新解析域名：
+
+```sh
+sudo docker exec assan-store-web-1 nginx -t && sudo docker exec assan-store-web-1 nginx -s reload
+```
+
+长期修复：同步带动态 DNS 配置的新代码，在本仓库目录重新构建并创建 `web`（配置被复制进镜像，只重启旧容器不会更新配置）：
+
+```sh
+sudo docker compose -p assan-store up -d --build --no-deps web
+sudo docker exec assan-store-web-1 nginx -t
+```
+
+随后在已登录浏览器访问 `/music/`，确认返回 200。如果日志目标 IP 与当前 DNS 一致却仍连接超时，应检查 NAS 到该 IP 的 66 端口、防火墙及公网回连链路；增加 `proxy_read_timeout` 无法修复连接失败。日志中的 499 则表示下游客户端或前置代理在响应前关闭连接，需结合对应请求排查。
 
 ### 构建时报 `docker.fnnas.com` 返回 401
 
