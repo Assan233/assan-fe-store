@@ -39,7 +39,7 @@ body {
 .assan-remote-toast {
   position: fixed;
   left: 50%;
-  bottom: 104px;
+  top: 120px;
   z-index: 110;
   max-width: calc(100vw - 40px);
   padding: 12px 20px;
