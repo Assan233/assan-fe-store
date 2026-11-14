@@ -1,0 +1,24 @@
+nginx.conf
+  s_c9da21729585c9::t_fbc6a5713df0da 11-18,68
+README.md
+  s_c9da21729585c9::t_fbc6a5713df0da 48-49
+docs/docker-deployment.md
+  s_c9da21729585c9::t_fbc6a5713df0da 64-69,95-117
+  s_c9da21729585c9::t_3f023c4a9baac6 118
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "74efb8a56732ffa6f5d2475786e9dcc944f9e689",
+  "prompts": {},
+  "sessions": {
+    "s_c9da21729585c9": {
+      "agent_id": {
+        "tool": "opencode",
+        "id": "ses_e2b87d4f0ffe1h7qsJw9DJSGqx",
+        "model": "gpt-6-astra"
+      },
+      "human_author": "caorongsen <caorongsen@zuoyebang.com>"
+    }
+  }
+}
