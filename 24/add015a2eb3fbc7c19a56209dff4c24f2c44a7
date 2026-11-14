@@ -1,0 +1,29 @@
+nginx.conf
+  s_c9da21729585c9::t_e354b718fde9c9 19-25,33,67
+public/music-custom.css
+  h_9beaa02e09d4ff 42
+docs/docker-deployment.md
+  s_c9da21729585c9::t_e354b718fde9c9 89,91
+  s_c9da21729585c9::t_1f4d646a132f44 88
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "24add015a2eb3fbc7c19a56209dff4c24f2c44a7",
+  "prompts": {},
+  "humans": {
+    "h_9beaa02e09d4ff": {
+      "author": "caorongsen <caorongsen@zuoyebang.com>"
+    }
+  },
+  "sessions": {
+    "s_c9da21729585c9": {
+      "agent_id": {
+        "tool": "opencode",
+        "id": "ses_e2b87d4f0ffe1h7qsJw9DJSGqx",
+        "model": "gpt-6-astra"
+      },
+      "human_author": "caorongsen <caorongsen@zuoyebang.com>"
+    }
+  }
+}
