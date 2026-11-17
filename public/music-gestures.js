@@ -16,20 +16,41 @@
     like: "收藏 / 取消收藏",
     delete: "删除歌曲",
   };
+  const symbols = {
+    previous: "⏮",
+    toggle: "⏯",
+    next: "⏭",
+    like: "♥",
+    delete: "✕",
+  };
+  let toast;
   let toastTimer;
-  const showToast = (action) => {
-    const toast = document.createElement("div");
-    toast.className = "assan-remote-toast";
-    toast.textContent = `远程控制：${labels[action]}`;
-    document.body.append(toast);
-    requestAnimationFrame(() =>
-      toast.classList.add("assan-remote-toast-visible"),
-    );
+  let toastRemoveTimer;
+  const showToast = (action, remote) => {
     clearTimeout(toastTimer);
+    clearTimeout(toastRemoveTimer);
+    if (!toast?.isConnected) {
+      toast = document.createElement("div");
+      toast.className = "assan-remote-toast";
+      toast.setAttribute("role", "status");
+      toast.setAttribute("aria-live", "polite");
+      toast.innerHTML =
+        '<span class="assan-toast-symbol" aria-hidden="true"></span>' +
+        '<span class="assan-toast-copy"><small></small><strong></strong></span>';
+      document.body.append(toast);
+    }
+    toast.dataset.action = action;
+    toast.querySelector(".assan-toast-symbol").textContent = symbols[action];
+    toast.querySelector("small").textContent = remote ? "远程控制" : "本地操作";
+    toast.querySelector("strong").textContent = labels[action];
+    toast.classList.remove("assan-remote-toast-visible");
+    requestAnimationFrame(() => {
+      if (toast?.isConnected) toast.classList.add("assan-remote-toast-visible");
+    });
     toastTimer = setTimeout(() => {
       toast.classList.remove("assan-remote-toast-visible");
-      setTimeout(() => toast.remove(), 220);
-    }, 1800);
+      toastRemoveTimer = setTimeout(() => toast.remove(), 260);
+    }, 2400);
   };
   // 与飞牛音乐当前客户端的 authx 算法保持一致；这些常量来自公开的播放器代码，
   // 并非用户凭据。music-token 仍由浏览器 Cookie 经同域代理发送。
@@ -141,7 +162,8 @@
           body,
           headers: { "Content-Type": "application/json" },
         });
-        if (remote) showToast(action);
+        document.querySelector(selectors.next)?.click();
+        showToast(action, remote);
         return true;
       } catch (error) {
         console.error("删除歌曲失败", error);
@@ -153,7 +175,7 @@
     const button = document.querySelector(selectors[action]);
     if (!button) return false;
     button.click();
-    if (remote) showToast(action);
+    showToast(action, remote);
     return true;
   };
   // Poll only while the player's controls exist. The server removes a command

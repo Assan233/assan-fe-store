@@ -46,7 +46,9 @@ it('仅在移动播放器页面提供手势区，并把滑动、双击、键盘�
   expect(zone.getAttribute('aria-label')).toContain('上划上一首')
 
   touch(zone, 40, 120, 45, 40)
+  expect(window.document.querySelector('.assan-toast-copy')?.textContent).toBe('本地操作上一首')
   touch(zone, 40, 40, 45, 120)
+  expect(window.document.querySelector('.assan-toast-copy')?.textContent).toBe('本地操作下一首')
   touch(zone, 40, 40, 100, 45) // 没有收藏按钮时不切歌
   touch(zone, 40, 40, 42, 42)
   expect(counts).toEqual([1, 0, 1]) // 单击不播放
@@ -54,6 +56,9 @@ it('仅在移动播放器页面提供手势区，并把滑动、双击、键盘�
   expect(counts).toEqual([1, 1, 1])
   zone.dispatchEvent(new window.KeyboardEvent('keydown', { key: 'ArrowUp', bubbles: true }))
   expect(counts).toEqual([2, 1, 1])
+  expect(window.document.querySelectorAll('.assan-remote-toast')).toHaveLength(1)
+  expect(window.document.querySelector('.assan-toast-copy')?.textContent).toBe('本地操作上一首')
+  expect(window.document.querySelector('.assan-remote-toast')?.getAttribute('role')).toBe('status')
 
   window.history.pushState({}, '', '/music/login')
   window.document.body.append(window.document.createElement('div')) // SPA 导航触发 DOM 更新
@@ -67,7 +72,7 @@ it('仅在移动播放器页面提供手势区，并把滑动、双击、键盘�
 })
 
 it('右划收藏，左划依次查询最新播放歌曲并请求永久删除', async () => {
-  page = new JSDOM('<!doctype html><body><div class="flex h-14 w-full items-center justify-between"><button></button><button></button><button></button><button></button></div><button class="fn-like-button">收藏</button></body>', {
+  page = new JSDOM('<!doctype html><body><div class="flex h-14 w-full items-center justify-between"><button></button><button></button><button></button><button></button></div><button type="button" aria-label="收藏" title="收藏">收藏</button></body>', {
     url: 'https://example.test/music/', runScripts: 'dangerously',
   })
   const { window } = page
@@ -76,9 +81,11 @@ it('右划收藏，左划依次查询最新播放歌曲并请求永久删除', a
   const clicks: string[] = []
   const calls: Array<{ url: string, options: RequestInit }> = []
   const { document } = window
-  document.querySelector('.fn-like-button')!.addEventListener('click', () => { clicks.push('like') })
+  document.querySelector('button[type="button"][aria-label="收藏"][title="收藏"]')!.addEventListener('click', () => { clicks.push('like') })
+  document.querySelectorAll('.flex button')[3].addEventListener('click', () => { clicks.push('next') })
   Object.defineProperty(window, 'fetch', { value: async (url: string, options: RequestInit) => {
     calls.push({ url, options })
+    if (url.includes('folder-view/delete')) clicks.push('deleted')
     return { ok: true, json: async () => ({ code: 0, data: url.includes('play-history') ? { list: [{ guid: 'valid-guid-123' }] } : {} }) }
   } })
   window.eval(script)
@@ -87,7 +94,10 @@ it('右划收藏，左划依次查询最新播放歌曲并请求永久删除', a
   touch(zone, 30, 40, 100, 40)
   touch(zone, 100, 40, 30, 40)
   await new Promise(resolve => window.setTimeout(resolve, 50))
-  expect(clicks).toEqual(['like'])
+  expect(clicks).toEqual(['like', 'deleted', 'next'])
+  expect(document.querySelectorAll('.assan-remote-toast')).toHaveLength(1)
+  expect(document.querySelector('.assan-toast-copy')?.textContent).toBe('本地操作删除歌曲')
+  expect(document.querySelector('.assan-remote-toast')?.getAttribute('data-action')).toBe('delete')
   expect(calls.map(({ url }) => url)).toEqual([
     '/music/api/v1/play-history/list?page=1&size=1',
     '/music/api/v1/folder-view/delete',
@@ -106,7 +116,7 @@ it('右划收藏，左划依次查询最新播放歌曲并请求永久删除', a
 })
 
 it('远程收藏与删除由轮询执行并在接口成功后显示提示', async () => {
-  page = new JSDOM('<!doctype html><body><div class="flex h-14 w-full items-center justify-between"><button></button><button></button><button></button><button></button></div><button class="fn-like-button"></button></body>', {
+  page = new JSDOM('<!doctype html><body><div class="flex h-14 w-full items-center justify-between"><button></button><button></button><button></button><button></button></div><button type="button" aria-label="收藏" title="收藏"></button></body>', {
     url: 'https://example.test/music/', runScripts: 'dangerously',
   })
   const { window } = page
@@ -121,15 +131,17 @@ it('远程收藏与删除由轮询执行并在接口成功后显示提示', asyn
     return { ok: true, json: async () => url.startsWith('/api/') ? { data: { action: actions.shift() } } : { code: 0, data: url.includes('play-history') ? { list: [{ guid: 'guid-1' }] } : {} } }
   } })
   const clicks: string[] = []
-  window.document.querySelector('.fn-like-button')!.addEventListener('click', () => { clicks.push('like') })
+  window.document.querySelector('button[type="button"][aria-label="收藏"][title="收藏"]')!.addEventListener('click', () => { clicks.push('like') })
+  window.document.querySelectorAll('.flex button')[3].addEventListener('click', () => { clicks.push('next') })
   window.eval(script)
   poll!()
   await new Promise(resolve => window.setTimeout(resolve, 10))
   poll!()
   await new Promise(resolve => window.setTimeout(resolve, 10))
-  expect(clicks).toEqual(['like'])
+  expect(clicks).toEqual(['like', 'next'])
   expect(requests).toEqual(['/api/v1/music/commands/next', '/api/v1/music/commands/next', '/music/api/v1/play-history/list?page=1&size=1', '/music/api/v1/folder-view/delete'])
-  expect(window.document.querySelectorAll('.assan-remote-toast')).toHaveLength(2)
+  expect(window.document.querySelectorAll('.assan-remote-toast')).toHaveLength(1)
+  expect(window.document.querySelector('.assan-toast-copy')?.textContent).toBe('远程控制删除歌曲')
 })
 
 it('无法获取歌曲 GUID 或删除接口失败时不提示删除成功', async () => {
@@ -164,6 +176,8 @@ it('飞牛音乐删除接口返回业务错误时不提示成功', async () => {
   Object.defineProperty(window, 'requestAnimationFrame', { value: (callback: FrameRequestCallback) => window.setTimeout(callback, 0) })
   window.console.error = () => {}
   const requests: string[] = []
+  let nextClicks = 0
+  window.document.querySelectorAll('.flex button')[3].addEventListener('click', () => { nextClicks++ })
   Object.defineProperty(window, 'fetch', { value: async (url: string) => {
     requests.push(url)
     return { ok: true, json: async () => url.startsWith('/api/') ? { data: { action: 'delete' } } : url.includes('play-history') ? { code: 0, data: { list: [{ guid: 'guid-1' }] } } : { code: 500, msg: '删除失败' } }
@@ -172,5 +186,6 @@ it('飞牛音乐删除接口返回业务错误时不提示成功', async () => {
   poll!()
   await new Promise(resolve => window.setTimeout(resolve, 10))
   expect(requests).toHaveLength(3)
+  expect(nextClicks).toBe(0)
   expect(window.document.querySelectorAll('.assan-remote-toast')).toHaveLength(0)
 })
