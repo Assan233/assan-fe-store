@@ -1,5 +1,6 @@
 import { readFileSync } from 'node:fs'
 import { resolve } from 'node:path'
+import { createHash } from 'node:crypto'
 import { JSDOM } from 'jsdom'
 import { afterEach, expect, it } from 'vitest'
 
@@ -65,44 +66,47 @@ it('仅在移动播放器页面提供手势区，并把滑动、双击、键盘�
   expect(window.document.querySelector('.assan-gesture-zone')).toBeNull()
 })
 
-it('右划收藏，左划等待删除文件与确认按钮出现后依次点击', async () => {
-  page = new JSDOM('<!doctype html><body><div class="flex h-14 w-full items-center justify-between"><button></button><button></button><button></button><button></button></div><button class="fn-like-button">收藏</button><button class="fn-delete-button">删除</button></body>', {
+it('右划收藏，左划依次查询最新播放歌曲并请求永久删除', async () => {
+  page = new JSDOM('<!doctype html><body><div class="flex h-14 w-full items-center justify-between"><button></button><button></button><button></button><button></button></div><button class="fn-like-button">收藏</button></body>', {
     url: 'https://example.test/music/', runScripts: 'dangerously',
   })
   const { window } = page
   Object.defineProperty(window, 'matchMedia', { value: () => ({ matches: true, addEventListener: () => {} }) })
   Object.defineProperty(window, 'requestAnimationFrame', { value: (callback: FrameRequestCallback) => window.setTimeout(callback, 0) })
   const clicks: string[] = []
+  const calls: Array<{ url: string, options: RequestInit }> = []
   const { document } = window
   document.querySelector('.fn-like-button')!.addEventListener('click', () => { clicks.push('like') })
-  document.querySelector('.fn-delete-button')!.addEventListener('click', () => {
-    clicks.push('delete')
-    window.setTimeout(() => {
-      const file = document.createElement('button')
-      file.className = 'fn-delete-file-button'
-      file.addEventListener('click', () => {
-        clicks.push('file')
-        window.setTimeout(() => {
-          const confirm = document.createElement('button')
-          confirm.className = 'fn-dialog-delete-confirm-button'
-          confirm.addEventListener('click', () => { clicks.push('confirm') })
-          document.body.append(confirm)
-        }, 0)
-      })
-      document.body.append(file)
-    }, 0)
-  })
+  Object.defineProperty(window, 'fetch', { value: async (url: string, options: RequestInit) => {
+    calls.push({ url, options })
+    return { ok: true, json: async () => ({ code: 0, data: url.includes('play-history') ? { list: [{ guid: 'valid-guid-123' }] } : {} }) }
+  } })
   window.eval(script)
   await new Promise(resolve => window.setTimeout(resolve, 20))
   const zone = document.querySelector('.assan-gesture-zone')!
   touch(zone, 30, 40, 100, 40)
   touch(zone, 100, 40, 30, 40)
   await new Promise(resolve => window.setTimeout(resolve, 50))
-  expect(clicks).toEqual(['like', 'delete', 'file', 'confirm'])
+  expect(clicks).toEqual(['like'])
+  expect(calls.map(({ url }) => url)).toEqual([
+    '/music/api/v1/play-history/list?page=1&size=1',
+    '/music/api/v1/folder-view/delete',
+  ])
+  expect(calls[1].options).toMatchObject({ method: 'POST', credentials: 'same-origin', cache: 'no-store', body: JSON.stringify({ folderPaths: [], isPermanent: true, trackGUIDs: ['valid-guid-123'] }) })
+  for (const { url, options } of calls) {
+    const header = (options.headers as Record<string, string>).authx
+    const match = header.match(/^nonce=(\d{6})&timestamp=(\d+)&sign=([0-9a-f]{32})$/)
+    expect(match).not.toBeNull()
+    const [, nonce, timestamp, sign] = match!
+    const hash = (text: string) => createHash('md5').update(text).digest('hex')
+    const path = new URL(url, 'https://example.test').pathname
+    const payload = options.method === 'POST' ? options.body as string : 'page=1&size=1'
+    expect(sign).toBe(hash(['NDzZTVxnRKP8Z0jXg1VAMonaG8akvh', path, nonce, timestamp, hash(payload), '6D5602D4-A342-4799-A0F0-BB795E7167D0'].join('_')))
+  }
 })
 
-it('远程收藏与删除由轮询执行并在操作完成后显示提示', async () => {
-  page = new JSDOM('<!doctype html><body><div class="flex h-14 w-full items-center justify-between"><button></button><button></button><button></button><button></button></div><button class="fn-like-button"></button><button class="fn-delete-button"></button><button class="fn-delete-file-button"></button><button class="fn-dialog-delete-confirm-button"></button></body>', {
+it('远程收藏与删除由轮询执行并在接口成功后显示提示', async () => {
+  page = new JSDOM('<!doctype html><body><div class="flex h-14 w-full items-center justify-between"><button></button><button></button><button></button><button></button></div><button class="fn-like-button"></button></body>', {
     url: 'https://example.test/music/', runScripts: 'dangerously',
   })
   const { window } = page
@@ -111,16 +115,62 @@ it('远程收藏与删除由轮询执行并在操作完成后显示提示', asyn
   Object.defineProperty(window, 'matchMedia', { value: () => ({ matches: false, addEventListener: () => {} }) })
   Object.defineProperty(window, 'requestAnimationFrame', { value: (callback: FrameRequestCallback) => window.setTimeout(callback, 0) })
   const actions = ['like', 'delete']
-  Object.defineProperty(window, 'fetch', { value: async () => ({ ok: true, json: async () => ({ data: { action: actions.shift() } }) }) })
+  const requests: string[] = []
+  Object.defineProperty(window, 'fetch', { value: async (url: string) => {
+    requests.push(url)
+    return { ok: true, json: async () => url.startsWith('/api/') ? { data: { action: actions.shift() } } : { code: 0, data: url.includes('play-history') ? { list: [{ guid: 'guid-1' }] } : {} } }
+  } })
   const clicks: string[] = []
-  for (const selector of ['.fn-like-button', '.fn-delete-button', '.fn-delete-file-button', '.fn-dialog-delete-confirm-button']) {
-    window.document.querySelector(selector)!.addEventListener('click', () => { clicks.push(selector) })
-  }
+  window.document.querySelector('.fn-like-button')!.addEventListener('click', () => { clicks.push('like') })
   window.eval(script)
   poll!()
   await new Promise(resolve => window.setTimeout(resolve, 10))
   poll!()
   await new Promise(resolve => window.setTimeout(resolve, 10))
-  expect(clicks).toEqual(['.fn-like-button', '.fn-delete-button', '.fn-delete-file-button', '.fn-dialog-delete-confirm-button'])
+  expect(clicks).toEqual(['like'])
+  expect(requests).toEqual(['/api/v1/music/commands/next', '/api/v1/music/commands/next', '/music/api/v1/play-history/list?page=1&size=1', '/music/api/v1/folder-view/delete'])
   expect(window.document.querySelectorAll('.assan-remote-toast')).toHaveLength(2)
+})
+
+it('无法获取歌曲 GUID 或删除接口失败时不提示删除成功', async () => {
+  page = new JSDOM('<!doctype html><body><div class="flex h-14 w-full items-center justify-between"><button></button><button></button><button></button><button></button></div></body>', {
+    url: 'https://example.test/music/', runScripts: 'dangerously',
+  })
+  const { window } = page
+  let poll: (() => void) | undefined
+  Object.defineProperty(window, 'setInterval', { value: (callback: () => void) => { poll = callback; return 1 } })
+  Object.defineProperty(window, 'matchMedia', { value: () => ({ matches: false, addEventListener: () => {} }) })
+  Object.defineProperty(window, 'requestAnimationFrame', { value: (callback: FrameRequestCallback) => window.setTimeout(callback, 0) })
+  const requests: string[] = []
+  Object.defineProperty(window, 'fetch', { value: async (url: string) => {
+    requests.push(url)
+    return { ok: true, json: async () => url.startsWith('/api/') ? { data: { action: 'delete' } } : { code: 0, data: { list: [] } } }
+  } })
+  window.eval(script)
+  poll!()
+  await new Promise(resolve => window.setTimeout(resolve, 10))
+  expect(requests).toEqual(['/api/v1/music/commands/next', '/music/api/v1/play-history/list?page=1&size=1'])
+  expect(window.document.querySelectorAll('.assan-remote-toast')).toHaveLength(0)
+})
+
+it('飞牛音乐删除接口返回业务错误时不提示成功', async () => {
+  page = new JSDOM('<!doctype html><body><div class="flex h-14 w-full items-center justify-between"><button></button><button></button><button></button><button></button></div></body>', {
+    url: 'https://example.test/music/', runScripts: 'dangerously',
+  })
+  const { window } = page
+  let poll: (() => void) | undefined
+  Object.defineProperty(window, 'setInterval', { value: (callback: () => void) => { poll = callback; return 1 } })
+  Object.defineProperty(window, 'matchMedia', { value: () => ({ matches: false, addEventListener: () => {} }) })
+  Object.defineProperty(window, 'requestAnimationFrame', { value: (callback: FrameRequestCallback) => window.setTimeout(callback, 0) })
+  window.console.error = () => {}
+  const requests: string[] = []
+  Object.defineProperty(window, 'fetch', { value: async (url: string) => {
+    requests.push(url)
+    return { ok: true, json: async () => url.startsWith('/api/') ? { data: { action: 'delete' } } : url.includes('play-history') ? { code: 0, data: { list: [{ guid: 'guid-1' }] } } : { code: 500, msg: '删除失败' } }
+  } })
+  window.eval(script)
+  poll!()
+  await new Promise(resolve => window.setTimeout(resolve, 10))
+  expect(requests).toHaveLength(3)
+  expect(window.document.querySelectorAll('.assan-remote-toast')).toHaveLength(0)
 })

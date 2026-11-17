@@ -31,41 +31,89 @@
       setTimeout(() => toast.remove(), 220);
     }, 1800);
   };
-  const waitForButton = (selector) =>
-    new Promise((resolve) => {
-      const find = () => {
-        const button = document.querySelector(selector);
-        return button && !button.disabled && button.getAttribute("aria-disabled") !== "true"
-          ? button
-          : null;
-      };
-      const existing = find();
-      if (existing) return resolve(existing);
-      const observer = new MutationObserver(() => {
-        const button = find();
-        if (button) finish(button);
-      });
-      const timer = setTimeout(() => finish(null), 3000);
-      const finish = (button) => {
-        observer.disconnect();
-        clearTimeout(timer);
-        resolve(button);
-      };
-      observer.observe(document.documentElement, { childList: true, subtree: true, attributes: true });
+  // 与飞牛音乐当前客户端的 authx 算法保持一致；这些常量来自公开的播放器代码，
+  // 并非用户凭据。music-token 仍由浏览器 Cookie 经同域代理发送。
+  const musicSignaturePrefix = "NDzZTVxnRKP8Z0jXg1VAMonaG8akvh";
+  const musicApiKey = "6D5602D4-A342-4799-A0F0-BB795E7167D0";
+  const md5 = (text) => {
+    const input = new TextEncoder().encode(text);
+    const length = Math.ceil((input.length + 9) / 64) * 64;
+    const bytes = new Uint8Array(length);
+    bytes.set(input);
+    bytes[input.length] = 128;
+    const view = new DataView(bytes.buffer);
+    view.setUint32(length - 8, (input.length * 8) >>> 0, true);
+    view.setUint32(length - 4, Math.floor(input.length / 0x20000000), true);
+    const shifts = [7, 12, 17, 22, 5, 9, 14, 20, 4, 11, 16, 23, 6, 10, 15, 21];
+    const constants = Array.from({ length: 64 }, (_, i) =>
+      Math.floor(Math.abs(Math.sin(i + 1)) * 0x100000000),
+    );
+    const state = [0x67452301, 0xefcdab89, 0x98badcfe, 0x10325476];
+    for (let offset = 0; offset < length; offset += 64) {
+      let [a, b, c, d] = state;
+      for (let i = 0; i < 64; i++) {
+        let f, g, shift;
+        if (i < 16) {
+          f = (b & c) | (~b & d); g = i; shift = shifts[i % 4];
+        } else if (i < 32) {
+          f = (d & b) | (~d & c); g = (5 * i + 1) % 16; shift = shifts[4 + i % 4];
+        } else if (i < 48) {
+          f = b ^ c ^ d; g = (3 * i + 5) % 16; shift = shifts[8 + i % 4];
+        } else {
+          f = c ^ (b | ~d); g = (7 * i) % 16; shift = shifts[12 + i % 4];
+        }
+        const sum = (a + f + constants[i] + view.getUint32(offset + g * 4, true)) | 0;
+        const rotated = (sum << shift) | (sum >>> (32 - shift));
+        [a, b, c, d] = [d, (b + rotated) | 0, b, c];
+      }
+      state[0] = (state[0] + a) | 0;
+      state[1] = (state[1] + b) | 0;
+      state[2] = (state[2] + c) | 0;
+      state[3] = (state[3] + d) | 0;
+    }
+    return state.map((word) =>
+      Array.from({ length: 4 }, (_, i) => ((word >>> (i * 8)) & 255).toString(16).padStart(2, "0")).join(""),
+    ).join("");
+  };
+  const musicAuthx = (path, payload) => {
+    const nonce = String(Math.floor(Math.random() * 900000) + 100000);
+    const timestamp = String(Date.now());
+    const digest = md5(payload);
+    const sign = md5([musicSignaturePrefix, path, nonce, timestamp, digest, musicApiKey].join("_"));
+    return `nonce=${nonce}&timestamp=${timestamp}&sign=${sign}`;
+  };
+  const musicRequest = async (path, options = {}) => {
+    const method = options.method ?? "GET";
+    const payload = method === "GET" ? new URLSearchParams(new URL(path, location.origin).search).toString() : options.body;
+    const response = await fetch(path, {
+      ...options,
+      credentials: "same-origin",
+      cache: "no-store",
+      headers: { ...options.headers, authx: musicAuthx(new URL(path, location.origin).pathname, payload) },
     });
+    if (!response.ok) throw new Error(`音乐接口返回 ${response.status}`);
+    const result = await response.json();
+    if (result?.code !== 0) throw new Error(result?.msg || "音乐接口操作失败");
+    return result.data;
+  };
   let deleting = false;
   const activate = async (action, remote = false) => {
     if (action === "delete") {
-      if (deleting || !document.querySelector(".fn-delete-button")) return false;
+      if (deleting || location.pathname === "/music/login") return false;
       deleting = true;
       try {
-        for (const selector of [".fn-delete-button", ".fn-delete-file-button", ".fn-dialog-delete-confirm-button"]) {
-          const button = await waitForButton(selector);
-          if (!button || location.pathname === "/music/login") return false;
-          button.click();
-        }
+        const history = await musicRequest("/music/api/v1/play-history/list?page=1&size=1");
+        const guid = history?.list?.[0]?.guid;
+        if (typeof guid !== "string" || !/^[a-zA-Z0-9_-]+$/.test(guid)) return false;
+        const body = JSON.stringify({ folderPaths: [], isPermanent: true, trackGUIDs: [guid] });
+        await musicRequest("/music/api/v1/folder-view/delete", {
+          method: "POST", body, headers: { "Content-Type": "application/json" },
+        });
         if (remote) showToast(action);
         return true;
+      } catch (error) {
+        console.error("删除歌曲失败", error);
+        return false;
       } finally {
         deleting = false;
       }
