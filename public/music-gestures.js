@@ -28,57 +28,12 @@
   let toastRemoveTimer;
   let zone;
   let previewItem;
-  let feedbackTimer;
-  let discTimer;
-  const updateDisc = (action) => {
-    const disc = zone?.querySelector(".assan-gesture-disc");
-    if (!disc) return;
-    disc.querySelector(".assan-gesture-disc-symbol").textContent = action
-      ? { previous: "↑", next: "↓", toggle: "Ⅱ", like: "♥", delete: "×" }[action]
-      : "♫";
-    disc.querySelector(".assan-gesture-disc-label").textContent = action
-      ? labels[action]
-      : "双击播放";
-  };
-  const resetDrag = () => {
-    if (!zone) return;
-    zone.classList.remove("assan-gesture-dragging");
-    zone.style.setProperty("--drag-x", "0px");
-    zone.style.setProperty("--drag-y", "0px");
-  };
   const setPreview = (action) => {
     const item = action && zone?.querySelector(`[data-action="${action}"]`);
     if (previewItem === item) return;
     previewItem?.classList.remove("assan-gesture-item-preview");
     previewItem = item;
     previewItem?.classList.add("assan-gesture-item-preview");
-    updateDisc(action || zone?.dataset.feedback);
-  };
-  const flashGesture = (action) => {
-    if (!zone?.isConnected) return;
-    clearTimeout(feedbackTimer);
-    clearTimeout(discTimer);
-    setPreview();
-    zone.classList.remove("assan-gesture-triggered");
-    zone.querySelector(".assan-gesture-disc")?.classList.remove("assan-gesture-disc-pulse");
-    zone.querySelector(".assan-gesture-item-active")?.classList.remove("assan-gesture-item-active");
-    // 重新触发同一操作时也要从第一帧播放。
-    void zone.offsetWidth;
-    zone.dataset.feedback = action;
-    updateDisc(action);
-    zone.querySelector(`[data-action="${action}"]`)?.classList.add("assan-gesture-item-active");
-    zone.querySelector(".assan-gesture-disc")?.classList.add("assan-gesture-disc-pulse");
-    zone.classList.add("assan-gesture-triggered");
-    const currentZone = zone;
-    feedbackTimer = setTimeout(() => {
-      currentZone.classList.remove("assan-gesture-triggered");
-      currentZone.querySelector(".assan-gesture-disc")?.classList.remove("assan-gesture-disc-pulse");
-      currentZone.querySelector(".assan-gesture-item-active")?.classList.remove("assan-gesture-item-active");
-    }, 760);
-    discTimer = setTimeout(() => {
-      delete currentZone.dataset.feedback;
-      if (zone === currentZone) updateDisc(previewItem?.dataset.action);
-    }, 1100);
   };
   const showToast = (action, remote) => {
     clearTimeout(toastTimer);
@@ -218,7 +173,6 @@
         });
         document.querySelector(selectors.next)?.click();
         showToast(action, remote);
-        flashGesture(action);
         return true;
       } catch (error) {
         console.error("删除歌曲失败", error);
@@ -231,7 +185,6 @@
     if (!button) return false;
     button.click();
     showToast(action, remote);
-    flashGesture(action);
     return true;
   };
   // Poll only while the player's controls exist. The server removes a command
@@ -280,8 +233,6 @@
         document.querySelector(selectors[action]),
       );
     if (!ready) {
-      clearTimeout(feedbackTimer);
-      clearTimeout(discTimer);
       setPreview();
       zone?.remove();
       zone = undefined;
@@ -300,12 +251,12 @@
     const icon = (content) =>
       `<svg class="assan-gesture-icon" viewBox="0 0 64 64" fill="none" stroke="currentColor" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${content}</svg>`;
     zone.innerHTML =
-      '<span class="assan-gesture-heading" aria-hidden="true">音乐触控板</span>' +
-      `<span class="assan-gesture-item" data-action="previous" aria-hidden="true">${icon('<path d="M32 46V19m-12 12 12-12 12 12"/>')}<small>上划<strong>上一首</strong></small></span>` +
-      `<span class="assan-gesture-item" data-action="delete" aria-hidden="true">${icon('<path d="M46 32H18m12-12L18 32l12 12"/>')}<small>左划<strong>删除</strong></small></span>` +
-      '<span class="assan-gesture-disc" aria-hidden="true"><span class="assan-gesture-disc-content"><span class="assan-gesture-disc-symbol">♫</span><span class="assan-gesture-disc-label">双击播放</span></span></span>' +
-      `<span class="assan-gesture-item" data-action="like" aria-hidden="true">${icon('<path d="M18 32h28M34 20l12 12-12 12"/>')}<small>右划<strong>收藏</strong></small></span>` +
-      `<span class="assan-gesture-item" data-action="next" aria-hidden="true">${icon('<path d="M32 18v27M20 33l12 12 12-12"/>')}<small>下划<strong>下一首</strong></small></span>`;
+      '<span class="assan-gesture-heading" aria-hidden="true">播放控制</span>' +
+      `<span class="assan-gesture-item" data-action="previous" aria-hidden="true">${icon('<path d="M32 46V19m-12 12 12-12 12 12"/>')}<strong>上一首</strong><small>上划</small></span>` +
+      `<span class="assan-gesture-item" data-action="delete" aria-hidden="true">${icon('<path d="M46 32H18m12-12L18 32l12 12"/>')}<strong>删除</strong><small>左划</small></span>` +
+      '<span class="assan-gesture-disc" aria-hidden="true"><span class="assan-gesture-disc-content"><span class="assan-gesture-disc-symbol">♫</span><span class="assan-gesture-disc-label">播放</span><small>双击</small></span></span>' +
+      `<span class="assan-gesture-item" data-action="like" aria-hidden="true">${icon('<path d="M18 32h28M34 20l12 12-12 12"/>')}<strong>收藏</strong><small>右划</small></span>` +
+      `<span class="assan-gesture-item" data-action="next" aria-hidden="true">${icon('<path d="M32 18v27M20 33l12 12 12-12"/>')}<strong>下一首</strong><small>下划</small></span>`;
 
     let start;
     let lastTap = 0;
@@ -315,7 +266,6 @@
       "touchstart",
       (event) => {
         setPreview();
-        resetDrag();
         if (event.touches.length !== 1) {
           start = undefined;
           lastTap = 0;
@@ -340,9 +290,6 @@
         }
         const dx = event.touches[0].clientX - start.x;
         const dy = event.touches[0].clientY - start.y;
-        zone.classList.add("assan-gesture-dragging");
-        zone.style.setProperty("--drag-x", `${Math.max(-32, Math.min(32, dx * 0.38))}px`);
-        zone.style.setProperty("--drag-y", `${Math.max(-32, Math.min(32, dy * 0.38))}px`);
         if (Math.abs(dy) >= 18 && Math.abs(dy) > Math.abs(dx) * 1.5)
           setPreview(dy < 0 ? "previous" : "next");
         else if (Math.abs(dx) >= 18 && Math.abs(dx) > Math.abs(dy) * 1.5)
@@ -354,7 +301,6 @@
     zone.addEventListener(
       "touchend",
       (event) => {
-        resetDrag();
         setPreview();
         if (
           !start ||
@@ -400,7 +346,6 @@
       { passive: false },
     );
     zone.addEventListener("touchcancel", () => {
-      resetDrag();
       setPreview();
       start = undefined;
       lastTap = 0;

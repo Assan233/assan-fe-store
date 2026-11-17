@@ -17,16 +17,17 @@ body {
   box-sizing: border-box;
   z-index: 100;
   display: grid;
-  grid-template-rows: auto repeat(5, minmax(0, 1fr));
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1.15fr) minmax(0, 1fr);
+  grid-template-rows: auto minmax(0, 1fr) minmax(0, 1.25fr) minmax(0, 1fr);
   justify-items: center;
-  gap: 6px;
-  padding: 12px 5px;
-  border: 1px solid rgba(255, 255, 255, .35);
-  border-radius: 32px;
+  gap: 0;
+  padding: clamp(12px, 1vw, 28px) clamp(5px, 1vw, 28px);
+  border: 1px solid rgba(255, 255, 255, .28);
+  border-radius: 22px;
   background: linear-gradient(145deg, #29006f, #4a11ab, #7638c5, #9b3fb6, #5423b0, #29006f);
   background-size: 150% 150%;
   animation: assan-glass-flow 8s ease-in-out infinite alternate;
-  box-shadow: inset 0 1px 0 rgba(255, 255, 255, .35), 0 20px 42px rgba(17, 25, 50, .42);
+  box-shadow: 0 12px 30px rgba(17, 25, 50, .3);
   -webkit-backdrop-filter: blur(24px);
   backdrop-filter: blur(24px);
   color: #f7f8fa;
@@ -36,43 +37,17 @@ body {
   -webkit-user-select: none;
   isolation: isolate;
   overflow: hidden;
-  --gesture-color: rgba(183, 176, 255, .85);
-  --drag-x: 0px;
-  --drag-y: 0px;
-}
-.assan-gesture-zone[data-feedback="delete"] { --gesture-color: rgba(255, 142, 161, .85); }
-.assan-gesture-zone[data-feedback="like"] { --gesture-color: rgba(255, 150, 204, .9); }
-.assan-gesture-zone::before,
-.assan-gesture-zone::after {
-  content: "";
-  position: absolute;
-  inset: 0;
-  z-index: 0;
-  pointer-events: none;
-  opacity: 0;
-}
-.assan-gesture-zone::before {
-  background: radial-gradient(ellipse at center, var(--gesture-color), transparent 70%);
-}
-.assan-gesture-zone::after {
-  background: linear-gradient(110deg, transparent 30%, rgba(255, 255, 255, .28) 50%, transparent 70%);
-  transform: translateX(-125%);
-}
-.assan-gesture-zone.assan-gesture-triggered::before {
-  animation: assan-gesture-glow .76s ease-out both;
-}
-.assan-gesture-zone.assan-gesture-triggered::after {
-  animation: assan-gesture-sheen .76s ease-out both;
 }
 .assan-gesture-heading {
   grid-row: 1;
-  justify-self: start;
-  z-index: 1;
-  padding: 0 5px;
-  color: rgba(255, 255, 255, .78);
-  font-size: 11px;
-  font-weight: 700;
-  letter-spacing: .06em;
+  grid-column: 1 / -1;
+  justify-self: center;
+  padding: 0 0 clamp(10px, 1vw, 26px);
+  color: rgba(255, 255, 255, .84);
+  font-size: clamp(11px, .9vw, 26px);
+  font-weight: 500;
+  letter-spacing: .04em;
+  white-space: nowrap;
 }
 .assan-gesture-zone:focus-visible {
   outline: 3px solid #fff;
@@ -81,7 +56,7 @@ body {
 .assan-remote-toast {
   position: fixed;
   left: 50%;
-  top: 34%;
+  top: 4%;
   z-index: 1000;
   box-sizing: border-box;
   display: flex;
@@ -138,142 +113,74 @@ body {
 @media (prefers-reduced-motion: reduce) {
   .assan-gesture-zone { animation: none; }
   .assan-remote-toast { transition: none; }
-  .assan-gesture-zone.assan-gesture-triggered::before,
-  .assan-gesture-zone.assan-gesture-triggered::after,
-  .assan-gesture-item-active .assan-gesture-icon,
-  .assan-gesture-disc.assan-gesture-disc-pulse::after { animation: none; }
-  .assan-gesture-zone.assan-gesture-triggered::before { opacity: .35; }
-  .assan-gesture-zone.assan-gesture-triggered::after { opacity: 0; }
-  .assan-gesture-item, .assan-gesture-disc, .assan-gesture-disc-content { transition: none; }
 }
 .assan-gesture-item {
-  position: relative;
   display: flex;
   min-height: 0;
   width: 100%;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: 1px;
-  z-index: 1;
-  border: 1px solid rgba(255, 255, 255, .22);
-  border-radius: 18px;
-  background: rgba(255, 255, 255, .09);
-  transition: background .17s ease, box-shadow .17s ease, transform .17s ease, border-color .17s ease;
+  gap: clamp(2px, .5vw, 14px);
+  padding: 4px 0;
+  box-sizing: border-box;
+  border-radius: 12px;
+  text-align: center;
 }
-.assan-gesture-item[data-action="previous"] { grid-row: 2; }
-.assan-gesture-item[data-action="delete"] { grid-row: 3; }
-.assan-gesture-item[data-action="like"] { grid-row: 5; }
-.assan-gesture-item[data-action="next"] { grid-row: 6; }
-.assan-gesture-item-preview, .assan-gesture-item-active {
-  border-color: rgba(255, 255, 255, .72);
-  background: rgba(255, 255, 255, .28);
-  box-shadow: 0 0 22px rgba(191, 170, 255, .35);
-  transform: scale(1.04);
-}
-.assan-gesture-item-active {
-  box-shadow: 0 0 24px var(--gesture-color);
-}
-.assan-gesture-item-active .assan-gesture-icon {
-  color: #fff;
-  animation: assan-gesture-lift .76s cubic-bezier(.18, .8, .24, 1) both;
+.assan-gesture-item[data-action="previous"] { grid-row: 2; grid-column: 1 / -1; }
+.assan-gesture-item[data-action="delete"] { grid-row: 3; grid-column: 1; }
+.assan-gesture-item[data-action="like"] { grid-row: 3; grid-column: 3; }
+.assan-gesture-item[data-action="next"] { grid-row: 4; grid-column: 1 / -1; }
+.assan-gesture-item-preview {
+  background: rgba(255, 255, 255, .18);
 }
 .assan-gesture-disc {
-  position: relative;
-  z-index: 1;
-  grid-row: 4;
+  grid-row: 3;
+  grid-column: 2;
   display: grid;
   place-items: center;
-  align-self: center;
-  width: min(100%, 82px);
-  aspect-ratio: 1;
-  border: 1px solid rgba(255, 255, 255, .52);
-  border-radius: 50%;
-  background: radial-gradient(circle at 35% 25%, rgba(255, 255, 255, .35), rgba(255, 255, 255, .08) 72%);
-  box-shadow: inset 0 1px 0 rgba(255, 255, 255, .25), 0 12px 26px rgba(16, 16, 54, .26);
-  transform: translate(var(--drag-x), var(--drag-y));
-  transition: transform .4s cubic-bezier(.2, 1.4, .35, 1), box-shadow .2s ease;
+  width: 100%;
+  min-height: 0;
 }
-.assan-gesture-zone.assan-gesture-dragging .assan-gesture-disc { transition: none; }
-.assan-gesture-disc::after {
-  content: "";
-  position: absolute;
-  inset: 0;
-  border: 2px solid rgba(255, 255, 255, .8);
-  border-radius: 50%;
-  opacity: 0;
-  pointer-events: none;
-}
-.assan-gesture-disc.assan-gesture-disc-pulse::after { animation: assan-disc-pulse .6s ease-out both; }
 .assan-gesture-disc-content {
   display: flex;
   flex-direction: column;
   align-items: center;
-  max-width: 100%;
-  padding: 3px;
+  justify-content: center;
+  gap: clamp(2px, .5vw, 14px);
+  width: 100%;
   text-align: center;
-  transition: opacity .18s ease, transform .18s ease;
 }
-.assan-gesture-disc-symbol { font-size: clamp(20px, 5vw, 34px); line-height: 1; }
-.assan-gesture-disc-label { font-size: clamp(9px, 2.5vw, 12px); font-weight: 700; line-height: 1.2; overflow-wrap: anywhere; }
-@keyframes assan-disc-pulse {
-  0% { opacity: .9; transform: scale(1); }
-  100% { opacity: 0; transform: scale(1.7); }
-}
+.assan-gesture-disc-symbol { font-size: clamp(22px, 1.9vw, 52px); line-height: 1; }
+.assan-gesture-disc-label { font-size: clamp(11px, 1.2vw, 32px); font-weight: 600; line-height: 1.2; }
+.assan-gesture-disc small { color: rgba(255, 255, 255, .64); font-size: clamp(10px, .75vw, 20px); line-height: 1.2; }
 @keyframes assan-glass-flow {
   from { background-position: 0% 0%; }
   to { background-position: 100% 100%; }
 }
-@keyframes assan-gesture-glow {
-  0% { opacity: 0; transform: scale(.65); }
-  30% { opacity: .58; transform: scale(1); }
-  100% { opacity: 0; transform: scale(1.55); }
-}
-@keyframes assan-gesture-sheen {
-  12% { opacity: 0; transform: translateX(-125%); }
-  38% { opacity: 1; }
-  100% { opacity: 0; transform: translateX(125%); }
-}
-@keyframes assan-gesture-lift {
-  0% { transform: scale(.8); }
-  35% { transform: scale(1.28); }
-  100% { transform: scale(1); }
-}
 .assan-gesture-icon {
   display: block;
-  width: clamp(16px, 5vw, 28px);
-  height: clamp(16px, 5vw, 28px);
+  width: clamp(20px, 2vw, 54px);
+  height: clamp(20px, 2vw, 54px);
   flex: none;
-  color: #e1e7ff;
+  color: rgba(255, 255, 255, .92);
 }
 .assan-gesture-item small {
-  display: block;
-  color: rgba(255, 255, 255, .82);
-  font-size: clamp(9px, 2.4vw, 13px);
-  line-height: 1.1;
+  color: rgba(255, 255, 255, .64);
+  font-size: clamp(10px, .75vw, 20px);
+  line-height: 1.2;
 }
 .assan-gesture-item strong {
-  display: block;
   color: #fff;
-  font-size: clamp(10px, 2.8vw, 16px);
-  font-weight: 700;
+  font-size: clamp(11px, 1.2vw, 32px);
+  font-weight: 600;
   line-height: 1.2;
-  overflow-wrap: anywhere;
+  white-space: nowrap;
 }
-/* 25vw 的触控板在宽屏达到 260px 时可容纳 Native 风格的四向布局。 */
-@media (min-width: 1040px) {
-  .assan-gesture-zone {
-    grid-template-columns: repeat(3, minmax(0, 1fr));
-    grid-template-rows: auto repeat(3, minmax(0, 1fr));
-    gap: 8px;
-    padding: 18px;
-  }
-  .assan-gesture-heading { grid-row: 1; grid-column: 1 / -1; }
-  .assan-gesture-item[data-action="previous"] { grid-row: 2; grid-column: 2; }
-  .assan-gesture-item[data-action="delete"] { grid-row: 3; grid-column: 1; }
-  .assan-gesture-item[data-action="like"] { grid-row: 3; grid-column: 3; }
-  .assan-gesture-item[data-action="next"] { grid-row: 4; grid-column: 2; }
-  .assan-gesture-disc { grid-row: 3; grid-column: 2; width: min(100%, 122px); }
+@media (max-width: 600px) {
+  .assan-gesture-item small { display: none; }
+  .assan-gesture-item[data-action="delete"] strong,
+  .assan-gesture-item[data-action="like"] strong { font-size: clamp(10px, 3vw, 13px); }
 }
 
 /* 将播放器中 10–20px 的 Tailwind 固定字号放大至 1.8 倍。 */
