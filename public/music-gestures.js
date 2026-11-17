@@ -5,7 +5,7 @@
     previous: `${controls} button:nth-of-type(2)`,
     toggle: `${controls} button:nth-of-type(3)`,
     next: `${controls} button:nth-of-type(4)`,
-    like: ".fn-like-button",
+    like: `button[type="button"][aria-label="收藏"][title="收藏"]`,
   };
   const playbackSelectors = ["previous", "toggle", "next"];
 
@@ -54,15 +54,24 @@
       for (let i = 0; i < 64; i++) {
         let f, g, shift;
         if (i < 16) {
-          f = (b & c) | (~b & d); g = i; shift = shifts[i % 4];
+          f = (b & c) | (~b & d);
+          g = i;
+          shift = shifts[i % 4];
         } else if (i < 32) {
-          f = (d & b) | (~d & c); g = (5 * i + 1) % 16; shift = shifts[4 + i % 4];
+          f = (d & b) | (~d & c);
+          g = (5 * i + 1) % 16;
+          shift = shifts[4 + (i % 4)];
         } else if (i < 48) {
-          f = b ^ c ^ d; g = (3 * i + 5) % 16; shift = shifts[8 + i % 4];
+          f = b ^ c ^ d;
+          g = (3 * i + 5) % 16;
+          shift = shifts[8 + (i % 4)];
         } else {
-          f = c ^ (b | ~d); g = (7 * i) % 16; shift = shifts[12 + i % 4];
+          f = c ^ (b | ~d);
+          g = (7 * i) % 16;
+          shift = shifts[12 + (i % 4)];
         }
-        const sum = (a + f + constants[i] + view.getUint32(offset + g * 4, true)) | 0;
+        const sum =
+          (a + f + constants[i] + view.getUint32(offset + g * 4, true)) | 0;
         const rotated = (sum << shift) | (sum >>> (32 - shift));
         [a, b, c, d] = [d, (b + rotated) | 0, b, c];
       }
@@ -71,25 +80,39 @@
       state[2] = (state[2] + c) | 0;
       state[3] = (state[3] + d) | 0;
     }
-    return state.map((word) =>
-      Array.from({ length: 4 }, (_, i) => ((word >>> (i * 8)) & 255).toString(16).padStart(2, "0")).join(""),
-    ).join("");
+    return state
+      .map((word) =>
+        Array.from({ length: 4 }, (_, i) =>
+          ((word >>> (i * 8)) & 255).toString(16).padStart(2, "0"),
+        ).join(""),
+      )
+      .join("");
   };
   const musicAuthx = (path, payload) => {
     const nonce = String(Math.floor(Math.random() * 900000) + 100000);
     const timestamp = String(Date.now());
     const digest = md5(payload);
-    const sign = md5([musicSignaturePrefix, path, nonce, timestamp, digest, musicApiKey].join("_"));
+    const sign = md5(
+      [musicSignaturePrefix, path, nonce, timestamp, digest, musicApiKey].join(
+        "_",
+      ),
+    );
     return `nonce=${nonce}&timestamp=${timestamp}&sign=${sign}`;
   };
   const musicRequest = async (path, options = {}) => {
     const method = options.method ?? "GET";
-    const payload = method === "GET" ? new URLSearchParams(new URL(path, location.origin).search).toString() : options.body;
+    const payload =
+      method === "GET"
+        ? new URLSearchParams(new URL(path, location.origin).search).toString()
+        : options.body;
     const response = await fetch(path, {
       ...options,
       credentials: "same-origin",
       cache: "no-store",
-      headers: { ...options.headers, authx: musicAuthx(new URL(path, location.origin).pathname, payload) },
+      headers: {
+        ...options.headers,
+        authx: musicAuthx(new URL(path, location.origin).pathname, payload),
+      },
     });
     if (!response.ok) throw new Error(`音乐接口返回 ${response.status}`);
     const result = await response.json();
@@ -102,12 +125,21 @@
       if (deleting || location.pathname === "/music/login") return false;
       deleting = true;
       try {
-        const history = await musicRequest("/music/api/v1/play-history/list?page=1&size=1");
+        const history = await musicRequest(
+          "/music/api/v1/play-history/list?page=1&size=1",
+        );
         const guid = history?.list?.[0]?.guid;
-        if (typeof guid !== "string" || !/^[a-zA-Z0-9_-]+$/.test(guid)) return false;
-        const body = JSON.stringify({ folderPaths: [], isPermanent: true, trackGUIDs: [guid] });
+        if (typeof guid !== "string" || !/^[a-zA-Z0-9_-]+$/.test(guid))
+          return false;
+        const body = JSON.stringify({
+          folderPaths: [],
+          isPermanent: true,
+          trackGUIDs: [guid],
+        });
         await musicRequest("/music/api/v1/folder-view/delete", {
-          method: "POST", body, headers: { "Content-Type": "application/json" },
+          method: "POST",
+          body,
+          headers: { "Content-Type": "application/json" },
         });
         if (remote) showToast(action);
         return true;
@@ -129,9 +161,12 @@
   let polling = false;
   const poll = async () => {
     if (
-      polling || deleting ||
+      polling ||
+      deleting ||
       location.pathname === "/music/login" ||
-      !playbackSelectors.every((action) => document.querySelector(selectors[action]))
+      !playbackSelectors.every((action) =>
+        document.querySelector(selectors[action]),
+      )
     )
       return;
     polling = true;
@@ -164,7 +199,9 @@
     const ready =
       mobile.matches &&
       location.pathname !== "/music/login" &&
-      playbackSelectors.every((action) => document.querySelector(selectors[action]));
+      playbackSelectors.every((action) =>
+        document.querySelector(selectors[action]),
+      );
     if (!ready) {
       zone?.remove();
       zone = undefined;
