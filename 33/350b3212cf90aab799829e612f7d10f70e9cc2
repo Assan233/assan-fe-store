@@ -1,0 +1,15 @@
+public/music-gestures.js
+  h_9beaa02e09d4ff 8,63,67,71,86,97-98,114,129,137,168,203
+  h_9beaa02e09d4ff 57-59,61-62,65-66,69-70,73-74,83-85,87-89,95-96,99,104-107,112-113,115,128,130,132-136,138,140-142,164-165,167,169,202,204
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "33350b3212cf90aab799829e612f7d10f70e9cc2",
+  "prompts": {},
+  "humans": {
+    "h_9beaa02e09d4ff": {
+      "author": "caorongsen <caorongsen@zuoyebang.com>"
+    }
+  }
+}
