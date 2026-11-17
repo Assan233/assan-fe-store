@@ -31,6 +31,38 @@ body {
   touch-action: none;
   user-select: none;
   -webkit-user-select: none;
+  isolation: isolate;
+  overflow: hidden;
+  --gesture-color: rgba(163, 194, 255, .8);
+  --gesture-x: 50%;
+  --gesture-y: 50%;
+}
+.assan-gesture-zone[data-feedback="previous"] { --gesture-y: 12%; }
+.assan-gesture-zone[data-feedback="next"] { --gesture-y: 88%; }
+.assan-gesture-zone[data-feedback="delete"] { --gesture-y: 38%; --gesture-color: rgba(255, 142, 161, .85); }
+.assan-gesture-zone[data-feedback="toggle"] { --gesture-y: 50%; }
+.assan-gesture-zone[data-feedback="like"] { --gesture-y: 62%; --gesture-color: rgba(255, 150, 204, .9); }
+.assan-gesture-zone::before,
+.assan-gesture-zone::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  opacity: 0;
+}
+.assan-gesture-zone::before {
+  background: radial-gradient(ellipse at var(--gesture-x) var(--gesture-y), var(--gesture-color), transparent 68%);
+}
+.assan-gesture-zone::after {
+  background: linear-gradient(110deg, transparent 30%, rgba(255, 255, 255, .28) 50%, transparent 70%);
+  transform: translateX(-125%);
+}
+.assan-gesture-zone.assan-gesture-triggered::before {
+  animation: assan-gesture-glow .76s ease-out both;
+}
+.assan-gesture-zone.assan-gesture-triggered::after {
+  animation: assan-gesture-sheen .76s ease-out both;
 }
 .assan-gesture-zone:focus-visible {
   outline: 3px solid #fff;
@@ -95,6 +127,12 @@ body {
 }
 @media (prefers-reduced-motion: reduce) {
   .assan-remote-toast { transition: none; }
+  .assan-gesture-zone.assan-gesture-triggered::before,
+  .assan-gesture-zone.assan-gesture-triggered::after,
+  .assan-gesture-item-active .assan-gesture-icon { animation: none; }
+  .assan-gesture-zone.assan-gesture-triggered::before { opacity: .35; }
+  .assan-gesture-zone.assan-gesture-triggered::after { opacity: 0; }
+  .assan-gesture-item { transition: none; }
 }
 .assan-gesture-item {
   position: relative;
@@ -106,6 +144,37 @@ body {
   align-items: center;
   justify-content: center;
   gap: 2px;
+  z-index: 1;
+  border-radius: 16px;
+  transition: background .2s ease, box-shadow .2s ease, transform .2s ease;
+}
+.assan-gesture-item-preview {
+  background: rgba(255, 255, 255, .12);
+  transform: scale(1.04);
+}
+.assan-gesture-item-active {
+  background: rgba(255, 255, 255, .19);
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, .28), 0 0 20px var(--gesture-color);
+  transform: scale(1.06);
+}
+.assan-gesture-item-active .assan-gesture-icon {
+  color: #fff;
+  animation: assan-gesture-lift .76s cubic-bezier(.18, .8, .24, 1) both;
+}
+@keyframes assan-gesture-glow {
+  0% { opacity: 0; transform: scale(.65); }
+  30% { opacity: .58; transform: scale(1); }
+  100% { opacity: 0; transform: scale(1.55); }
+}
+@keyframes assan-gesture-sheen {
+  12% { opacity: 0; transform: translateX(-125%); }
+  38% { opacity: 1; }
+  100% { opacity: 0; transform: translateX(125%); }
+}
+@keyframes assan-gesture-lift {
+  0% { transform: scale(.8); }
+  35% { transform: scale(1.28); }
+  100% { transform: scale(1); }
 }
 .assan-gesture-row {
   display: flex;

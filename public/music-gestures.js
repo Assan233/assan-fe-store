@@ -26,6 +26,34 @@
   let toast;
   let toastTimer;
   let toastRemoveTimer;
+  let zone;
+  let previewItem;
+  let feedbackTimer;
+  const setPreview = (action) => {
+    const item = action && zone?.querySelector(`[data-action="${action}"]`);
+    if (previewItem === item) return;
+    previewItem?.classList.remove("assan-gesture-item-preview");
+    previewItem = item;
+    previewItem?.classList.add("assan-gesture-item-preview");
+  };
+  const flashGesture = (action) => {
+    if (!zone?.isConnected) return;
+    clearTimeout(feedbackTimer);
+    setPreview();
+    zone.classList.remove("assan-gesture-triggered");
+    zone.querySelector(".assan-gesture-item-active")?.classList.remove("assan-gesture-item-active");
+    // 重新触发同一操作时也要从第一帧播放。
+    void zone.offsetWidth;
+    zone.dataset.feedback = action;
+    zone.querySelector(`[data-action="${action}"]`)?.classList.add("assan-gesture-item-active");
+    zone.classList.add("assan-gesture-triggered");
+    const currentZone = zone;
+    feedbackTimer = setTimeout(() => {
+      currentZone.classList.remove("assan-gesture-triggered");
+      currentZone.querySelector(".assan-gesture-item-active")?.classList.remove("assan-gesture-item-active");
+      delete currentZone.dataset.feedback;
+    }, 760);
+  };
   const showToast = (action, remote) => {
     clearTimeout(toastTimer);
     clearTimeout(toastRemoveTimer);
@@ -164,6 +192,7 @@
         });
         document.querySelector(selectors.next)?.click();
         showToast(action, remote);
+        flashGesture(action);
         return true;
       } catch (error) {
         console.error("删除歌曲失败", error);
@@ -176,6 +205,7 @@
     if (!button) return false;
     button.click();
     showToast(action, remote);
+    flashGesture(action);
     return true;
   };
   // Poll only while the player's controls exist. The server removes a command
@@ -213,7 +243,6 @@
   }, 2000);
   window.addEventListener("pagehide", () => clearInterval(pollTimer));
   const mobile = matchMedia("(hover: none) and (pointer: coarse)");
-  let zone;
   let scheduled = false;
 
   const mount = () => {
@@ -225,6 +254,8 @@
         document.querySelector(selectors[action]),
       );
     if (!ready) {
+      clearTimeout(feedbackTimer);
+      setPreview();
       zone?.remove();
       zone = undefined;
       return;
@@ -242,9 +273,9 @@
     const icon = (content) =>
       `<svg class="assan-gesture-icon" viewBox="0 0 64 64" fill="none" stroke="currentColor" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${content}</svg>`;
     zone.innerHTML =
-      `<span class="assan-gesture-item" aria-hidden="true">${icon('<path d="M32 46V19m-12 12 12-12 12 12"/>')}<small>上划<strong>上一首</strong></small></span>` +
-      `<span class="assan-gesture-row" aria-hidden="true"><span class="assan-gesture-item">${icon('<path d="M46 32H18m12-12L18 32l12 12"/>')}<small>左划<strong>删除</strong></small></span><span class="assan-gesture-item">${icon('<path d="M25 20.5c0-1.8 1.9-2.9 3.5-2l17 11c1.8 1.1 1.8 3.9 0 5l-17 11c-1.6.9-3.5-.2-3.5-2z"/>')}<small>双击<strong>播放/暂停</strong></small></span><span class="assan-gesture-item">${icon('<path d="M18 32h28M34 20l12 12-12 12"/>')}<small>右划<strong>收藏</strong></small></span></span>` +
-      `<span class="assan-gesture-item" aria-hidden="true">${icon('<path d="M32 18v27M20 33l12 12 12-12"/>')}<small>下划<strong>下一首</strong></small></span>`;
+      `<span class="assan-gesture-item" data-action="previous" aria-hidden="true">${icon('<path d="M32 46V19m-12 12 12-12 12 12"/>')}<small>上划<strong>上一首</strong></small></span>` +
+      `<span class="assan-gesture-row" aria-hidden="true"><span class="assan-gesture-item" data-action="delete">${icon('<path d="M46 32H18m12-12L18 32l12 12"/>')}<small>左划<strong>删除</strong></small></span><span class="assan-gesture-item" data-action="toggle">${icon('<path d="M25 20.5c0-1.8 1.9-2.9 3.5-2l17 11c1.8 1.1 1.8 3.9 0 5l-17 11c-1.6.9-3.5-.2-3.5-2z"/>')}<small>双击<strong>播放/暂停</strong></small></span><span class="assan-gesture-item" data-action="like">${icon('<path d="M18 32h28M34 20l12 12-12 12"/>')}<small>右划<strong>收藏</strong></small></span></span>` +
+      `<span class="assan-gesture-item" data-action="next" aria-hidden="true">${icon('<path d="M32 18v27M20 33l12 12 12-12"/>')}<small>下划<strong>下一首</strong></small></span>`;
 
     let start;
     let lastTap = 0;
@@ -253,6 +284,7 @@
     zone.addEventListener(
       "touchstart",
       (event) => {
+        setPreview();
         if (event.touches.length !== 1) {
           start = undefined;
           lastTap = 0;
@@ -269,8 +301,26 @@
       { passive: true },
     );
     zone.addEventListener(
+      "touchmove",
+      (event) => {
+        if (!start || event.touches.length !== 1 || event.touches[0].identifier !== start.id) {
+          setPreview();
+          return;
+        }
+        const dx = event.touches[0].clientX - start.x;
+        const dy = event.touches[0].clientY - start.y;
+        if (Math.abs(dy) >= 18 && Math.abs(dy) > Math.abs(dx) * 1.5)
+          setPreview(dy < 0 ? "previous" : "next");
+        else if (Math.abs(dx) >= 18 && Math.abs(dx) > Math.abs(dy) * 1.5)
+          setPreview(dx < 0 ? "delete" : "like");
+        else setPreview();
+      },
+      { passive: true },
+    );
+    zone.addEventListener(
       "touchend",
       (event) => {
+        setPreview();
         if (
           !start ||
           event.touches.length ||
@@ -315,6 +365,7 @@
       { passive: false },
     );
     zone.addEventListener("touchcancel", () => {
+      setPreview();
       start = undefined;
       lastTap = 0;
     });

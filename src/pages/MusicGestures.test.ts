@@ -45,9 +45,27 @@ it('仅在移动播放器页面提供手势区，并把滑动、双击、键盘�
   expect(zone).not.toBeNull()
   expect(zone.getAttribute('aria-label')).toContain('上划上一首')
 
-  touch(zone, 40, 120, 45, 40)
+  const point = (x: number, y: number) => ({ identifier: 1, clientX: x, clientY: y })
+  const move = (type: string, x: number, y: number) => {
+    const event = new window.Event(type, { bubbles: true, cancelable: true })
+    Object.defineProperties(event, {
+      touches: { value: [point(x, y)] }, changedTouches: { value: [point(x, y)] },
+    })
+    zone.dispatchEvent(event)
+  }
+  move('touchstart', 40, 120)
+  move('touchmove', 40, 80)
+  expect(zone.querySelector('[data-action="previous"]')?.classList.contains('assan-gesture-item-preview')).toBe(true)
+  move('touchmove', 80, 80)
+  expect(zone.querySelector('.assan-gesture-item-preview')).toBeNull()
+  zone.dispatchEvent(Object.assign(new window.Event('touchend', { bubbles: true, cancelable: true }), { touches: [], changedTouches: [point(45, 40)] }))
+  expect(zone.classList.contains('assan-gesture-triggered')).toBe(true)
+  expect(zone.getAttribute('data-feedback')).toBe('previous')
+  expect(zone.querySelector('[data-action="previous"]')?.classList.contains('assan-gesture-item-active')).toBe(true)
   expect(window.document.querySelector('.assan-toast-copy')?.textContent).toBe('本地操作上一首')
   touch(zone, 40, 40, 45, 120)
+  expect(zone.getAttribute('data-feedback')).toBe('next')
+  expect(zone.querySelectorAll('.assan-gesture-item-active')).toHaveLength(1)
   expect(window.document.querySelector('.assan-toast-copy')?.textContent).toBe('本地操作下一首')
   touch(zone, 40, 40, 100, 45) // 没有收藏按钮时不切歌
   touch(zone, 40, 40, 42, 42)
@@ -59,6 +77,10 @@ it('仅在移动播放器页面提供手势区，并把滑动、双击、键盘�
   expect(window.document.querySelectorAll('.assan-remote-toast')).toHaveLength(1)
   expect(window.document.querySelector('.assan-toast-copy')?.textContent).toBe('本地操作上一首')
   expect(window.document.querySelector('.assan-remote-toast')?.getAttribute('role')).toBe('status')
+  expect(zone.getAttribute('data-feedback')).toBe('previous')
+  await new Promise(resolve => window.setTimeout(resolve, 780))
+  expect(zone.classList.contains('assan-gesture-triggered')).toBe(false)
+  expect(zone.querySelector('.assan-gesture-item-active')).toBeNull()
 
   window.history.pushState({}, '', '/music/login')
   window.document.body.append(window.document.createElement('div')) // SPA 导航触发 DOM 更新
@@ -98,6 +120,8 @@ it('右划收藏，左划依次查询最新播放歌曲并请求永久删除', a
   expect(document.querySelectorAll('.assan-remote-toast')).toHaveLength(1)
   expect(document.querySelector('.assan-toast-copy')?.textContent).toBe('本地操作删除歌曲')
   expect(document.querySelector('.assan-remote-toast')?.getAttribute('data-action')).toBe('delete')
+  expect(zone.getAttribute('data-feedback')).toBe('delete')
+  expect(zone.querySelector('[data-action="delete"]')?.classList.contains('assan-gesture-item-active')).toBe(true)
   expect(calls.map(({ url }) => url)).toEqual([
     '/music/api/v1/play-history/list?page=1&size=1',
     '/music/api/v1/folder-view/delete',
