@@ -27,7 +27,7 @@ function captureDeleteDelay(window: JSDOM['window']) {
   let finish: (() => void) | undefined
   let tick: (() => void) | undefined
   Object.defineProperty(window, 'setTimeout', { value: (callback: () => void, duration: number) => {
-    if (duration === 6000) {
+    if (duration === 3000) {
       finish = callback
       return 999999
     }
@@ -121,7 +121,7 @@ it('仅在移动播放器页面提供手势区，并把滑动、双击、键盘�
   expect(window.document.querySelector('.assan-gesture-zone')).toBeNull()
 })
 
-it('左划显示居中倒计时和左侧大按钮，取消后不删除，再操作须等待 6 秒才永久删除', async () => {
+it('左划显示居中倒计时和左侧大按钮，取消后不删除，再操作须等待 3 秒才永久删除', async () => {
   page = new JSDOM('<!doctype html><body><div class="flex h-14 w-full items-center justify-between"><button></button><button></button><button></button><button></button></div><button type="button" aria-label="收藏" title="收藏">收藏</button></body>', {
     url: 'https://example.test/music/', runScripts: 'dangerously',
   })
@@ -149,11 +149,11 @@ it('左划显示居中倒计时和左侧大按钮，取消后不删除，再操�
   expect(pending.textContent).toContain('即将永久删除歌曲')
   expect(pending.firstElementChild?.textContent).toBe('取消')
   expect(pending.querySelector('button')?.getAttribute('aria-label')).toBe('取消删除歌曲')
-  expect(pending.querySelector('.assan-delete-countdown')?.textContent).toBe('剩余 6 秒')
+  expect(pending.querySelector('.assan-delete-countdown')?.textContent).toBe('剩余 3 秒')
   const clock = vi.spyOn(window.Date, 'now')
-  clock.mockReturnValue(Date.now() + 2100)
+  clock.mockReturnValue(Date.now() + 1100)
   delay.tick()
-  expect(pending.querySelector('.assan-delete-countdown')?.textContent).toBe('剩余 4 秒')
+  expect(pending.querySelector('.assan-delete-countdown')?.textContent).toBe('剩余 2 秒')
   clock.mockRestore()
   expect(calls.map(({ url }) => url)).toEqual(['/music/api/v1/play-history/list?page=1&size=1'])
   expect(clicks).toEqual(['like'])
@@ -167,7 +167,7 @@ it('左划显示居中倒计时和左侧大按钮，取消后不删除，再操�
   await new Promise(resolve => window.setTimeout(resolve, 0))
   expect(calls).toHaveLength(2)
   expect(document.activeElement).toBe(document.querySelector('.assan-delete-cancel'))
-  expect(document.querySelector('.assan-delete-countdown')?.textContent).toBe('剩余 6 秒')
+  expect(document.querySelector('.assan-delete-countdown')?.textContent).toBe('剩余 3 秒')
   delay.fire()
   await new Promise(resolve => window.setTimeout(resolve, 0))
   expect(clicks).toEqual(['like', 'deleted', 'next'])
@@ -245,7 +245,7 @@ it('远程收藏与删除由轮询执行并在接口成功后显示提示', asyn
   poll!()
   await new Promise(resolve => window.setTimeout(resolve, 10))
   expect(requests).toEqual(['/api/v1/music/commands/next', '/api/v1/music/commands/next', '/music/api/v1/play-history/list?page=1&size=1'])
-  expect(window.document.querySelector('.assan-delete-pending')?.textContent).toContain('远程控制：即将永久删除歌曲剩余 6 秒')
+  expect(window.document.querySelector('.assan-delete-pending')?.textContent).toContain('远程控制：即将永久删除歌曲剩余 3 秒')
   delay.fire()
   await new Promise(resolve => window.setTimeout(resolve, 10))
   expect(clicks).toEqual(['like', 'next'])

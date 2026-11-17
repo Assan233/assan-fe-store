@@ -182,7 +182,7 @@
       countdown.className = "assan-delete-countdown";
       countdown.setAttribute("role", "timer");
       countdown.setAttribute("aria-live", "off");
-      const deadline = Date.now() + 6000;
+      const deadline = Date.now() + 3000;
       const updateCountdown = () => {
         countdown.textContent = `剩余 ${Math.max(0, Math.ceil((deadline - Date.now()) / 1000))} 秒`;
       };
@@ -201,7 +201,7 @@
           if (restoreFocus) zone?.focus();
           pendingDelete = undefined;
           resolve(true);
-        }, 6000),
+        }, 3000),
         countdownTimer: setInterval(updateCountdown, 250),
       };
     });

@@ -4,7 +4,9 @@ body {
   min-height: 100%;
 }
 body {
-  --assan-music-accent: #7471e8;
+  --assan-music-deep: #29006f;
+  --assan-music-surface: #4a11ab;
+  --assan-music-highlight: #9b3fb6;
 }
 
 /* 手势操作渲染 */
@@ -27,7 +29,7 @@ body {
   background: linear-gradient(145deg, #29006f, #4a11ab, #7638c5, #9b3fb6, #5423b0, #29006f);
   background-size: 150% 150%;
   animation: assan-glass-flow 8s ease-in-out infinite alternate;
-  box-shadow: 0 12px 30px rgba(17, 25, 50, .3);
+  box-shadow: 0 12px 30px rgba(28, 6, 72, .38);
   -webkit-backdrop-filter: blur(24px);
   backdrop-filter: blur(24px);
   color: #f7f8fa;
@@ -67,8 +69,8 @@ body {
   padding: 18px 24px;
   border: 2px solid rgba(255, 255, 255, .85);
   border-radius: 24px;
-  background: linear-gradient(135deg, #303074, #171931);
-  box-shadow: 0 20px 60px rgba(6, 9, 30, .65), 0 0 32px rgba(116, 113, 232, .65);
+  background: linear-gradient(135deg, var(--assan-music-surface), var(--assan-music-deep));
+  box-shadow: 0 20px 60px rgba(22, 4, 59, .6), 0 0 32px rgba(118, 56, 197, .42);
   color: #fff;
   opacity: 0;
   pointer-events: none;
@@ -76,8 +78,8 @@ body {
   transition: opacity .22s ease, transform .22s ease;
 }
 .assan-remote-toast[data-action="delete"] {
-  background: linear-gradient(135deg, #913750, #371b32);
-  box-shadow: 0 20px 60px rgba(6, 9, 30, .65), 0 0 32px rgba(230, 83, 114, .7);
+  background: linear-gradient(135deg, var(--assan-music-highlight), var(--assan-music-deep));
+  box-shadow: 0 20px 60px rgba(22, 4, 59, .6), 0 0 32px rgba(155, 63, 182, .52);
 }
 .assan-toast-symbol {
   display: grid;
@@ -97,7 +99,7 @@ body {
   gap: 4px;
 }
 .assan-toast-copy small {
-  color: #e2e4ff;
+  color: #e9d9ff;
   font-size: 15px;
   font-weight: 600;
   letter-spacing: .12em;
@@ -118,29 +120,29 @@ body {
   box-sizing: border-box;
   display: flex;
   align-items: center;
-  gap: 10px;
-  width: min(90vw, 390px);
-  min-height: 88px;
-  padding: 10px 12px;
+  gap: 18px;
+  width: min(92vw, 520px);
+  min-height: 112px;
+  padding: 16px 20px;
   border: 2px solid rgba(255, 255, 255, .85);
-  border-radius: 16px;
-  background: linear-gradient(135deg, #913750, #371b32);
-  box-shadow: 0 20px 60px rgba(6, 9, 30, .65);
+  border-radius: 20px;
+  background: linear-gradient(135deg, var(--assan-music-highlight), var(--assan-music-deep));
+  box-shadow: 0 20px 60px rgba(22, 4, 59, .6);
   color: #fff;
   cursor: pointer;
   transform: translateX(-50%);
 }
 .assan-delete-cancel {
   flex: none;
-  min-width: 96px;
-  min-height: 64px;
-  padding: 8px 12px;
+  min-width: 112px;
+  min-height: 80px;
+  padding: 10px 16px;
   border: 2px solid #fff;
   border-radius: 14px;
-  background: #fff;
-  color: #371b32;
+  background: #f3e5ff;
+  color: #29006f;
   font: inherit;
-  font-size: 20px;
+  font-size: 22px;
   font-weight: 700;
   cursor: pointer;
   touch-action: manipulation;
@@ -154,8 +156,8 @@ body {
   min-width: 0;
   flex-direction: column;
   align-items: flex-start;
-  gap: 4px;
-  font-size: clamp(14px, 1.8vw, 18px);
+  gap: 8px;
+  font-size: clamp(16px, 1.8vw, 20px);
   font-weight: 600;
   line-height: 1.35;
 }
@@ -163,9 +165,9 @@ body {
   display: inline-block;
   padding: 2px 10px;
   border-radius: 12px;
-  background: #ffde76;
-  color: #3a1c24;
-  font-size: clamp(22px, 2.5vw, 28px);
+  background: #e7ceff;
+  color: #29006f;
+  font-size: clamp(24px, 2.5vw, 32px);
   font-variant-numeric: tabular-nums;
   white-space: nowrap;
 }
@@ -243,7 +245,7 @@ body {
 }
 
 :focus-visible {
-  outline: 2px solid var(--assan-music-accent);
+  outline: 3px solid #c998ff;
   outline-offset: 3px;
 }
 
@@ -298,13 +300,14 @@ body {
   }
   .assan-toast-copy strong { font-size: 32px; }
   .assan-delete-pending {
-    width: min(460px, 36vw);
-    min-height: 104px;
-    padding: 12px 16px;
+    width: min(680px, 45vw);
+    min-height: 144px;
+    gap: 24px;
+    padding: 20px 24px;
   }
-  .assan-delete-cancel { min-width: 112px; min-height: 72px; font-size: 24px; }
-  .assan-delete-message { font-size: 20px; }
-  .assan-delete-countdown { font-size: 30px; }
+  .assan-delete-cancel { min-width: 156px; min-height: 96px; font-size: 28px; }
+  .assan-delete-message { font-size: 24px; }
+  .assan-delete-countdown { font-size: 38px; }
   .flex.h-14.w-full.items-center.justify-between { min-height: 80px; }
   .flex.h-14.w-full.items-center.justify-between button:nth-of-type(n + 2):nth-of-type(-n + 4) {
     min-width: 72px;
