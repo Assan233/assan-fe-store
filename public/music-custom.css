@@ -12,8 +12,8 @@ body {
   position: fixed;
   top: 80px;
   bottom: 80px;
-  left: 32px;
-  width: 25%;
+  left: 16px;
+  width: min(58vw, 320px);
   box-sizing: border-box;
   z-index: 100;
   display: flex;
@@ -71,6 +71,25 @@ body {
   align-items: center;
   justify-content: center;
   gap: 12px;
+}
+.assan-gesture-row {
+  display: flex;
+  width: 100%;
+  flex: 1;
+  min-height: 0;
+}
+.assan-gesture-row .assan-gesture-item {
+  gap: 4px;
+}
+.assan-gesture-row .assan-gesture-item strong {
+  font-size: clamp(12px, 2.8vw, 20px);
+}
+.assan-gesture-row .assan-gesture-item small {
+  font-size: clamp(11px, 2.5vw, 16px);
+}
+.assan-gesture-row .assan-gesture-icon {
+  width: clamp(30px, 9vw, 60px);
+  height: clamp(30px, 9vw, 60px);
 }
 .assan-gesture-icon {
   display: block;

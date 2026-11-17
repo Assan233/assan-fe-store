@@ -5,12 +5,16 @@
     previous: `${controls} button:nth-of-type(2)`,
     toggle: `${controls} button:nth-of-type(3)`,
     next: `${controls} button:nth-of-type(4)`,
+    like: ".fn-like-button",
   };
+  const playbackSelectors = ["previous", "toggle", "next"];
 
   const labels = {
     previous: "上一首",
     toggle: "播放 / 暂停",
     next: "下一首",
+    like: "收藏 / 取消收藏",
+    delete: "删除歌曲",
   };
   let toastTimer;
   const showToast = (action) => {
@@ -27,7 +31,45 @@
       setTimeout(() => toast.remove(), 220);
     }, 1800);
   };
-  const activate = (action, remote = false) => {
+  const waitForButton = (selector) =>
+    new Promise((resolve) => {
+      const find = () => {
+        const button = document.querySelector(selector);
+        return button && !button.disabled && button.getAttribute("aria-disabled") !== "true"
+          ? button
+          : null;
+      };
+      const existing = find();
+      if (existing) return resolve(existing);
+      const observer = new MutationObserver(() => {
+        const button = find();
+        if (button) finish(button);
+      });
+      const timer = setTimeout(() => finish(null), 3000);
+      const finish = (button) => {
+        observer.disconnect();
+        clearTimeout(timer);
+        resolve(button);
+      };
+      observer.observe(document.documentElement, { childList: true, subtree: true, attributes: true });
+    });
+  let deleting = false;
+  const activate = async (action, remote = false) => {
+    if (action === "delete") {
+      if (deleting || !document.querySelector(".fn-delete-button")) return false;
+      deleting = true;
+      try {
+        for (const selector of [".fn-delete-button", ".fn-delete-file-button", ".fn-dialog-delete-confirm-button"]) {
+          const button = await waitForButton(selector);
+          if (!button || location.pathname === "/music/login") return false;
+          button.click();
+        }
+        if (remote) showToast(action);
+        return true;
+      } finally {
+        deleting = false;
+      }
+    }
     const button = document.querySelector(selectors[action]);
     if (!button) return false;
     button.click();
@@ -39,11 +81,9 @@
   let polling = false;
   const poll = async () => {
     if (
-      polling ||
+      polling || deleting ||
       location.pathname === "/music/login" ||
-      !Object.values(selectors).every((selector) =>
-        document.querySelector(selector),
-      )
+      !playbackSelectors.every((action) => document.querySelector(selectors[action]))
     )
       return;
     polling = true;
@@ -54,7 +94,8 @@
       });
       if (response.ok) {
         const { data } = await response.json();
-        if (Object.hasOwn(selectors, data.action)) activate(data.action, true);
+        if (data.action === "delete" || Object.hasOwn(selectors, data.action))
+          await activate(data.action, true);
       }
     } catch {
       /* A later poll can resume when connectivity returns. */
@@ -75,9 +116,7 @@
     const ready =
       mobile.matches &&
       location.pathname !== "/music/login" &&
-      Object.values(selectors).every((selector) =>
-        document.querySelector(selector),
-      );
+      playbackSelectors.every((action) => document.querySelector(selectors[action]));
     if (!ready) {
       zone?.remove();
       zone = undefined;
@@ -91,13 +130,13 @@
     zone.setAttribute("tabindex", "0");
     zone.setAttribute(
       "aria-label",
-      "音乐手势控制区：上划上一首，下划下一首，双击播放或暂停；键盘可用上下方向键和空格键",
+      "音乐手势控制区：上划上一首，下划下一首，右划收藏或取消收藏，左划删除歌曲，双击播放或暂停；键盘可用方向键、空格键和回车键",
     );
     const icon = (content) =>
       `<svg class="assan-gesture-icon" viewBox="0 0 64 64" fill="none" stroke="currentColor" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${content}</svg>`;
     zone.innerHTML =
       `<span class="assan-gesture-item" aria-hidden="true">${icon('<path d="M32 46V19m-12 12 12-12 12 12"/>')}<small>上划<strong>上一首</strong></small></span>` +
-      `<span class="assan-gesture-item" aria-hidden="true">${icon('<path d="M25 20.5c0-1.8 1.9-2.9 3.5-2l17 11c1.8 1.1 1.8 3.9 0 5l-17 11c-1.6.9-3.5-.2-3.5-2z"/>')}<small>双击<strong> 播放/暂停 </strong></small></span>` +
+      `<span class="assan-gesture-row" aria-hidden="true"><span class="assan-gesture-item">${icon('<path d="M46 32H18m12-12L18 32l12 12"/>')}<small>左划<strong>删除</strong></small></span><span class="assan-gesture-item">${icon('<path d="M25 20.5c0-1.8 1.9-2.9 3.5-2l17 11c1.8 1.1 1.8 3.9 0 5l-17 11c-1.6.9-3.5-.2-3.5-2z"/>')}<small>双击<strong>播放/暂停</strong></small></span><span class="assan-gesture-item">${icon('<path d="M18 32h28M34 20l12 12-12 12"/>')}<small>右划<strong>收藏</strong></small></span></span>` +
       `<span class="assan-gesture-item" aria-hidden="true">${icon('<path d="M32 18v27M20 33l12 12 12-12"/>')}<small>下划<strong>下一首</strong></small></span>`;
 
     let start;
@@ -139,7 +178,11 @@
         const dy = touch.clientY - start.y;
         const now = Date.now();
         if (Math.abs(dy) >= 48 && Math.abs(dy) > Math.abs(dx) * 1.5) {
-          activate(dy < 0 ? "previous" : "next");
+          void activate(dy < 0 ? "previous" : "next");
+          lastTap = 0;
+          event.preventDefault();
+        } else if (Math.abs(dx) >= 48 && Math.abs(dx) > Math.abs(dy) * 1.5) {
+          void activate(dx < 0 ? "delete" : "like");
           lastTap = 0;
           event.preventDefault();
         } else if (
@@ -151,7 +194,7 @@
             now - lastTap < 350 &&
             Math.hypot(touch.clientX - lastX, touch.clientY - lastY) < 48
           ) {
-            activate("toggle");
+            void activate("toggle");
             lastTap = 0;
             event.preventDefault();
           } else {
@@ -172,12 +215,14 @@
       const action = {
         ArrowUp: "previous",
         ArrowDown: "next",
+        ArrowLeft: "delete",
+        ArrowRight: "like",
         " ": "toggle",
         Enter: "toggle",
       }[event.key];
       if (action) {
         event.preventDefault();
-        activate(action);
+        void activate(action);
       }
     });
     document.body.append(zone);
