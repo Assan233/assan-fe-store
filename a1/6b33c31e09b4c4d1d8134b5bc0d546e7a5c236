@@ -1,0 +1,41 @@
+vite.config.ts
+  s_c9da21729585c9::t_6c5ad8479d963e 2,6,12,33
+public/music-gestures.js
+  s_c9da21729585c9::t_519b8621e8f9ca 257
+  s_c9da21729585c9::t_02144fa8444f71 254-256,258-259
+README.md
+  s_c9da21729585c9::t_6c5ad8479d963e 68
+  s_c9da21729585c9::t_37ee221e204ee7 44-45
+src/pages/MusicGestures.test.ts
+  s_c9da21729585c9::t_337cc35cc8e8a3 62-63,68-69,73-74,86,126-128
+  s_c9da21729585c9::t_94b33880050501 61,70
+public/music-custom.css
+  s_c9da21729585c9::t_aa5c5fca2ae796 47,124,150,154-156,163-164,170,175
+  s_c9da21729585c9::t_4ceb790ec55b3e 50,134
+  s_c9da21729585c9::t_40cc6919e57162 23,25-26,30,46,48-49,126,143,151,169,178,180-181
+  s_c9da21729585c9::t_94b33880050501 20-21,43,125,127-128,130-133,135,138-139,142,149,171,182-183
+  s_c9da21729585c9::t_43d210b26d6e7d 24,45
+  s_c9da21729585c9::t_8da122ffb6c404 44
+  s_c9da21729585c9::t_10703306c840ff 176
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "a16b33c31e09b4c4d1d8134b5bc0d546e7a5c236",
+  "prompts": {},
+  "humans": {
+    "h_9beaa02e09d4ff": {
+      "author": "caorongsen <caorongsen@zuoyebang.com>"
+    }
+  },
+  "sessions": {
+    "s_c9da21729585c9": {
+      "agent_id": {
+        "tool": "opencode",
+        "id": "ses_e2b87d4f0ffe1h7qsJw9DJSGqx",
+        "model": "gpt-6-astra"
+      },
+      "human_author": "caorongsen <caorongsen@zuoyebang.com>"
+    }
+  }
+}
