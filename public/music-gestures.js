@@ -35,7 +35,7 @@
     previewItem = item;
     previewItem?.classList.add("assan-gesture-item-preview");
   };
-  const showToast = (action, remote) => {
+  const showToast = (action, remote, { message, error = false, persistent = false } = {}) => {
     clearTimeout(toastTimer);
     clearTimeout(toastRemoveTimer);
     if (!toast?.isConnected) {
@@ -48,18 +48,22 @@
         '<span class="assan-toast-copy"><small></small><strong></strong></span>';
       document.body.append(toast);
     }
-    toast.dataset.action = action;
-    toast.querySelector(".assan-toast-symbol").textContent = symbols[action];
+    toast.dataset.action = error ? "delete-error" : action;
+    toast.setAttribute("role", error ? "alert" : "status");
+    toast.setAttribute("aria-live", error ? "assertive" : "polite");
+    toast.querySelector(".assan-toast-symbol").textContent = error ? "!" : symbols[action];
     toast.querySelector("small").textContent = remote ? "远程控制" : "本地操作";
-    toast.querySelector("strong").textContent = labels[action];
+    toast.querySelector("strong").textContent = message ?? labels[action];
     toast.classList.remove("assan-remote-toast-visible");
     requestAnimationFrame(() => {
       if (toast?.isConnected) toast.classList.add("assan-remote-toast-visible");
     });
-    toastTimer = setTimeout(() => {
-      toast.classList.remove("assan-remote-toast-visible");
-      toastRemoveTimer = setTimeout(() => toast.remove(), 260);
-    }, 2400);
+    if (!persistent) {
+      toastTimer = setTimeout(() => {
+        toast.classList.remove("assan-remote-toast-visible");
+        toastRemoveTimer = setTimeout(() => toast.remove(), 260);
+      }, error ? 6000 : 2400);
+    }
   };
   // 与飞牛音乐当前客户端的 authx 算法保持一致；这些常量来自公开的播放器代码，
   // 并非用户凭据。music-token 仍由浏览器 Cookie 经同域代理发送。
@@ -215,7 +219,7 @@
         );
         const guid = history?.list?.[0]?.guid;
         if (typeof guid !== "string" || !/^[a-zA-Z0-9_-]+$/.test(guid))
-          return false;
+          throw new Error("未找到最近播放的歌曲，请确认播放记录");
         if (pageHidden || location.pathname === "/music/login") return false;
         if (
           !(await waitForDelete(remote)) ||
@@ -223,21 +227,38 @@
           location.pathname === "/music/login"
         )
           return false;
+        showToast(action, remote, { message: "正在删除歌曲…", persistent: true });
         const body = JSON.stringify({
           folderPaths: [],
           isPermanent: true,
           trackGUIDs: [guid],
         });
-        await musicRequest("/music/api/v1/folder-view/delete", {
-          method: "POST",
-          body,
-          headers: { "Content-Type": "application/json" },
-        });
+        const controller = new AbortController();
+        const timeout = setTimeout(() => controller.abort(), 12000);
+        try {
+          await musicRequest("/music/api/v1/folder-view/delete", {
+            method: "POST",
+            body,
+            signal: controller.signal,
+            headers: { "Content-Type": "application/json" },
+          });
+        } finally {
+          clearTimeout(timeout);
+        }
         document.querySelector(selectors.next)?.click();
         showToast(action, remote);
         return true;
       } catch (error) {
         console.error("删除歌曲失败", error);
+        if (!pageHidden) {
+          const reason = error?.name === "AbortError"
+            ? "请求超时，无法确认删除结果，请先查看歌曲列表"
+            : error instanceof Error ? error.message : "请求失败，请检查网络";
+          showToast(action, remote, {
+            message: `${error?.name === "AbortError" ? "删除结果未确认" : "删除失败"}：${reason.slice(0, 80)}`,
+            error: true,
+          });
+        }
         return false;
       } finally {
         deleting = false;

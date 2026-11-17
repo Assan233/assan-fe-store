@@ -81,6 +81,10 @@ body {
   background: linear-gradient(135deg, var(--assan-music-highlight), var(--assan-music-deep));
   box-shadow: 0 20px 60px rgba(22, 4, 59, .6), 0 0 32px rgba(155, 63, 182, .52);
 }
+.assan-remote-toast[data-action="delete-error"] {
+  border-color: #ffe1e1;
+  background: linear-gradient(135deg, #8e315f, var(--assan-music-deep));
+}
 .assan-toast-symbol {
   display: grid;
   flex: none;

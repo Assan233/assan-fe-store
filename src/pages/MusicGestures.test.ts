@@ -26,10 +26,15 @@ function captureDeleteDelay(window: JSDOM['window']) {
   const nativeSetInterval = window.setInterval.bind(window)
   let finish: (() => void) | undefined
   let tick: (() => void) | undefined
+  let abort: (() => void) | undefined
   Object.defineProperty(window, 'setTimeout', { value: (callback: () => void, duration: number) => {
     if (duration === 3000) {
       finish = callback
       return 999999
+    }
+    if (duration === 12000) {
+      abort = callback
+      return 999997
     }
     return nativeSetTimeout(callback, duration)
   } })
@@ -43,6 +48,7 @@ function captureDeleteDelay(window: JSDOM['window']) {
   return {
     fire: () => { expect(finish).toBeDefined(); finish!() },
     tick: () => { expect(tick).toBeDefined(); tick!() },
+    fireAbort: () => { expect(abort).toBeDefined(); abort!() },
   }
 }
 
@@ -254,11 +260,12 @@ it('远程收藏与删除由轮询执行并在接口成功后显示提示', asyn
   expect(window.document.querySelector('.assan-toast-copy')?.textContent).toBe('远程控制删除歌曲')
 })
 
-it('无法获取歌曲 GUID 或删除接口失败时不提示删除成功', async () => {
+it('无法获取歌曲 GUID 时提示失败且不发送删除请求', async () => {
   page = new JSDOM('<!doctype html><body><div class="flex h-14 w-full items-center justify-between"><button></button><button></button><button></button><button></button></div></body>', {
     url: 'https://example.test/music/', runScripts: 'dangerously',
   })
   const { window } = page
+  window.console.error = () => {}
   let poll: (() => void) | undefined
   Object.defineProperty(window, 'setInterval', { value: (callback: () => void) => { poll = callback; return 1 } })
   Object.defineProperty(window, 'matchMedia', { value: () => ({ matches: false, addEventListener: () => {} }) })
@@ -272,10 +279,45 @@ it('无法获取歌曲 GUID 或删除接口失败时不提示删除成功', asyn
   poll!()
   await new Promise(resolve => window.setTimeout(resolve, 10))
   expect(requests).toEqual(['/api/v1/music/commands/next', '/music/api/v1/play-history/list?page=1&size=1'])
-  expect(window.document.querySelectorAll('.assan-remote-toast')).toHaveLength(0)
+  expect(window.document.querySelector('.assan-remote-toast')?.getAttribute('role')).toBe('alert')
+  expect(window.document.querySelector('.assan-toast-copy')?.textContent).toContain('未找到最近播放的歌曲')
 })
 
-it('飞牛音乐删除接口返回业务错误时不提示成功', async () => {
+it('飞牛音乐删除接口返回业务错误时显示失败原因且不切下一首', async () => {
+  page = new JSDOM('<!doctype html><body><div class="flex h-14 w-full items-center justify-between"><button></button><button></button><button></button><button></button></div></body>', {
+    url: 'https://example.test/music/', runScripts: 'dangerously',
+  })
+  const { window } = page
+  let poll: (() => void) | undefined
+  Object.defineProperty(window, 'setInterval', { value: (callback: () => void) => { poll = callback; return 1 } })
+  Object.defineProperty(window, 'matchMedia', { value: () => ({ matches: false, addEventListener: () => {} }) })
+  Object.defineProperty(window, 'requestAnimationFrame', { value: (callback: FrameRequestCallback) => window.setTimeout(callback, 0) })
+  const delay = captureDeleteDelay(window)
+  window.console.error = () => {}
+  const requests: string[] = []
+  let resolveDelete: ((value: unknown) => void) | undefined
+  let nextClicks = 0
+  window.document.querySelectorAll('.flex button')[3].addEventListener('click', () => { nextClicks++ })
+  Object.defineProperty(window, 'fetch', { value: async (url: string) => {
+    requests.push(url)
+    if (url.includes('folder-view/delete')) return new Promise(resolve => { resolveDelete = resolve })
+    return { ok: true, json: async () => url.startsWith('/api/') ? { data: { action: 'delete' } } : { code: 0, data: { list: [{ guid: 'guid-1' }] } } }
+  } })
+  window.eval(script)
+  poll!()
+  await new Promise(resolve => window.setTimeout(resolve, 10))
+  delay.fire()
+  await new Promise(resolve => window.setTimeout(resolve, 10))
+  expect(window.document.querySelector('.assan-toast-copy')?.textContent).toContain('正在删除歌曲')
+  resolveDelete!({ ok: true, json: async () => ({ code: 500, msg: '上游拒绝删除' }) })
+  await new Promise(resolve => window.setTimeout(resolve, 10))
+  expect(requests).toHaveLength(3)
+  expect(nextClicks).toBe(0)
+  expect(window.document.querySelector('.assan-remote-toast')?.getAttribute('role')).toBe('alert')
+  expect(window.document.querySelector('.assan-toast-copy')?.textContent).toContain('删除失败：上游拒绝删除')
+})
+
+it('车机删除请求一直无响应时显示进度和结果未确认提示', async () => {
   page = new JSDOM('<!doctype html><body><div class="flex h-14 w-full items-center justify-between"><button></button><button></button><button></button><button></button></div></body>', {
     url: 'https://example.test/music/', runScripts: 'dangerously',
   })
@@ -289,16 +331,25 @@ it('飞牛音乐删除接口返回业务错误时不提示成功', async () => {
   const requests: string[] = []
   let nextClicks = 0
   window.document.querySelectorAll('.flex button')[3].addEventListener('click', () => { nextClicks++ })
-  Object.defineProperty(window, 'fetch', { value: async (url: string) => {
+  Object.defineProperty(window, 'fetch', { value: async (url: string, options: RequestInit) => {
     requests.push(url)
-    return { ok: true, json: async () => url.startsWith('/api/') ? { data: { action: 'delete' } } : url.includes('play-history') ? { code: 0, data: { list: [{ guid: 'guid-1' }] } } : { code: 500, msg: '删除失败' } }
+    if (url.includes('folder-view/delete')) {
+      return new Promise((_, reject) => {
+        options.signal!.addEventListener('abort', () => reject(new window.DOMException('aborted', 'AbortError')))
+      })
+    }
+    return { ok: true, json: async () => url.startsWith('/api/') ? { data: { action: 'delete' } } : { code: 0, data: { list: [{ guid: 'guid-1' }] } } }
   } })
   window.eval(script)
   poll!()
   await new Promise(resolve => window.setTimeout(resolve, 10))
   delay.fire()
   await new Promise(resolve => window.setTimeout(resolve, 10))
+  expect(window.document.querySelector('.assan-toast-copy')?.textContent).toContain('正在删除歌曲')
+  delay.fireAbort()
+  await new Promise(resolve => window.setTimeout(resolve, 10))
   expect(requests).toHaveLength(3)
   expect(nextClicks).toBe(0)
-  expect(window.document.querySelectorAll('.assan-remote-toast')).toHaveLength(0)
+  expect(window.document.querySelector('.assan-remote-toast')?.getAttribute('role')).toBe('alert')
+  expect(window.document.querySelector('.assan-toast-copy')?.textContent).toContain('请求超时，无法确认删除结果')
 })
