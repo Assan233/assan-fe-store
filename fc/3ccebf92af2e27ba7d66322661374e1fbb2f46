@@ -1,0 +1,25 @@
+src/pages/MusicPage.tsx
+  s_c9da21729585c9::t_90e3ab53ed15b0 79,81-84
+public/music-custom.css
+  s_c9da21729585c9::t_7edc60ae3c3f23 191-203,205-245
+src/styles.css
+  s_c9da21729585c9::t_28a949e5bd8a6e 29-59
+README.md
+  s_c9da21729585c9::t_04a0610d3c7af0 44
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "fc3ccebf92af2e27ba7d66322661374e1fbb2f46",
+  "prompts": {},
+  "sessions": {
+    "s_c9da21729585c9": {
+      "agent_id": {
+        "tool": "opencode",
+        "id": "ses_e2b87d4f0ffe1h7qsJw9DJSGqx",
+        "model": "gpt-6-astra"
+      },
+      "human_author": "caorongsen <caorongsen@zuoyebang.com>"
+    }
+  }
+}
