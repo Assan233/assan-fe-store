@@ -1,0 +1,24 @@
+src/pages/MusicGestures.test.ts
+  s_c9da21729585c9::t_253d5293c0db04 154-176
+  s_c9da21729585c9::t_a64d3cbc590275 3,69-70,77,80-83,90-105,108-109,118-122,124,130-131,134-153
+public/music-gestures.js
+  s_c9da21729585c9::t_6c880cb67b933c 34-92,94-98,102,105-111,114-116
+README.md
+  s_c9da21729585c9::t_6ad41e4f8c450e 42
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "69129145c48a9224b231891872b07cf2ae12133a",
+  "prompts": {},
+  "sessions": {
+    "s_c9da21729585c9": {
+      "agent_id": {
+        "tool": "opencode",
+        "id": "ses_e2b87d4f0ffe1h7qsJw9DJSGqx",
+        "model": "gpt-6-astra"
+      },
+      "human_author": "caorongsen <caorongsen@zuoyebang.com>"
+    }
+  }
+}
