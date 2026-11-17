@@ -1,0 +1,30 @@
+public/music-gestures.js
+  s_c9da21729585c9::t_5e988846f26acc 29,165-166,178
+  s_c9da21729585c9::t_6d696149a98f72 19-26,28,31-49,52-53
+public/music-custom.css
+  s_c9da21729585c9::t_1ede058c5feb2f 15-16,22-26,108,113-114,118,121,124,128-129,131,135-137,142-145
+  s_c9da21729585c9::t_6d696149a98f72 42-54,58-90,94-97
+src/pages/MusicGestures.test.ts
+  s_c9da21729585c9::t_733bfe612e6573 85,88,97,135,141,179-180,189
+  s_c9da21729585c9::t_695d0421d81633 59,61,98,100,143
+  s_c9da21729585c9::t_cbe5de461474ad 49,51,60,99,144
+  s_c9da21729585c9::t_b487fe05ea0bc7 75,84,119,134
+README.md
+  s_c9da21729585c9::t_5e988846f26acc 42
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "a7962df1591509f883bc0db1ad6bc76054ad3044",
+  "prompts": {},
+  "sessions": {
+    "s_c9da21729585c9": {
+      "agent_id": {
+        "tool": "opencode",
+        "id": "ses_e2b87d4f0ffe1h7qsJw9DJSGqx",
+        "model": "gpt-6-astra"
+      },
+      "human_author": "caorongsen <caorongsen@zuoyebang.com>"
+    }
+  }
+}
