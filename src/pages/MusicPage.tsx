@@ -76,13 +76,12 @@ export default function MusicPage() {
     </header>
     {error && <p className="music-error" role="alert">{error}</p>}
     {editing && <section id="music-settings" className="music-settings" aria-label="音乐账号设置">
+      <div className="music-settings-header"><h2>音乐账号设置</h2><button type="button" onClick={() => setEditing(false)} aria-label="关闭音乐账号设置">关闭</button></div>
       <form onSubmit={save}>
-        <label htmlFor="music-username">飞牛音乐用户名</label>
-        <input id="music-username" autoComplete="username" value={username} maxLength={128} required onChange={event => setUsername(event.target.value)} />
-        <label htmlFor="music-password">飞牛音乐密码</label>
-        <input id="music-password" type="password" autoComplete="current-password" value={password} maxLength={512} required onChange={event => setPassword(event.target.value)} />
-        <button disabled={busy} type="submit">保存并登录</button>
-        {configured && <button disabled={busy} type="button" onClick={() => void forget()}>删除已保存的音乐账号</button>}
+        <label htmlFor="music-username">飞牛音乐用户名<input id="music-username" autoComplete="username" value={username} maxLength={128} required onChange={event => setUsername(event.target.value)} /></label>
+        <label htmlFor="music-password">飞牛音乐密码<input id="music-password" type="password" autoComplete="current-password" value={password} maxLength={512} required onChange={event => setPassword(event.target.value)} /></label>
+        <div className="music-settings-actions"><button disabled={busy} type="submit">保存并登录</button>
+          {configured && <button disabled={busy} type="button" onClick={() => void forget()}>删除已保存的音乐账号</button>}</div>
       </form>
       <p>账号仅供你本人使用；密码加密存储在应用库后端。修改后播放器会重新登录。</p>
     </section>}

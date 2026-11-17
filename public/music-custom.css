@@ -183,80 +183,64 @@ body {
   .assan-gesture-item[data-action="like"] strong { font-size: clamp(10px, 3vw, 13px); }
 }
 
-/* 将播放器中 10–20px 的 Tailwind 固定字号放大至 1.8 倍。 */
-[class~="text-[10px]"] { font-size: 18px !important; }
-[class~="text-[11px]"] { font-size: 19.8px !important; }
-[class~="text-[12px]"] { font-size: 21.6px !important; }
-[class~="text-[13px]"] { font-size: 23.4px !important; }
-[class~="text-[14px]"] { font-size: 25.2px !important; }
-[class~="text-[15px]"] { font-size: 27px !important; }
-[class~="text-[16px]"] { font-size: 28.8px !important; }
-[class~="text-[17px]"] { font-size: 30.6px !important; }
-[class~="text-[18px]"] { font-size: 32.4px !important; }
-[class~="text-[19px]"] { font-size: 34.2px !important; }
-[class~="text-[20px]"] { font-size: 36px !important; }
-
-
 :focus-visible {
   outline: 2px solid var(--assan-music-accent);
   outline-offset: 3px;
 }
 
-/* 播放器菜单浮层(包含 歌曲列表/全屏等) */
-/* @media (hover: none) {
-  ._corner-controls_14qoa_91 {
-    opacity: 1 !important;
-    visibility: visible !important;
+/* 车机横屏：对播放器文字和已知控制栏做适度放大，不对整块工具栏缩放，避免遮挡。 */
+@media (min-width: 1800px) and (min-height: 800px) {
+  [class~="text-[10px]"] { font-size: 18px !important; }
+  [class~="text-[11px]"] { font-size: 19.8px !important; }
+  [class~="text-[12px]"] { font-size: 21.6px !important; }
+  [class~="text-[13px]"] { font-size: 23.4px !important; }
+  [class~="text-[14px]"] { font-size: 25.2px !important; }
+  [class~="text-[15px]"] { font-size: 27px !important; }
+  [class~="text-[16px]"] { font-size: 28.8px !important; }
+  [class~="text-[17px]"] { font-size: 30.6px !important; }
+  [class~="text-[18px]"] { font-size: 32.4px !important; }
+  [class~="text-[19px]"] { font-size: 34.2px !important; }
+  [class~="text-[20px]"] { font-size: 36px !important; }
+
+  .assan-gesture-zone {
+    top: 5.5dvh;
+    bottom: 5.5dvh;
+    left: 1vw;
+    gap: 12px;
+    padding: 28px 40px;
+    border-radius: 32px;
   }
-} */
-
-/* 播放器控制栏 */
-/* .flex.h-14.w-full.items-center.justify-between
-  button:nth-of-type(n + 2):nth-of-type(-n + 4) {
-  position: fixed !important;
-  left: 300px !important;
-  width: calc(100dvh / 3) !important;
-  height: calc(100dvh / 3) !important;
-  padding: 0 !important;
-  display: flex !important;
-  align-items: center;
-  justify-content: center;
-  z-index: 20;
-} */
-/* 同步放大实际图标，覆盖 SVG 原有的固定尺寸。 */
-/* .flex.h-14.w-full.items-center.justify-between
-  button:nth-of-type(n + 2):nth-of-type(-n + 4)
-  svg {
-  width: calc(100dvh / 3) !important;
-  height: calc(100dvh / 3) !important;
-  max-width: none !important;
-  max-height: none !important;
-  flex-shrink: 0;
-} */
-.flex.h-14.w-full.items-center.justify-between button:nth-of-type(1),
-.flex.h-14.w-full.items-center.justify-between button:nth-of-type(5) {
-  transform: scale(2);
-  transform-origin: center;
+  .assan-gesture-heading { font-size: 24px; letter-spacing: .12em; }
+  .assan-gesture-item {
+    width: min(100%, 150px);
+    min-height: 100px;
+    gap: 6px;
+    border-radius: 20px;
+  }
+  .assan-gesture-item-preview { background: rgba(255, 255, 255, .22); }
+  .assan-gesture-icon { width: 52px; height: 52px; }
+  .assan-gesture-item strong { font-size: 30px; }
+  .assan-gesture-item small, .assan-gesture-disc small { font-size: 18px; }
+  .assan-gesture-disc-content {
+    width: min(100%, 150px);
+    aspect-ratio: 1;
+    gap: 6px;
+    border: 1px solid rgba(255, 255, 255, .38);
+    border-radius: 50%;
+    background: rgba(255, 255, 255, .12);
+  }
+  .assan-gesture-disc-symbol { font-size: 46px; }
+  .assan-gesture-disc-label { font-size: 28px; }
+  .assan-remote-toast {
+    left: 62.5%;
+    top: 32px;
+    width: min(540px, 40vw);
+    min-height: 128px;
+  }
+  .assan-toast-copy strong { font-size: 32px; }
+  .flex.h-14.w-full.items-center.justify-between { min-height: 80px; }
+  .flex.h-14.w-full.items-center.justify-between button:nth-of-type(n + 2):nth-of-type(-n + 4) {
+    min-width: 72px;
+    min-height: 72px;
+  }
 }
-/* .flex.h-14.w-full.items-center.justify-between button:nth-of-type(2) {
-  top: 0 !important;
-}
-.flex.h-14.w-full.items-center.justify-between button:nth-of-type(3) {
-  top: calc(100dvh / 3) !important;
-}
-.flex.h-14.w-full.items-center.justify-between button:nth-of-type(4) {
-  top: calc(100dvh * 2 / 3) !important;
-} */
-
-/* 播放器 底部 工具栏 */
-.music-player-glass {
-  transform: scale(2);
-  transform-origin: center bottom;
-}
-
-/* 播放器菜单浮层(包含 歌曲列表/全屏等) */
-/* ._corner-controls_14qoa_91 {
-  zoom: 4 !important;
-  opacity: 1 !important;
-  visibility: visible !important;
-} */

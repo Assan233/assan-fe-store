@@ -26,18 +26,37 @@
 * { box-sizing: border-box; }
 html { min-width: 320px; scroll-behavior: smooth; }
 body { min-width: 320px; min-height: 100vh; margin: 0; }
-.music-page { position: relative; display: flex; height: 100dvh; min-height: 350px; flex-direction: column; background: var(--canvas); }
-.music-toolbar { position: absolute; top: 24px; right: 220px; z-index: 10; opacity: 0; transition: opacity .2s ease; zoom: 2;}
-.music-toolbar:hover, .music-toolbar:focus-within { opacity: 1; }
-@media (hover: none) { .music-toolbar { opacity: 1; } }
-.music-toolbar button, .music-settings button, .music-message button { padding: 7px 12px; border: 1px solid var(--line); border-radius: 8px; background: var(--paper); cursor: pointer; }
-.music-player { width: 100%; min-height: 0; flex: 1; border: 0; }
-.music-settings { position: absolute; z-index: 11; top: 58px; right: 12px; max-width: min(420px, calc(100% - 24px)); padding: 16px 20px; background: var(--paper); border: 1px solid var(--line); border-radius: 12px; box-shadow: 0 12px 36px rgb(0 0 0 / .18); }
-.music-settings form { display: flex; flex-wrap: wrap; align-items: center; gap: 10px; }
-.music-settings input { min-width: 150px; max-width: 220px; padding: 6px 10px; border: 1px solid var(--line); border-radius: 8px; }
-.music-settings p { margin: 8px 0 0; color: var(--muted); font-size: .85rem; }
-.music-message { margin: auto; padding: 20px; text-align: center; }
-.music-error { position: absolute; z-index: 12; top: 58px; left: 12px; max-width: calc(100% - 24px); margin: 0; padding: 6px 20px; background: #fff0ed; color: #a33; }
+.music-page { position: relative; display: flex; height: 100dvh; min-height: 350px; flex-direction: column; overflow: hidden; background: var(--canvas); }
+.music-toolbar { position: absolute; top: 16px; right: 16px; z-index: 10; }
+.music-toolbar button, .music-settings button, .music-message button { min-height: 44px; padding: 8px 16px; border: 1px solid var(--line); border-radius: 12px; background: var(--paper); cursor: pointer; }
+.music-toolbar button { border-color: rgb(255 255 255 / 45%); background: rgb(30 25 62 / 88%); box-shadow: 0 8px 24px rgb(0 0 0 / 20%); color: #fff; }
+.music-toolbar button:hover { background: #4a367e; }
+.music-player { display: block; width: 100%; min-height: 0; flex: 1; border: 0; }
+.music-settings { position: absolute; z-index: 11; top: 72px; right: 16px; width: min(420px, calc(100% - 32px)); max-height: calc(100dvh - 88px); overflow-y: auto; padding: 20px; background: var(--paper); border: 1px solid var(--line); border-radius: 18px; box-shadow: 0 16px 48px rgb(0 0 0 / 25%); }
+.music-settings-header { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-bottom: 16px; }
+.music-settings-header h2 { margin: 0; font-size: 1.15rem; }
+.music-settings form { display: grid; gap: 14px; }
+.music-settings label { display: grid; gap: 6px; font-weight: 600; }
+.music-settings input { width: 100%; min-width: 0; padding: 10px 12px; border: 1px solid var(--line); border-radius: 10px; }
+.music-settings-actions { display: flex; flex-wrap: wrap; gap: 10px; }
+.music-settings-actions button[type="submit"] { background: #5340a0; color: #fff; }
+.music-settings button:disabled { opacity: .6; cursor: not-allowed; }
+.music-settings p { margin: 16px 0 0; color: var(--muted); font-size: .85rem; }
+.music-message { margin: auto; padding: 24px; text-align: center; }
+.music-error { position: absolute; z-index: 12; top: 72px; left: 16px; max-width: calc(100% - 32px); margin: 0; padding: 12px 20px; border-radius: 12px; background: #fff0ed; color: #a33; }
+@media (min-width: 1800px) and (min-height: 800px) {
+  .music-toolbar { top: 28px; right: 36px; }
+  .music-toolbar button { min-height: 64px; padding: 12px 24px; border-radius: 18px; font-size: 22px; font-weight: 600; }
+  .music-settings { top: 112px; right: 36px; width: min(540px, 30vw); max-height: calc(100dvh - 140px); padding: 28px 32px; border-radius: 24px; font-size: 20px; }
+  .music-settings-header h2 { font-size: 26px; }
+  .music-settings form { gap: 22px; }
+  .music-settings input { min-height: 56px; font-size: 20px; }
+  .music-settings button { min-height: 56px; padding: 10px 20px; font-size: 18px; }
+  .music-settings p { font-size: 17px; }
+  .music-message { font-size: 24px; }
+  .music-message button { min-height: 60px; font-size: 21px; }
+  .music-error { top: 112px; left: 36px; font-size: 20px; }
+}
 button, input { font: inherit; }
 button, a { -webkit-tap-highlight-color: transparent; }
 button { color: inherit; }
