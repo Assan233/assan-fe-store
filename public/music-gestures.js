@@ -150,6 +150,61 @@
     return result.data;
   };
   let deleting = false;
+  let pageHidden = false;
+  let pendingDelete;
+  const cancelPendingDelete = () => {
+    if (!pendingDelete) return;
+    clearTimeout(pendingDelete.timer);
+    clearInterval(pendingDelete.countdownTimer);
+    const restoreFocus = pendingDelete.toast.contains(document.activeElement);
+    pendingDelete.toast.remove();
+    if (restoreFocus) zone?.focus();
+    pendingDelete.resolve(false);
+    pendingDelete = undefined;
+  };
+  const waitForDelete = (remote) =>
+    new Promise((resolve) => {
+      const toast = document.createElement("div");
+      toast.className = "assan-delete-pending";
+      toast.setAttribute("role", "status");
+      toast.setAttribute("aria-live", "polite");
+      toast.addEventListener("click", cancelPendingDelete);
+      const cancel = document.createElement("button");
+      cancel.type = "button";
+      cancel.className = "assan-delete-cancel";
+      cancel.textContent = "取消";
+      cancel.setAttribute("aria-label", "取消删除歌曲");
+      const message = document.createElement("div");
+      message.className = "assan-delete-message";
+      const description = document.createElement("span");
+      description.textContent = `${remote ? "远程控制" : "本地操作"}：即将永久删除歌曲`;
+      const countdown = document.createElement("strong");
+      countdown.className = "assan-delete-countdown";
+      countdown.setAttribute("role", "timer");
+      countdown.setAttribute("aria-live", "off");
+      const deadline = Date.now() + 6000;
+      const updateCountdown = () => {
+        countdown.textContent = `剩余 ${Math.max(0, Math.ceil((deadline - Date.now()) / 1000))} 秒`;
+      };
+      updateCountdown();
+      message.append(description, countdown);
+      toast.append(cancel, message);
+      document.body.append(toast);
+      if (document.activeElement === zone) cancel.focus();
+      pendingDelete = {
+        toast,
+        resolve,
+        timer: setTimeout(() => {
+          clearInterval(pendingDelete.countdownTimer);
+          const restoreFocus = toast.contains(document.activeElement);
+          toast.remove();
+          if (restoreFocus) zone?.focus();
+          pendingDelete = undefined;
+          resolve(true);
+        }, 6000),
+        countdownTimer: setInterval(updateCountdown, 250),
+      };
+    });
   const activate = async (action, remote = false) => {
     if (action === "delete") {
       if (deleting || location.pathname === "/music/login") return false;
@@ -160,6 +215,13 @@
         );
         const guid = history?.list?.[0]?.guid;
         if (typeof guid !== "string" || !/^[a-zA-Z0-9_-]+$/.test(guid))
+          return false;
+        if (pageHidden || location.pathname === "/music/login") return false;
+        if (
+          !(await waitForDelete(remote)) ||
+          pageHidden ||
+          location.pathname === "/music/login"
+        )
           return false;
         const body = JSON.stringify({
           folderPaths: [],
@@ -217,10 +279,21 @@
       polling = false;
     }
   };
-  const pollTimer = setInterval(() => {
+  let pollTimer = setInterval(() => {
     void poll();
   }, 2000);
-  window.addEventListener("pagehide", () => clearInterval(pollTimer));
+  window.addEventListener("pagehide", () => {
+    pageHidden = true;
+    clearInterval(pollTimer);
+    cancelPendingDelete();
+  });
+  window.addEventListener("pageshow", () => {
+    if (!pageHidden) return;
+    pageHidden = false;
+    pollTimer = setInterval(() => {
+      void poll();
+    }, 2000);
+  });
   const mobile = matchMedia("(hover: none) and (pointer: coarse)");
   let scheduled = false;
 

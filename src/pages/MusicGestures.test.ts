@@ -2,12 +2,12 @@ import { readFileSync } from 'node:fs'
 import { resolve } from 'node:path'
 import { createHash } from 'node:crypto'
 import { JSDOM } from 'jsdom'
-import { afterEach, expect, it } from 'vitest'
+import { afterEach, expect, it, vi } from 'vitest'
 
 const script = readFileSync(resolve(process.cwd(), 'public/music-gestures.js'), 'utf8')
 let page: JSDOM | undefined
 
-afterEach(() => { page?.window.close(); page = undefined })
+afterEach(() => { page?.window.close(); page = undefined; vi.restoreAllMocks() })
 
 function touch(zone: Element, x1: number, y1: number, x2: number, y2: number) {
   const window = zone.ownerDocument.defaultView!
@@ -19,6 +19,31 @@ function touch(zone: Element, x1: number, y1: number, x2: number, y2: number) {
   }
   dispatch('touchstart', [point(x1, y1)], [point(x1, y1)])
   dispatch('touchend', [], [point(x2, y2)])
+}
+
+function captureDeleteDelay(window: JSDOM['window']) {
+  const nativeSetTimeout = window.setTimeout.bind(window)
+  const nativeSetInterval = window.setInterval.bind(window)
+  let finish: (() => void) | undefined
+  let tick: (() => void) | undefined
+  Object.defineProperty(window, 'setTimeout', { value: (callback: () => void, duration: number) => {
+    if (duration === 6000) {
+      finish = callback
+      return 999999
+    }
+    return nativeSetTimeout(callback, duration)
+  } })
+  Object.defineProperty(window, 'setInterval', { value: (callback: () => void, duration: number) => {
+    if (duration === 250) {
+      tick = callback
+      return 999998
+    }
+    return nativeSetInterval(callback, duration)
+  } })
+  return {
+    fire: () => { expect(finish).toBeDefined(); finish!() },
+    tick: () => { expect(tick).toBeDefined(); tick!() },
+  }
 }
 
 it('仅在移动播放器页面提供手势区，并把滑动、双击、键盘操作映射到现有按钮', async () => {
@@ -96,13 +121,14 @@ it('仅在移动播放器页面提供手势区，并把滑动、双击、键盘�
   expect(window.document.querySelector('.assan-gesture-zone')).toBeNull()
 })
 
-it('右划收藏，左划依次查询最新播放歌曲并请求永久删除', async () => {
+it('左划显示居中倒计时和左侧大按钮，取消后不删除，再操作须等待 6 秒才永久删除', async () => {
   page = new JSDOM('<!doctype html><body><div class="flex h-14 w-full items-center justify-between"><button></button><button></button><button></button><button></button></div><button type="button" aria-label="收藏" title="收藏">收藏</button></body>', {
     url: 'https://example.test/music/', runScripts: 'dangerously',
   })
   const { window } = page
   Object.defineProperty(window, 'matchMedia', { value: () => ({ matches: true, addEventListener: () => {} }) })
   Object.defineProperty(window, 'requestAnimationFrame', { value: (callback: FrameRequestCallback) => window.setTimeout(callback, 0) })
+  const delay = captureDeleteDelay(window)
   const clicks: string[] = []
   const calls: Array<{ url: string, options: RequestInit }> = []
   const { document } = window
@@ -118,7 +144,32 @@ it('右划收藏，左划依次查询最新播放歌曲并请求永久删除', a
   const zone = document.querySelector('.assan-gesture-zone')!
   touch(zone, 30, 40, 100, 40)
   touch(zone, 100, 40, 30, 40)
-  await new Promise(resolve => window.setTimeout(resolve, 50))
+  await new Promise(resolve => window.setTimeout(resolve, 20))
+  const pending = document.querySelector('.assan-delete-pending')!
+  expect(pending.textContent).toContain('即将永久删除歌曲')
+  expect(pending.firstElementChild?.textContent).toBe('取消')
+  expect(pending.querySelector('button')?.getAttribute('aria-label')).toBe('取消删除歌曲')
+  expect(pending.querySelector('.assan-delete-countdown')?.textContent).toBe('剩余 6 秒')
+  const clock = vi.spyOn(window.Date, 'now')
+  clock.mockReturnValue(Date.now() + 2100)
+  delay.tick()
+  expect(pending.querySelector('.assan-delete-countdown')?.textContent).toBe('剩余 4 秒')
+  clock.mockRestore()
+  expect(calls.map(({ url }) => url)).toEqual(['/music/api/v1/play-history/list?page=1&size=1'])
+  expect(clicks).toEqual(['like'])
+  pending.querySelector('button')!.click()
+  await new Promise(resolve => window.setTimeout(resolve, 0))
+  expect(document.querySelector('.assan-delete-pending')).toBeNull()
+  expect(clicks).toEqual(['like'])
+  const gestureZone = zone as HTMLElement
+  gestureZone.focus()
+  touch(zone, 100, 40, 30, 40)
+  await new Promise(resolve => window.setTimeout(resolve, 0))
+  expect(calls).toHaveLength(2)
+  expect(document.activeElement).toBe(document.querySelector('.assan-delete-cancel'))
+  expect(document.querySelector('.assan-delete-countdown')?.textContent).toBe('剩余 6 秒')
+  delay.fire()
+  await new Promise(resolve => window.setTimeout(resolve, 0))
   expect(clicks).toEqual(['like', 'deleted', 'next'])
   expect(document.querySelectorAll('.assan-remote-toast')).toHaveLength(1)
   expect(document.querySelector('.assan-toast-copy')?.textContent).toBe('本地操作删除歌曲')
@@ -128,9 +179,10 @@ it('右划收藏，左划依次查询最新播放歌曲并请求永久删除', a
   expect(zone.querySelector('.assan-gesture-disc-symbol')?.textContent).toBe('♫')
   expect(calls.map(({ url }) => url)).toEqual([
     '/music/api/v1/play-history/list?page=1&size=1',
+    '/music/api/v1/play-history/list?page=1&size=1',
     '/music/api/v1/folder-view/delete',
   ])
-  expect(calls[1].options).toMatchObject({ method: 'POST', credentials: 'same-origin', cache: 'no-store', body: JSON.stringify({ folderPaths: [], isPermanent: true, trackGUIDs: ['valid-guid-123'] }) })
+  expect(calls[2].options).toMatchObject({ method: 'POST', credentials: 'same-origin', cache: 'no-store', body: JSON.stringify({ folderPaths: [], isPermanent: true, trackGUIDs: ['valid-guid-123'] }) })
   for (const { url, options } of calls) {
     const header = (options.headers as Record<string, string>).authx
     const match = header.match(/^nonce=(\d{6})&timestamp=(\d+)&sign=([0-9a-f]{32})$/)
@@ -143,6 +195,31 @@ it('右划收藏，左划依次查询最新播放歌曲并请求永久删除', a
   }
 })
 
+it('点击删除确认提示的非按钮区域也会取消删除', async () => {
+  page = new JSDOM('<!doctype html><body><div class="flex h-14 w-full items-center justify-between"><button></button><button></button><button></button><button></button></div></body>', {
+    url: 'https://example.test/music/', runScripts: 'dangerously',
+  })
+  const { window } = page
+  Object.defineProperty(window, 'matchMedia', { value: () => ({ matches: true, addEventListener: () => {} }) })
+  Object.defineProperty(window, 'requestAnimationFrame', { value: (callback: FrameRequestCallback) => window.setTimeout(callback, 0) })
+  captureDeleteDelay(window)
+  const requests: string[] = []
+  Object.defineProperty(window, 'fetch', { value: async (url: string) => {
+    requests.push(url)
+    return { ok: true, json: async () => ({ code: 0, data: { list: [{ guid: 'guid-1' }] } }) }
+  } })
+  window.eval(script)
+  await new Promise(resolve => window.setTimeout(resolve, 20))
+  touch(window.document.querySelector('.assan-gesture-zone')!, 100, 40, 30, 40)
+  await new Promise(resolve => window.setTimeout(resolve, 0))
+  const pending = window.document.querySelector('.assan-delete-pending')!
+  pending.querySelector('.assan-delete-message')!.dispatchEvent(new window.MouseEvent('click', { bubbles: true }))
+  await new Promise(resolve => window.setTimeout(resolve, 0))
+  expect(window.document.querySelector('.assan-delete-pending')).toBeNull()
+  expect(requests).toEqual(['/music/api/v1/play-history/list?page=1&size=1'])
+  expect(window.document.querySelector('.assan-remote-toast')).toBeNull()
+})
+
 it('远程收藏与删除由轮询执行并在接口成功后显示提示', async () => {
   page = new JSDOM('<!doctype html><body><div class="flex h-14 w-full items-center justify-between"><button></button><button></button><button></button><button></button></div><button type="button" aria-label="收藏" title="收藏"></button></body>', {
     url: 'https://example.test/music/', runScripts: 'dangerously',
@@ -152,6 +229,7 @@ it('远程收藏与删除由轮询执行并在接口成功后显示提示', asyn
   Object.defineProperty(window, 'setInterval', { value: (callback: () => void) => { poll = callback; return 1 } })
   Object.defineProperty(window, 'matchMedia', { value: () => ({ matches: false, addEventListener: () => {} }) })
   Object.defineProperty(window, 'requestAnimationFrame', { value: (callback: FrameRequestCallback) => window.setTimeout(callback, 0) })
+  const delay = captureDeleteDelay(window)
   const actions = ['like', 'delete']
   const requests: string[] = []
   Object.defineProperty(window, 'fetch', { value: async (url: string) => {
@@ -165,6 +243,10 @@ it('远程收藏与删除由轮询执行并在接口成功后显示提示', asyn
   poll!()
   await new Promise(resolve => window.setTimeout(resolve, 10))
   poll!()
+  await new Promise(resolve => window.setTimeout(resolve, 10))
+  expect(requests).toEqual(['/api/v1/music/commands/next', '/api/v1/music/commands/next', '/music/api/v1/play-history/list?page=1&size=1'])
+  expect(window.document.querySelector('.assan-delete-pending')?.textContent).toContain('远程控制：即将永久删除歌曲剩余 6 秒')
+  delay.fire()
   await new Promise(resolve => window.setTimeout(resolve, 10))
   expect(clicks).toEqual(['like', 'next'])
   expect(requests).toEqual(['/api/v1/music/commands/next', '/api/v1/music/commands/next', '/music/api/v1/play-history/list?page=1&size=1', '/music/api/v1/folder-view/delete'])
@@ -202,6 +284,7 @@ it('飞牛音乐删除接口返回业务错误时不提示成功', async () => {
   Object.defineProperty(window, 'setInterval', { value: (callback: () => void) => { poll = callback; return 1 } })
   Object.defineProperty(window, 'matchMedia', { value: () => ({ matches: false, addEventListener: () => {} }) })
   Object.defineProperty(window, 'requestAnimationFrame', { value: (callback: FrameRequestCallback) => window.setTimeout(callback, 0) })
+  const delay = captureDeleteDelay(window)
   window.console.error = () => {}
   const requests: string[] = []
   let nextClicks = 0
@@ -212,6 +295,8 @@ it('飞牛音乐删除接口返回业务错误时不提示成功', async () => {
   } })
   window.eval(script)
   poll!()
+  await new Promise(resolve => window.setTimeout(resolve, 10))
+  delay.fire()
   await new Promise(resolve => window.setTimeout(resolve, 10))
   expect(requests).toHaveLength(3)
   expect(nextClicks).toBe(0)
