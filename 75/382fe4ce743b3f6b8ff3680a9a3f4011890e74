@@ -1,0 +1,45 @@
+public/music-custom.css
+  s_c9da21729585c9::t_52b4da4c41fd60 113-114,117-120,125,127-129,132-134,138-142,144-152,159-161,300,304
+  s_c9da21729585c9::t_3e1d88ea7c9b8a 121-123,126,130,135-137,143,158,168,301-302,305-307
+  h_9beaa02e09d4ff 116,124,303
+  s_c9da21729585c9::t_ed2a9245d72f10 115,131,157,164
+  s_c9da21729585c9::t_bd82f27e1b2c80 153-156,162-163,165-167,169-171
+src/pages/MusicGestures.test.ts
+  s_c9da21729585c9::t_49a61eaba0066c 198-222
+  s_c9da21729585c9::t_fc1fd531bb13fb 5,10,26,28,36-42,45,124,149,152-157,170,248
+  s_c9da21729585c9::t_594898450f2f40 169
+  s_c9da21729585c9::t_c55ea6a5496bcc 24-25,27,29-35,43-44,46-48,131,147-148,150-151,158-163,167-168,171-172,181,185,232,247,249-250,287,299-300
+  s_c9da21729585c9::t_bcfd5a12cf6743 164-165
+  s_c9da21729585c9::t_c2410786a3c66b 166
+README.md
+  s_c9da21729585c9::t_3e1d88ea7c9b8a 42
+public/music-gestures.js
+  s_c9da21729585c9::t_a714c3574518d9 159,161,199,201
+  s_c9da21729585c9::t_3e1d88ea7c9b8a 171
+  s_c9da21729585c9::t_5b65e59c5a3c06 193,282,289-295
+  s_c9da21729585c9::t_c7fb45245e316c 153,219-224,286
+  s_c9da21729585c9::t_52b4da4c41fd60 154-157,160,162-170,172-176,178,191-192,194-197,200,202-204,206-207,285,287-288,296
+  s_c9da21729585c9::t_bd82f27e1b2c80 158,177,179-190,198,205
+  s_c9da21729585c9::t_cd0fcc6d9ed76a 225
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "75382fe4ce743b3f6b8ff3680a9a3f4011890e74",
+  "prompts": {},
+  "humans": {
+    "h_9beaa02e09d4ff": {
+      "author": "caorongsen <caorongsen@zuoyebang.com>"
+    }
+  },
+  "sessions": {
+    "s_c9da21729585c9": {
+      "agent_id": {
+        "tool": "opencode",
+        "id": "ses_e2b87d4f0ffe1h7qsJw9DJSGqx",
+        "model": "gpt-6-astra"
+      },
+      "human_author": "caorongsen <caorongsen@zuoyebang.com>"
+    }
+  }
+}
