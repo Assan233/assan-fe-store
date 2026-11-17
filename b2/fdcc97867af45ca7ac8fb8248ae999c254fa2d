@@ -1,0 +1,33 @@
+Dockerfile
+  s_c9da21729585c9::t_32a6cf7368eac8 5-9
+.dockerignore
+  s_c9da21729585c9::t_32a6cf7368eac8 1-2,5-9
+public/music-gestures.js
+  s_c9da21729585c9::t_ee0b7a69b084fb 32-48,55,60,63,68,70,75,78-81,284,303,305-307,318,343-345,357,403
+src/pages/MusicGestures.test.ts
+  s_c9da21729585c9::t_db3128bd3ec882 47-48,61-63,66,69-72,94-95,137
+docs/docker-deployment.md
+  s_c9da21729585c9::t_a6f5bafc3372a7 122
+public/music-custom.css
+  s_c9da21729585c9::t_618c276f360f12 26-28,76,139,222-226,277
+  s_c9da21729585c9::t_ee0b7a69b084fb 263-264
+  s_c9da21729585c9::t_65f9ba50a3a804 19-25,29,39-44,55,67-75,143-144,147,157,159-162,164-171,175,181-221,244-245,252-253,258,265-276
+README.md
+  s_c9da21729585c9::t_32a6cf7368eac8 86-87
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "b2fdcc97867af45ca7ac8fb8248ae999c254fa2d",
+  "prompts": {},
+  "sessions": {
+    "s_c9da21729585c9": {
+      "agent_id": {
+        "tool": "opencode",
+        "id": "ses_e2b87d4f0ffe1h7qsJw9DJSGqx",
+        "model": "gpt-6-astra"
+      },
+      "human_author": "caorongsen <caorongsen@zuoyebang.com>"
+    }
+  }
+}
