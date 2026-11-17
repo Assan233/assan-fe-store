@@ -119,7 +119,7 @@ sudo docker exec assan-store-web-1 nginx -t
 
 ### 构建时报 `docker.fnnas.com` 返回 401
 
-若错误为 `failed to resolve source metadata for docker.io/docker/dockerfile:1`，并显示 `https://docker.fnnas.com/...: 401 Unauthorized`，失败发生在拉取 Dockerfile 的构建语法镜像阶段，还没有开始编译本项目。两个 Dockerfile 的首行 `# syntax=docker/dockerfile:1` 会触发该镜像拉取；镜像请求被 NAS 配置的 `docker.fnnas.com` 镜像加速源转发并拒绝。日志中 `failed to read current commit information` 的警告与此失败无关。
+若错误为 `failed to resolve source metadata for docker.io/docker/dockerfile:1`，并显示 `https://docker.fnnas.com/...: 401 Unauthorized`，失败发生在拉取 Dockerfile 的构建语法镜像阶段，还没有开始编译本项目。后端 Dockerfile 的首行 `# syntax=docker/dockerfile:1` 会触发该镜像拉取；前端 Dockerfile 已改用 Docker BuildKit 内置的语法解析器，不再单独拉取此镜像。镜像请求被 NAS 配置的 `docker.fnnas.com` 镜像加速源转发并拒绝。日志中 `failed to read current commit information` 的警告与此失败无关。
 
 1. 在 **NAS 本机**检查 Docker Engine 的镜像源配置并复现拉取：
 

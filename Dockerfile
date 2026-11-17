@@ -1,10 +1,12 @@
-# syntax=docker/dockerfile:1
 FROM node:22-alpine AS build
 WORKDIR /app
 RUN corepack enable
 COPY package.json pnpm-lock.yaml ./
-RUN pnpm install --frozen-lockfile
-COPY . .
+RUN --mount=type=cache,id=assan-fe-pnpm,target=/root/.local/share/pnpm/store \
+    pnpm install --frozen-lockfile --store-dir /root/.local/share/pnpm/store
+COPY index.html vite.config.ts tsconfig*.json ./
+COPY src ./src
+COPY public ./public
 RUN pnpm build
 # Vite copies public/ files as-is; NAS checkout permissions may be restrictive.
 # Normalize the entire static output so the unprivileged Nginx worker can read it.

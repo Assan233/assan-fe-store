@@ -44,6 +44,8 @@ it('仅在移动播放器页面提供手势区，并把滑动、双击、键盘�
   const zone = window.document.querySelector('.assan-gesture-zone')!
   expect(zone).not.toBeNull()
   expect(zone.getAttribute('aria-label')).toContain('上划上一首')
+  expect(zone.querySelector('.assan-gesture-disc-symbol')?.textContent).toBe('♫')
+  expect(zone.querySelectorAll('.assan-gesture-item')).toHaveLength(4)
 
   const point = (x: number, y: number) => ({ identifier: 1, clientX: x, clientY: y })
   const move = (type: string, x: number, y: number) => {
@@ -56,10 +58,18 @@ it('仅在移动播放器页面提供手势区，并把滑动、双击、键盘�
   move('touchstart', 40, 120)
   move('touchmove', 40, 80)
   expect(zone.querySelector('[data-action="previous"]')?.classList.contains('assan-gesture-item-preview')).toBe(true)
+  expect(zone.querySelector('.assan-gesture-disc-label')?.textContent).toBe('上一首')
+  expect(zone.classList.contains('assan-gesture-dragging')).toBe(true)
+  expect((zone as HTMLElement).style.getPropertyValue('--drag-y')).toBe('-15.2px')
   move('touchmove', 80, 80)
   expect(zone.querySelector('.assan-gesture-item-preview')).toBeNull()
+  expect(zone.querySelector('.assan-gesture-disc-symbol')?.textContent).toBe('♫')
   zone.dispatchEvent(Object.assign(new window.Event('touchend', { bubbles: true, cancelable: true }), { touches: [], changedTouches: [point(45, 40)] }))
   expect(zone.classList.contains('assan-gesture-triggered')).toBe(true)
+  expect(zone.classList.contains('assan-gesture-dragging')).toBe(false)
+  expect((zone as HTMLElement).style.getPropertyValue('--drag-y')).toBe('0px')
+  expect(zone.querySelector('.assan-gesture-disc-pulse')).not.toBeNull()
+  expect(zone.querySelector('.assan-gesture-disc-label')?.textContent).toBe('上一首')
   expect(zone.getAttribute('data-feedback')).toBe('previous')
   expect(zone.querySelector('[data-action="previous"]')?.classList.contains('assan-gesture-item-active')).toBe(true)
   expect(window.document.querySelector('.assan-toast-copy')?.textContent).toBe('本地操作上一首')
@@ -81,6 +91,8 @@ it('仅在移动播放器页面提供手势区，并把滑动、双击、键盘�
   await new Promise(resolve => window.setTimeout(resolve, 780))
   expect(zone.classList.contains('assan-gesture-triggered')).toBe(false)
   expect(zone.querySelector('.assan-gesture-item-active')).toBeNull()
+  await new Promise(resolve => window.setTimeout(resolve, 350))
+  expect(zone.querySelector('.assan-gesture-disc-label')?.textContent).toBe('双击播放')
 
   window.history.pushState({}, '', '/music/login')
   window.document.body.append(window.document.createElement('div')) // SPA 导航触发 DOM 更新
@@ -122,6 +134,7 @@ it('右划收藏，左划依次查询最新播放歌曲并请求永久删除', a
   expect(document.querySelector('.assan-remote-toast')?.getAttribute('data-action')).toBe('delete')
   expect(zone.getAttribute('data-feedback')).toBe('delete')
   expect(zone.querySelector('[data-action="delete"]')?.classList.contains('assan-gesture-item-active')).toBe(true)
+  expect(zone.querySelector('.assan-gesture-disc-symbol')?.textContent).toBe('×')
   expect(calls.map(({ url }) => url)).toEqual([
     '/music/api/v1/play-history/list?page=1&size=1',
     '/music/api/v1/folder-view/delete',
