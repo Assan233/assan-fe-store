@@ -45,7 +45,9 @@
 
 登录后从「效率」分类进入 `/tools/video-downloader`，粘贴优酷视频链接，解析后选择剧集并点击「生成 MP4」。完成后点击「下载 MP4」；链接仅限当前账号使用一次，5 分钟后失效。单个视频最多处理 4 分钟、1 GiB。
 
-服务端兼容 `../youku_spi` 的解析接口，使用 FFmpeg 合并视频流。启用时，在 Compose 的 `.env` 中设置 `VIDEO_RESOLVER_URL`（HTTPS 接口地址，查询参数中包含该服务的 `z` 值）以及接口需要的 `VIDEO_RESOLVER_ORIGIN`。不要提交带密钥的地址。本地直接运行后端时，将这两个值设为后端进程的环境变量，并确保 `ffmpeg` 在 `PATH` 中。使用外层反向代理时，将 `/api/v1/video/prepare` 的等待上游响应超时设为至少 255 秒。
+Docker Compose 默认使用 yt-dlp 解析单条优酷视频链接（`https://v.youku.com/v_show/id_….html`），再由 FFmpeg 生成 MP4，无需解析服务密钥。切换时请更新前后端代码，并在 Compose 目录运行 `docker compose up -d --build`。优酷限制播放的视频无法使用此方式下载。
+
+本地直接运行后端时设置 `VIDEO_PROVIDER=yt-dlp`，并确保 `yt-dlp` 和 `ffmpeg` 在 `PATH` 中。旧解析接口已移除；升级时请删除旧的解析地址及 Origin 配置，若曾覆盖 `VIDEO_PROVIDER`，请改为 `yt-dlp` 或 `disabled`（禁用解析）。使用外层反向代理时，将 `/api/v1/video/prepare` 的等待上游响应超时设为至少 255 秒。
 
 ## 飞牛音乐
 
