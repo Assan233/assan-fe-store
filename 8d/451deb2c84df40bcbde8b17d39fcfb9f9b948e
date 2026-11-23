@@ -1,0 +1,25 @@
+compose.yaml
+  s_67e5ba6678c4aa::t_d13aa28c4d0989 15
+.env.example
+  s_67e5ba6678c4aa::t_d13aa28c4d0989 15
+  s_67e5ba6678c4aa::t_ade94b28c6e5d9 14
+README.md
+  s_67e5ba6678c4aa::t_d13aa28c4d0989 48-49
+  s_67e5ba6678c4aa::t_ade94b28c6e5d9 50
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "8d451deb2c84df40bcbde8b17d39fcfb9f9b948e",
+  "prompts": {},
+  "sessions": {
+    "s_67e5ba6678c4aa": {
+      "agent_id": {
+        "tool": "opencode",
+        "id": "ses_dfbbdab7affen2zpWrjTRxe52w",
+        "model": "gpt-6.2-astra"
+      },
+      "human_author": "caorongsen <caorongsen@zuoyebang.com>"
+    }
+  }
+}
