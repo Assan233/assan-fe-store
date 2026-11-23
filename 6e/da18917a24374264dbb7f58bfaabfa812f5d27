@@ -1,0 +1,37 @@
+src/app/App.tsx
+  s_67e5ba6678c4aa::t_cd002cacaef2a8 12,60
+README.md
+  s_67e5ba6678c4aa::t_7a06af769f8edf 44-49
+src/lib/api.ts
+  s_67e5ba6678c4aa::t_cd002cacaef2a8 2,39,43,55-56
+.env.example
+  s_67e5ba6678c4aa::t_7a06af769f8edf 14-18
+src/pages/VideoDownloaderPage.test.tsx
+  s_67e5ba6678c4aa::t_95dafde9bb7d12 1-42
+src/lib/catalog.ts
+  s_67e5ba6678c4aa::t_cd002cacaef2a8 15-23
+  s_67e5ba6678c4aa::t_85af5ae585309e 14
+src/pages/VideoDownloaderPage.tsx
+  s_67e5ba6678c4aa::t_cd002cacaef2a8 1-15,24-88,92-101,105-106,108-110,114-115,117-119
+  s_67e5ba6678c4aa::t_7a06af769f8edf 16-23,89-91,102-104,107,111-113,116
+compose.yaml
+  s_67e5ba6678c4aa::t_53651f5a5b5e95 15-17,22,61
+nginx.conf
+  s_67e5ba6678c4aa::t_53651f5a5b5e95 41-45
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "6eda18917a24374264dbb7f58bfaabfa812f5d27",
+  "prompts": {},
+  "sessions": {
+    "s_67e5ba6678c4aa": {
+      "agent_id": {
+        "tool": "opencode",
+        "id": "ses_dfbbdab7affen2zpWrjTRxe52w",
+        "model": "gpt-6.2-astra"
+      },
+      "human_author": "caorongsen <caorongsen@zuoyebang.com>"
+    }
+  }
+}
