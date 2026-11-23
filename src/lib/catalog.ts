@@ -12,6 +12,16 @@ export type Tool = {
 
 export const tools: Tool[] = [
   {
+    id: 'video-downloader',
+    name: '视频下载助手',
+    description: '解析优酷视频链接，选取剧集并下载为 MP4。',
+    category: '效率',
+    icon: '↓',
+    accent: 'mint',
+    keywords: ['优酷', 'youku', '视频', '下载', 'mp4', '剧集'],
+    path: '/tools/video-downloader',
+  },
+  {
     id: 'tower-defense',
     name: '荒漠塔防',
     description: '在荒原布置四种防御塔，守住八波魔物进攻。',

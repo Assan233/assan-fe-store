@@ -1,4 +1,5 @@
 export type User = { id: number; username: string; role: 'admin' | 'member'; disabled: boolean }
+export type VideoEpisode = { id: string; name: string }
 type Envelope<T> = { data: T }
 type ErrorEnvelope = { error?: { code?: string; message?: string } }
 
@@ -35,10 +36,11 @@ async function csrfToken() {
   return result.token
 }
 
-async function mutate<T>(path: string, body?: unknown): Promise<T> {
+async function mutate<T>(path: string, body?: unknown, signal?: AbortSignal): Promise<T> {
   const token = await csrfToken()
   return request<T>(path, {
     method: 'POST',
+    signal,
     headers: { 'Content-Type': 'application/json', 'X-CSRF-Token': token },
     ...(body === undefined ? {} : { body: JSON.stringify(body) }),
   })
@@ -50,6 +52,8 @@ async function remove(path: string): Promise<void> {
 }
 
 export const api = {
+  resolveVideo: (url: string, signal: AbortSignal) => mutate<VideoEpisode[]>('/api/v1/video/resolve', { url }, signal),
+  prepareVideo: (episodeId: string, signal: AbortSignal) => mutate<{ id: string }>('/api/v1/video/prepare', { episodeId }, signal),
   musicCredentialStatus: () => request<{ configured: boolean }>('/api/v1/music/credential'),
   saveMusicCredential: (username: string, password: string) => mutate<void>('/api/v1/music/credential', { username, password }),
   deleteMusicCredential: () => remove('/api/v1/music/credential'),

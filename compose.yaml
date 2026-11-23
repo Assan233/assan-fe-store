@@ -12,10 +12,14 @@ services:
       SECURE_COOKIES: "${SECURE_COOKIES:-true}"
       TRUST_PROXY: "true"
       MUSIC_CREDENTIAL_KEY: "${MUSIC_CREDENTIAL_KEY:-}"
+      VIDEO_RESOLVER_URL: "${VIDEO_RESOLVER_URL:-}"
+      VIDEO_RESOLVER_ORIGIN: "${VIDEO_RESOLVER_ORIGIN:-}"
+      VIDEO_TEMP_DIR: /video-cache
     ports:
       - "127.0.0.1:${API_HOST_PORT:-29090}:9090"
     volumes:
       - assan-data:/data
+      - video-cache:/video-cache
     stop_grace_period: 15s
     read_only: true
     tmpfs:
@@ -54,3 +58,4 @@ services:
 
 volumes:
   assan-data:
+  video-cache:

@@ -9,6 +9,7 @@ import { UsersPage } from '../pages/UsersPage'
 import { BrandMark } from '../components/BrandMark'
 
 const AudioConverterPage = lazy(() => import('../pages/AudioConverterPage'))
+const VideoDownloaderPage = lazy(() => import('../pages/VideoDownloaderPage'))
 const MusicPage = lazy(() => import('../pages/MusicPage'))
 const AtmospherePage = lazy(() => import('../pages/AtmospherePage'))
 const TowerDefensePage = lazy(() => import('../pages/TowerDefensePage'))
@@ -56,6 +57,7 @@ export function App() {
         <Route path="/users" element={user?.role === 'admin' ? <UsersPage /> : <Navigate to="/" replace />} />
         <Route path="/tools/m4a-to-flac" element={<Suspense fallback={<LoadingScreen />}><AudioConverterPage key="flac" /></Suspense>} />
         <Route path="/tools/video-to-mp3" element={<Suspense fallback={<LoadingScreen />}><AudioConverterPage key="mp3" video /></Suspense>} />
+        <Route path="/tools/video-downloader" element={<Suspense fallback={<LoadingScreen />}><VideoDownloaderPage /></Suspense>} />
         <Route path="/tools/atmosphere" element={<Suspense fallback={<LoadingScreen />}><AtmospherePage /></Suspense>} />
         <Route path="/tools/tower-defense" element={<Suspense fallback={<LoadingScreen />}><TowerDefensePage /></Suspense>} />
         <Route path="/tools/json-beautifier" element={<Suspense fallback={<LoadingScreen />}><JsonFormatterPage /></Suspense>} />
