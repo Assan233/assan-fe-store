@@ -52,6 +52,16 @@ export const tools: Tool[] = [
     path: '/tools/m4a-to-flac',
   },
   {
+    id: 'video-to-mp3',
+    name: '视频转 MP3',
+    description: '从 MKV 或 MP4 视频提取音轨，在浏览器中转换为 MP3。',
+    category: '音频',
+    icon: '▷',
+    accent: 'mint',
+    keywords: ['mkv', 'mp4', 'mp3', '视频转音频', '提取音频', '转换'],
+    path: '/tools/video-to-mp3',
+  },
+  {
     id: 'json-beautifier',
     name: 'JSON 格式化',
     description: '整理缩进、快速阅读 JSON 数据结构。',
