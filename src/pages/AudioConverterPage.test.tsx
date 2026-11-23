@@ -2,7 +2,7 @@ import { act, cleanup, fireEvent, render, screen, waitFor } from '@testing-libra
 import { MemoryRouter } from 'react-router-dom'
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import AudioConverterPage from './AudioConverterPage'
-import { convertToFlac } from '../features/audio/convert'
+import { convertToFlac, convertToMp3 } from '../features/audio/convert'
 import { archiveAudio } from '../features/audio/archive'
 
 vi.mock('../features/audio/archive', () => ({ archiveAudio: vi.fn() }))
@@ -10,6 +10,7 @@ vi.mock('../features/audio/archive', () => ({ archiveAudio: vi.fn() }))
 vi.mock('../features/audio/convert', async (original) => ({
   ...await original<typeof import('../features/audio/convert')>(),
   convertToFlac: vi.fn(),
+  convertToMp3: vi.fn(),
 }))
 
 const convert = vi.mocked(convertToFlac)
@@ -24,11 +25,12 @@ function choose(name = 'song.m4a', contents = 'audio') {
 beforeEach(() => {
   vi.clearAllMocks()
   vi.stubGlobal('URL', Object.assign(URL, { createObjectURL: vi.fn(() => 'blob:converted'), revokeObjectURL: revoke }))
-  render(<MemoryRouter><AudioConverterPage /></MemoryRouter>)
 })
 afterEach(() => { cleanup(); vi.unstubAllGlobals() })
 
 describe('local audio workflow', () => {
+  beforeEach(() => { render(<MemoryRouter><AudioConverterPage /></MemoryRouter>) })
+
   it('processes multiple files sequentially, continues after failure, and packs only selected results', async () => {
     convert.mockRejectedValueOnce(new Error('损坏的文件'))
       .mockResolvedValueOnce(new Blob(['one']))
@@ -85,4 +87,19 @@ describe('local audio workflow', () => {
     await waitFor(() => expect(screen.getByRole('alert')).toHaveTextContent('无法转换此文件'))
     expect(screen.getByRole('button', { name: '开始转换' })).toBeEnabled()
   })
+})
+
+it('converts MKV and MP4 in one batch and skips unsupported files', async () => {
+  const convertVideo = vi.mocked(convertToMp3)
+  convertVideo.mockResolvedValue(new Blob(['mp3'], { type: 'audio/mpeg' }))
+  render(<MemoryRouter><AudioConverterPage video /></MemoryRouter>)
+  expect(screen.getByRole('heading', { name: '视频转 MP3' })).toBeInTheDocument()
+  fireEvent.change(screen.getByLabelText(/选择 MKV \/ MP4 视频/), {
+    target: { files: ['旅行.MKV', '片段.mp4', '录音.m4a'].map((name) => new File(['media'], name)) },
+  })
+  expect(screen.getByRole('alert')).toHaveTextContent('请选择 .mkv 或 .mp4')
+  fireEvent.click(screen.getByRole('button', { name: '开始转换' }))
+  expect(await screen.findByRole('link', { name: /下载 片段\.mp3/ })).toHaveAttribute('download', '片段.mp3')
+  expect(screen.getByRole('link', { name: /下载 旅行\.mp3/ })).toHaveAttribute('download', '旅行.mp3')
+  expect(convertVideo.mock.calls.map(([file]) => file.name)).toEqual(['旅行.MKV', '片段.mp4'])
 })
