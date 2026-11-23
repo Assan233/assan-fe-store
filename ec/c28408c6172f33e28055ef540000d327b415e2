@@ -1,0 +1,35 @@
+src/features/audio/archive.test.ts
+  s_67e5ba6678c4aa::t_f5d2081163a200 7,9-11,14
+src/pages/AudioConverterPage.tsx
+  s_67e5ba6678c4aa::t_611cf2013a6e6d 4,17-26,29,94,98,116-119,123-126,132,137,158,176-180
+src/lib/catalog.ts
+  s_67e5ba6678c4aa::t_611cf2013a6e6d 55-63
+  s_67e5ba6678c4aa::t_cb306661f53a73 54
+src/features/audio/archive.ts
+  s_67e5ba6678c4aa::t_36e3bb32791765 3,8-10,13
+src/app/App.tsx
+  s_67e5ba6678c4aa::t_611cf2013a6e6d 57-58
+README.md
+  s_67e5ba6678c4aa::t_611cf2013a6e6d 38-43
+src/features/audio/convert.ts
+  s_67e5ba6678c4aa::t_41c8de84df0d8f 6,8,13-35,39,49-50,52-53,59-61,64,70-107
+src/pages/AudioConverterPage.test.tsx
+  s_67e5ba6678c4aa::t_18f57f492849f8 5,13,32-33,91-104
+  s_67e5ba6678c4aa::t_f0a2a20371e9db 105
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "ecc28408c6172f33e28055ef540000d327b415e2",
+  "prompts": {},
+  "sessions": {
+    "s_67e5ba6678c4aa": {
+      "agent_id": {
+        "tool": "opencode",
+        "id": "ses_dfbbdab7affen2zpWrjTRxe52w",
+        "model": "gpt-6.2-astra"
+      },
+      "human_author": "caorongsen <caorongsen@zuoyebang.com>"
+    }
+  }
+}
