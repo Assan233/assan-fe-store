@@ -1,0 +1,28 @@
+compose.yaml
+  h_9beaa02e09d4ff 26
+src/features/nas/NasPicker.tsx
+  s_9a3e8dfc4aef55::t_33340f8b1ebac0 1-117
+src/features/nas/NasMediaForm.tsx
+  s_9a3e8dfc4aef55::t_33340f8b1ebac0 2-4,35,51-54,56,59-60
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "2a750f1478a754b87ee083580a6c07d3e00d48f4",
+  "prompts": {},
+  "humans": {
+    "h_9beaa02e09d4ff": {
+      "author": "caorongsen <caorongsen@zuoyebang.com>"
+    }
+  },
+  "sessions": {
+    "s_9a3e8dfc4aef55": {
+      "agent_id": {
+        "tool": "opencode",
+        "id": "ses_df2ddd0d2ffewqL2zw7fB9RfH1",
+        "model": "gpt-6-astra"
+      },
+      "human_author": "caorongsen <caorongsen@zuoyebang.com>"
+    }
+  }
+}
