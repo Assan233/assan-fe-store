@@ -69,7 +69,11 @@ curl http://127.0.0.1:29090/healthz
 
 ## 启用 NAS 媒体工具
 
-NAS 文件访问默认关闭。编辑 `compose.yaml`，取消 `services.api.environment` 中 `NAS_MEDIA_DIR: /nas-media` 和 `services.api.volumes` 中 NAS 挂载块的注释，再把挂载的 `source` 改成宿主机上**已存在**的 NAS 媒体目录绝对路径。`target` 保持 `/nas-media`，挂载为可读写。
+NAS 文件访问默认关闭。编辑 `compose.yaml`，取消 `services.api.environment` 中 `NAS_MEDIA_DIR: /nas-media` 的注释。然后在 `services.api.volumes` 中按需启用、复制 NAS 挂载块，每个路径添加一项：
+
+- `source`：宿主机上**已存在**的 NAS 媒体目录绝对路径。
+- `target`：不同的 `/nas-media/<目录名>`，例如 `/nas-media/videos`、`/nas-media/music`。目录名会显示在网页的 NAS 文件选择器中；有多条映射时，不要同时挂载 `/nas-media` 本身。
+- `read_only`：仅作为视频来源可设为 `true`；用于保存 MP3 或重命名音频的目录必须设为 `false`。
 
 后端容器的 UID/GID `10001:10001` 需要能够读取媒体文件、进入子目录，并在输出目录和要重命名的文件所在目录写入。不要挂载整个 NAS、系统目录或应用数据目录。生产 Linux 文件系统需支持不覆盖目标的原子重命名（如 ext4、Btrfs）；不支持时操作会失败。
 
@@ -78,7 +82,7 @@ docker compose config --quiet
 docker compose up -d --build
 ```
 
-以管理员身份登录后，在「视频转 MP3」选择 NAS 视频和输出文件夹，或在「按歌曲名重命名」选择 NAS 音频。转换期间保持页面打开；外层反向代理应将 `/api/v1/nas/convert` 的上游响应超时设为至少 920 秒。
+以管理员身份登录后，在「视频转 MP3」分别选择来源和输出目录，例如从 `videos` 读取视频并将 MP3 保存到 `music`。使用「按歌曲名重命名」时，从任意可写的映射目录选择音频。转换期间保持页面打开；外层反向代理应将 `/api/v1/nas/convert` 的上游响应超时设为至少 920 秒。
 
 ## 配置 HTTPS 反向代理
 

@@ -41,6 +41,7 @@ function Picker({ label, kind, selected, onSelect, disabled, version = 0 }: {
     </div>
     {shown && <div className="nas-directory">
       <p className="nas-path">当前目录：{directory === '.' ? 'NAS 根目录' : directory}</p>
+      {kind === 'folder' && directory === '.' && <p>配置了多个 NAS 路径时，请进入其中一个可写目录作为输出位置。</p>}
       <div className="audio-actions">
         <button type="button" disabled={directory === '.'} onClick={() => setDirectory(directory.split('/').slice(0, -1).join('/') || '.')}>返回上一级</button>
         <button type="button" onClick={() => setRetry((value) => value + 1)}>刷新</button>

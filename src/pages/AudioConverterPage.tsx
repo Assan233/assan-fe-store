@@ -119,7 +119,7 @@ export default function AudioConverterPage({ video = false, allowNas = false }: 
       <p>{video ? '在浏览器中从 MKV 或 MP4 视频提取音频并转为 MP3，文件不会上传到服务器。' : '在浏览器中转换音频，文件不会上传到服务器。'}</p>
       {video && allowNas && <details className="audio-panel nas-workspace">
         <summary>使用 NAS 文件并保存到 NAS</summary>
-        <p>从 NAS 选择 MKV 或 MP4 和输出目录。转换完成后自动保存同名 MP3，不会覆盖已有文件。</p>
+        <p>从 NAS 选择 MKV 或 MP4 和可写的输出文件夹，两者可以位于不同的 NAS 路径。转换完成后自动保存同名 MP3，不会覆盖已有文件。</p>
         <NasMediaForm mode="convert" />
       </details>}
       <ol className="audio-steps" aria-label="转换步骤"><li><span>1</span>选择 {formats} 文件</li><li><span>2</span>开始本地转换</li><li><span>3</span>下载 {output}</li></ol>

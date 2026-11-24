@@ -14,17 +14,24 @@ services:
       MUSIC_CREDENTIAL_KEY: "${MUSIC_CREDENTIAL_KEY:-}"
       VIDEO_PROVIDER: "${VIDEO_PROVIDER:-yt-dlp}"
       VIDEO_TEMP_DIR: /video-cache
-      # 启用 NAS 媒体工具时，取消本行和下方 NAS 挂载的注释。
+      # 启用 NAS 媒体工具时，取消本行和至少一个下方 NAS 挂载的注释。
       # NAS_MEDIA_DIR: /nas-media
     ports:
       - "127.0.0.1:${API_HOST_PORT:-29090}:9090"
     volumes:
       - assan-data:/data
       - video-cache:/video-cache
-      # NAS 媒体目录（读写）：将 source 改成宿主机上已有的专用目录。
+      # NAS 路径可独立挂载。source 必须是宿主机上已有的目录；
+      # 每条映射使用不同的 /nas-media/<目录名>，目录名会显示在文件选择器中。
       # - type: bind
-      #   source: /path/to/nas/media
-      #   target: /nas-media
+      #   source: /path/to/nas/videos
+      #   target: /nas-media/videos
+      #   read_only: true
+      #   bind:
+      #     create_host_path: false
+      # - type: bind
+      #   source: /path/to/nas/music
+      #   target: /nas-media/music
       #   read_only: false
       #   bind:
       #     create_host_path: false
