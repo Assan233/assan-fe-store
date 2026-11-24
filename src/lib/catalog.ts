@@ -14,11 +14,11 @@ export const tools: Tool[] = [
   {
     id: 'video-downloader',
     name: '视频下载助手',
-    description: '解析优酷视频链接，选取剧集并下载为 MP4。',
+    description: '下载公开的 MP4 或 M3U8 视频直链，统一生成 MP4。',
     category: '效率',
     icon: '↓',
     accent: 'mint',
-    keywords: ['优酷', 'youku', '视频', '下载', 'mp4', '剧集'],
+    keywords: ['优酷', 'youku', '视频', '下载', 'mp4', 'm3u8', '直链'],
     path: '/tools/video-downloader',
   },
   {

@@ -121,7 +121,7 @@ export default function AudioConverterPage({ video = false }: { video?: boolean 
         <div className={`audio-picker${busy ? ' is-disabled' : ''}`}>
         <div className="audio-picker-icon"><FolderOpen size={32} aria-hidden="true" /></div>
         <h2>{items.length ? `已选择 ${items.length} 个${media}文件` : `从选择你的${media}开始`}</h2>
-        <p>支持一次选择多个 {formats} 文件，单个文件最多 100 MiB</p>
+        <p>支持一次选择多个 {formats} 文件，单个文件最多 {video ? '10 GB' : '100 MiB'}</p>
         <label htmlFor="audio-file" className="sr-only">选择 {formats} {media}</label>
         <input id="audio-file" type="file" multiple accept={accept} disabled={busy} aria-describedby="audio-help" onChange={(event) => {
           const selected = Array.from(event.currentTarget.files ?? [])

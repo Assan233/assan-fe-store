@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom'
 import { api, ApiError, type VideoEpisode } from '../lib/api'
 import './community-tools.css'
 
-/** Resolves a Youku link and prepares a single episode for browser download. */
+/** Resolves a video link and prepares an MP4 for browser download. */
 export default function VideoDownloaderPage() {
   const [url, setUrl] = useState('')
   const [episodes, setEpisodes] = useState<VideoEpisode[]>([])
@@ -75,11 +75,11 @@ export default function VideoDownloaderPage() {
       <header className="community-header">
         <span className="section-kicker">VIDEO TOOL</span>
         <h1>视频下载助手</h1>
-        <p>粘贴优酷视频链接，选择剧集，由服务端生成 MP4。</p>
+        <p>支持公开的 MP4 和 M3U8 视频直链，不限站点。也可尝试解析优酷单视频页面。</p>
       </header>
       <form className="community-panel community-form" onSubmit={resolve}>
-        <label htmlFor="video-url">优酷视频链接</label>
-        <input id="video-url" type="url" value={url} placeholder="https://v.youku.com/…" required maxLength={4096}
+        <label htmlFor="video-url">视频链接</label>
+        <input id="video-url" type="url" value={url} placeholder="https://example.com/video.mp4" required maxLength={4096}
           disabled={phase !== null || !!fileId} onChange={(event) => {
             setUrl(event.currentTarget.value)
             setEpisodes([])
@@ -92,7 +92,7 @@ export default function VideoDownloaderPage() {
       </form>
       {episodes.length > 0 && (
         <form className="community-panel community-form" onSubmit={prepare}>
-          <label htmlFor="video-episode">选择剧集（共 {episodes.length} 个）</label>
+          <label htmlFor="video-episode">选择视频（共 {episodes.length} 个）</label>
           <select id="video-episode" value={episodeId} disabled={phase !== null || !!fileId} onChange={(event) => {
             setEpisodeId(event.currentTarget.value)
             setError('')
@@ -106,7 +106,7 @@ export default function VideoDownloaderPage() {
       )}
       {phase && <div className="community-actions"><button type="button" onClick={cancel}>取消</button></div>}
       <div className="community-result" role="status">
-        {phase === 'prepare' && <p>服务端正在下载并合并剧集，请保持页面打开，最长等待 4 分钟。</p>}
+        {phase === 'prepare' && <p>服务端正在生成 MP4，请保持页面打开，最长等待 4 分钟。</p>}
         {fileId && <p>MP4 已生成，下载链接 5 分钟内有效。{' '}
           <a href={`/api/v1/video/file/${encodeURIComponent(fileId)}`} download onClick={() => window.setTimeout(() => {
             setFileId((current) => current === fileId ? '' : current)

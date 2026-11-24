@@ -1,8 +1,9 @@
-import { FFmpeg } from '@ffmpeg/ffmpeg'
+import { FFmpeg, FFFSType } from '@ffmpeg/ffmpeg'
 import coreURL from '@ffmpeg/core?url'
 import wasmURL from '@ffmpeg/core/wasm?url'
 
 const maxBytes = 100 * 1024 * 1024
+const maxVideoBytes = 10_000_000_000
 const videoExtension = /\.(mkv|mp4)$/i
 
 function validateSize(file: File): string | undefined {
@@ -19,7 +20,8 @@ export function validateAudio(file: File): string | undefined {
 /** Validates MKV or MP4 input before loading the conversion engine. */
 export function validateVideo(file: File): string | undefined {
   if (!videoExtension.test(file.name)) return '请选择 .mkv 或 .mp4 格式的视频文件。'
-  return validateSize(file)
+  if (file.size === 0) return '文件为空，请重新选择。'
+  if (file.size > maxVideoBytes) return '文件超过 10 GB，请选择更小的文件。'
 }
 
 type Conversion = {
@@ -30,13 +32,14 @@ type Conversion = {
   args: string[]
   failure: string
   showPercent?: boolean
+  mountInput?: boolean
 }
 
 async function convertMedia(
   file: File,
   signal: AbortSignal,
   onProgress: (message: string) => void,
-  { input, output, mime, reading, args, failure, showPercent }: Conversion,
+  { input, output, mime, reading, args, failure, showPercent, mountInput }: Conversion,
 ): Promise<Blob> {
   signal.throwIfAborted()
   const engine = new FFmpeg()
@@ -47,16 +50,28 @@ async function convertMedia(
     await engine.load({ coreURL, wasmURL })
     signal.throwIfAborted()
     onProgress(reading)
-    const bytes = new Uint8Array(await file.arrayBuffer())
+    let inputPath = input
+    if (mountInput) {
+      // WORKERFS reads slices of the original File instead of copying it into WASM memory.
+      await engine.createDir('/input')
+      signal.throwIfAborted()
+      if (!await engine.mount(FFFSType.WORKERFS, { blobs: [{ name: input, data: file }] }, '/input')) {
+        throw new Error('无法读取本地视频文件。')
+      }
+      inputPath = `/input/${input}`
+    } else {
+      const bytes = new Uint8Array(await file.arrayBuffer())
+      signal.throwIfAborted()
+      await engine.writeFile(input, bytes)
+    }
     signal.throwIfAborted()
-    await engine.writeFile(input, bytes)
     if (showPercent) engine.on('progress', ({ progress }) => {
       if (Number.isFinite(progress)) {
         onProgress(`正在转换…约 ${Math.min(99, Math.max(0, Math.round(progress * 100)))}%`)
       }
     })
     onProgress('正在转换…')
-    const exitCode = await engine.exec(['-i', input, '-map', '0:a:0', ...args, output])
+    const exitCode = await engine.exec(['-i', inputPath, '-map', '0:a:0', ...args, output])
     if (exitCode !== 0) throw new Error(failure)
     const data = await engine.readFile(output)
     signal.throwIfAborted()
@@ -101,6 +116,7 @@ export async function convertToMp3(
   return convertMedia(file, signal, onProgress, {
     input: /\.mkv$/i.test(file.name) ? 'input.mkv' : 'input.mp4',
     output: 'output.mp3', mime: 'audio/mpeg', reading: '正在读取视频…',
+    mountInput: true,
     failure: '无法转换此视频，请确认文件未加密、未损坏，并且包含可读取的音轨。',
     args: ['-vn', '-c:a', 'libmp3lame', '-ac', '2', '-q:a', '2'],
   })

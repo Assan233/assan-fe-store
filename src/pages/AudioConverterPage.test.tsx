@@ -103,3 +103,18 @@ it('converts MKV and MP4 in one batch and skips unsupported files', async () => 
   expect(screen.getByRole('link', { name: /下载 旅行\.mp3/ })).toHaveAttribute('download', '旅行.mp3')
   expect(convertVideo.mock.calls.map(([file]) => file.name)).toEqual(['旅行.MKV', '片段.mp4'])
 })
+
+it('accepts a 10 GB video but skips larger files before conversion', async () => {
+  const convertVideo = vi.mocked(convertToMp3)
+  convertVideo.mockResolvedValue(new Blob(['mp3']))
+  render(<MemoryRouter><AudioConverterPage video /></MemoryRouter>)
+  const atLimit = new File([], 'limit.mkv')
+  const tooLarge = new File([], 'too-large.mp4')
+  Object.defineProperty(atLimit, 'size', { value: 10_000_000_000 })
+  Object.defineProperty(tooLarge, 'size', { value: 10_000_000_001 })
+  fireEvent.change(screen.getByLabelText(/选择 MKV \/ MP4 视频/), { target: { files: [atLimit, tooLarge] } })
+  expect(screen.getByRole('alert')).toHaveTextContent('文件超过 10 GB')
+  fireEvent.click(screen.getByRole('button', { name: '开始转换' }))
+  await screen.findByRole('link', { name: /下载 limit\.mp3/ })
+  expect(convertVideo.mock.calls.map(([file]) => file.name)).toEqual(['limit.mkv'])
+})
