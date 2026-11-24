@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom'
 import { FileAudio, FolderOpen, ShieldCheck } from 'lucide-react'
 import { convertToFlac, convertToMp3, validateAudio, validateVideo } from '../features/audio/convert'
 import { archiveAudio } from '../features/audio/archive'
+import { NasMediaForm } from '../features/nas/NasMediaForm'
 import './audio-converter.css'
 
 type AudioItem = {
@@ -15,7 +16,7 @@ type AudioItem = {
 }
 
 /** Shared local media workflow, including cancellation and download cleanup. */
-export default function AudioConverterPage({ video = false }: { video?: boolean }) {
+export default function AudioConverterPage({ video = false, allowNas = false }: { video?: boolean; allowNas?: boolean }) {
   const title = video ? '视频转 MP3' : 'M4A 转 FLAC'
   const media = video ? '视频' : '音频'
   const formats = video ? 'MKV / MP4' : 'M4A'
@@ -113,9 +114,14 @@ export default function AudioConverterPage({ video = false }: { video?: boolean 
   return (
     <section className="audio-converter" aria-labelledby="audio-title">
       <Link to="/" className="hero-link">← 返回应用库</Link>
-      <div className="section-kicker">{video ? 'LOCAL VIDEO TOOL' : 'LOCAL AUDIO TOOL'}</div>
+      <div className="section-kicker">{video ? 'VIDEO TOOL' : 'LOCAL AUDIO TOOL'}</div>
       <h1 id="audio-title">{title}</h1>
       <p>{video ? '在浏览器中从 MKV 或 MP4 视频提取音频并转为 MP3，文件不会上传到服务器。' : '在浏览器中转换音频，文件不会上传到服务器。'}</p>
+      {video && allowNas && <details className="audio-panel nas-workspace">
+        <summary>使用 NAS 文件并保存到 NAS</summary>
+        <p>从 NAS 选择 MKV 或 MP4 和输出目录。转换完成后自动保存同名 MP3，不会覆盖已有文件。</p>
+        <NasMediaForm mode="convert" />
+      </details>}
       <ol className="audio-steps" aria-label="转换步骤"><li><span>1</span>选择 {formats} 文件</li><li><span>2</span>开始本地转换</li><li><span>3</span>下载 {output}</li></ol>
       <div className="audio-panel">
         <div className={`audio-picker${busy ? ' is-disabled' : ''}`}>

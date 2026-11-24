@@ -1,5 +1,7 @@
 export type User = { id: number; username: string; role: 'admin' | 'member'; disabled: boolean }
 export type VideoEpisode = { id: string; name: string }
+export type NasEntry = { name: string; directory: boolean }
+export type NasKind = 'video' | 'audio' | 'folder'
 type Envelope<T> = { data: T }
 type ErrorEnvelope = { error?: { code?: string; message?: string } }
 
@@ -52,6 +54,12 @@ async function remove(path: string): Promise<void> {
 }
 
 export const api = {
+  nasEntries: (path: string, kind: NasKind, signal: AbortSignal) =>
+    request<NasEntry[]>(`/api/v1/nas/entries?${new URLSearchParams({ path, kind })}`, { signal }),
+  nasConvert: (source: string, directory: string, signal: AbortSignal) =>
+    mutate<{ path: string }>('/api/v1/nas/convert', { source, directory }, signal),
+  nasRename: (source: string, signal: AbortSignal) =>
+    mutate<{ path: string }>('/api/v1/nas/rename', { source }, signal),
   resolveVideo: (url: string, signal: AbortSignal) => mutate<VideoEpisode[]>('/api/v1/video/resolve', { url }, signal),
   prepareVideo: (episodeId: string, signal: AbortSignal) => mutate<{ id: string }>('/api/v1/video/prepare', { episodeId }, signal),
   musicCredentialStatus: () => request<{ configured: boolean }>('/api/v1/music/credential'),

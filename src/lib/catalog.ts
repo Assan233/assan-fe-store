@@ -8,6 +8,7 @@ export type Tool = {
   accent: 'violet' | 'mint' | 'amber'
   keywords: string[]
   path?: string
+  adminOnly?: boolean
 }
 
 export const tools: Tool[] = [
@@ -64,12 +65,23 @@ export const tools: Tool[] = [
   {
     id: 'video-to-mp3',
     name: '视频转 MP3',
-    description: '从 MKV 或 MP4 视频提取音轨，在浏览器中转换为 MP3。',
+    description: '从 MKV 或 MP4 提取音轨，支持浏览器转换和 NAS 保存。',
     category: '音频',
     icon: '▷',
     accent: 'mint',
     keywords: ['mkv', 'mp4', 'mp3', '视频转音频', '提取音频', '转换'],
     path: '/tools/video-to-mp3',
+  },
+  {
+    id: 'audio-rename',
+    name: '按歌曲名重命名',
+    description: '读取 NAS 音频的歌曲标题标签，将文件改为歌曲名。',
+    category: '音频',
+    icon: '♫',
+    accent: 'amber',
+    keywords: ['nas', '文件名', '歌曲名', '元数据', 'mp3', 'flac', 'm4a', '音频'],
+    path: '/tools/audio-rename',
+    adminOnly: true,
   },
   {
     id: 'json-beautifier',

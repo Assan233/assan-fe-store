@@ -67,6 +67,19 @@ curl http://127.0.0.1:29090/healthz
 
 此 DNS 地址适用于当前 Docker Compose 网络；若把配置用于宿主机 Nginx 或其他网络环境，必须改为该环境可访问的可信 DNS 服务器。
 
+## 启用 NAS 媒体工具
+
+NAS 文件访问默认关闭。编辑 `compose.yaml`，取消 `services.api.environment` 中 `NAS_MEDIA_DIR: /nas-media` 和 `services.api.volumes` 中 NAS 挂载块的注释，再把挂载的 `source` 改成宿主机上**已存在**的 NAS 媒体目录绝对路径。`target` 保持 `/nas-media`，挂载为可读写。
+
+后端容器的 UID/GID `10001:10001` 需要能够读取媒体文件、进入子目录，并在输出目录和要重命名的文件所在目录写入。不要挂载整个 NAS、系统目录或应用数据目录。生产 Linux 文件系统需支持不覆盖目标的原子重命名（如 ext4、Btrfs）；不支持时操作会失败。
+
+```bash
+docker compose config --quiet
+docker compose up -d --build
+```
+
+以管理员身份登录后，在「视频转 MP3」选择 NAS 视频和输出文件夹，或在「按歌曲名重命名」选择 NAS 音频。转换期间保持页面打开；外层反向代理应将 `/api/v1/nas/convert` 的上游响应超时设为至少 920 秒。
+
 ## 配置 HTTPS 反向代理
 
 将域名的 HTTPS 入口转发到 NAS 宿主机 `http://127.0.0.1:28080`。反向代理需要：

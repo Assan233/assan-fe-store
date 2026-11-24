@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom'
 import { ArrowUpRight, Search, WandSparkles } from 'lucide-react'
 import { filterTools, tools, type CategoryFilter, type Tool } from '../lib/catalog'
 import { BrandMark } from '../components/BrandMark'
+import { useAuth } from '../app/useAuth'
 
 const categories: CategoryFilter[] = ['全部', '效率', '文本', '开发', '音频', '游戏']
 
@@ -23,9 +24,11 @@ function ToolCard({ tool }: { tool: Tool }) {
 }
 
 export function HomePage() {
+  const { user } = useAuth()
   const [query, setQuery] = useState('')
   const [category, setCategory] = useState<CategoryFilter>('全部')
-  const visibleTools = useMemo(() => filterTools(tools, query, category), [query, category])
+  const availableTools = useMemo(() => tools.filter((tool) => !tool.adminOnly || user?.role === 'admin'), [user?.role])
+  const visibleTools = useMemo(() => filterTools(availableTools, query, category), [availableTools, query, category])
 
   return (
     <>
@@ -49,7 +52,7 @@ export function HomePage() {
 
       <section className="catalog-section" id="all-tools" aria-labelledby="catalog-title">
         <div className="section-heading">
-          <div><div className="section-kicker">YOUR TOOLBOX</div><h2 id="catalog-title">应用总览 <span className="count-bubble">{tools.length.toString().padStart(2, '0')}</span></h2></div>
+          <div><div className="section-kicker">YOUR TOOLBOX</div><h2 id="catalog-title">应用总览 <span className="count-bubble">{availableTools.length.toString().padStart(2, '0')}</span></h2></div>
           <label className="search-box"><Search size={17} aria-hidden="true" /><span className="sr-only">搜索应用</span><input value={query} onChange={(event) => setQuery(event.currentTarget.value)} placeholder="搜索一个工具…" /></label>
         </div>
 
