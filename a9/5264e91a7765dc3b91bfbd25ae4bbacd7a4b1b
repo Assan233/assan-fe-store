@@ -1,0 +1,32 @@
+src/pages/VideoDownloaderPage.tsx
+  s_67e5ba6678c4aa::t_c69beb2c192881 6,78,81-82,95,109
+README.md
+  s_67e5ba6678c4aa::t_0e93fc98c500ca 40,46
+src/pages/AudioConverterPage.tsx
+  s_67e5ba6678c4aa::t_5e90a83a5bb582 124
+src/lib/catalog.ts
+  s_67e5ba6678c4aa::t_c69beb2c192881 17,21
+src/pages/VideoDownloaderPage.test.tsx
+  s_67e5ba6678c4aa::t_0e93fc98c500ca 27-28
+  s_67e5ba6678c4aa::t_c69beb2c192881 19
+src/pages/AudioConverterPage.test.tsx
+  s_67e5ba6678c4aa::t_c69beb2c192881 106-120
+src/features/audio/convert.ts
+  s_67e5ba6678c4aa::t_5e90a83a5bb582 1,6,23-24,35,42,53-66,74,119
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "a95264e91a7765dc3b91bfbd25ae4bbacd7a4b1b",
+  "prompts": {},
+  "sessions": {
+    "s_67e5ba6678c4aa": {
+      "agent_id": {
+        "tool": "opencode",
+        "id": "ses_dfbbdab7affen2zpWrjTRxe52w",
+        "model": "gpt-6.2-astra"
+      },
+      "human_author": "caorongsen <caorongsen@zuoyebang.com>"
+    }
+  }
+}
