@@ -23,7 +23,7 @@ services:
       - video-cache:/video-cache
       # 每条映射使用不同的 /nas-media/<目录名>，目录名会显示在文件选择器中。
       - /vol1/1000/Download:/nas-media/Download:rw
-      - /vol1/1000/Music:/nas-media/music:rw
+      - /vol1/1000/Music:/nas-media/Music:rw
     stop_grace_period: 15s
     read_only: true
     tmpfs:
