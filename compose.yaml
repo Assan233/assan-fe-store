@@ -21,10 +21,9 @@ services:
     volumes:
       - assan-data:/data
       - video-cache:/video-cache
-      # NAS 路径可独立挂载。source 必须是宿主机上已有的目录；
       # 每条映射使用不同的 /nas-media/<目录名>，目录名会显示在文件选择器中。
-      # - /path/to/nas/videos:/nas-media/videos:ro
-      # - /path/to/nas/music:/nas-media/music:rw
+      - /vol1/1000/Download:/nas-media/Download:rw
+      - /vol1/1000/Music:/nas-media/music:rw
     stop_grace_period: 15s
     read_only: true
     tmpfs:
