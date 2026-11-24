@@ -69,11 +69,14 @@ curl http://127.0.0.1:29090/healthz
 
 ## 启用 NAS 媒体工具
 
-NAS 文件访问默认关闭。编辑 `compose.yaml`，取消 `services.api.environment` 中 `NAS_MEDIA_DIR: /nas-media` 的注释。然后在 `services.api.volumes` 中按需启用、复制 NAS 挂载块，每个路径添加一项：
+编辑 `compose.yaml`，确认 `services.api.environment` 中启用了 `NAS_MEDIA_DIR: /nas-media`，然后在 `services.api.volumes` 中启用 NAS 挂载，每个路径添加一行：
 
-- `source`：宿主机上**已存在**的 NAS 媒体目录绝对路径。
-- `target`：不同的 `/nas-media/<目录名>`，例如 `/nas-media/videos`、`/nas-media/music`。目录名会显示在网页的 NAS 文件选择器中；有多条映射时，不要同时挂载 `/nas-media` 本身。
-- `read_only`：仅作为视频来源可设为 `true`；用于保存 MP3 或重命名音频的目录必须设为 `false`。
+```yaml
+- /volume1/videos:/nas-media/videos:ro
+- /volume2/music:/nas-media/music:rw
+```
+
+把左侧换成宿主机上**已存在**的 NAS 媒体目录绝对路径。右侧为不同的 `/nas-media/<目录名>`，目录名会显示在文件选择器中；有多条映射时，不要同时挂载 `/nas-media` 本身。`:ro` 表示只读；保存 MP3 或重命名音频的目录要用 `:rw`。短写法在源路径不存在时可能自动创建空目录，启动前请核对路径。
 
 后端容器的 UID/GID `10001:10001` 需要能够读取媒体文件、进入子目录，并在输出目录和要重命名的文件所在目录写入。不要挂载整个 NAS、系统目录或应用数据目录。生产 Linux 文件系统需支持不覆盖目标的原子重命名（如 ext4、Btrfs）；不支持时操作会失败。
 
