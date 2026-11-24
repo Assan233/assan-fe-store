@@ -1,0 +1,27 @@
+src/features/nas/NasMediaForm.tsx
+  s_9a3e8dfc4aef55::t_988b8c464bbeab 44
+README.md
+  s_9a3e8dfc4aef55::t_988b8c464bbeab 44
+docs/docker-deployment.md
+  s_9a3e8dfc4aef55::t_988b8c464bbeab 72-76,85
+src/pages/AudioConverterPage.tsx
+  s_9a3e8dfc4aef55::t_988b8c464bbeab 122
+compose.yaml
+  s_9a3e8dfc4aef55::t_988b8c464bbeab 17,24-25,27-34
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "5cc291579bc825839c2f1fc5583fe56d974745ab",
+  "prompts": {},
+  "sessions": {
+    "s_9a3e8dfc4aef55": {
+      "agent_id": {
+        "tool": "opencode",
+        "id": "ses_df2ddd0d2ffewqL2zw7fB9RfH1",
+        "model": "gpt-6-astra"
+      },
+      "human_author": "caorongsen <caorongsen@zuoyebang.com>"
+    }
+  }
+}
