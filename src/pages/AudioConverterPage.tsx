@@ -120,7 +120,7 @@ export default function AudioConverterPage({ video = false, allowNas = false }: 
       {video && allowNas && <details className="nas-workspace">
         <summary className="nas-workspace-heading">
           <span className="nas-icon-chip"><HardDrive size={22} aria-hidden="true" /></span>
-          <span><strong>使用 NAS 文件并保存到 NAS</strong><small>选择 MKV 或 MP4 和可写的输出文件夹，自动保存同名 MP3。</small></span>
+          <span><strong>使用 NAS 文件并保存到 NAS</strong><small>多选 MKV、MP4 或文件夹，批量转换到指定的 NAS 输出目录。</small></span>
           <ChevronDown size={20} className="nas-workspace-chevron" aria-hidden="true" />
         </summary>
         <NasMediaForm mode="convert" />

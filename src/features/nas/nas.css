@@ -49,6 +49,9 @@ summary.nas-workspace-heading::-webkit-details-marker { display: none; }
 .nas-feedback svg { flex: none; }
 .nas-feedback[data-success="true"] { color: var(--nas-success); }
 .nas-feedback-error { color: var(--nas-error); }
+.nas-batch-failures { display: block; }
+.nas-batch-failures p { margin: 0; }
+.nas-batch-failures ul { max-block-size: 12rem; overflow: auto; margin: 6px 0 0; padding-inline-start: 1.25rem; }
 
 .nas-dialog { position: fixed; inset: 0; width: min(600px, calc(100% - 24px)); max-height: calc(100dvh - 24px); margin: auto; padding: 0; overflow: auto; border: 1px solid var(--line); border-radius: 21px; background: var(--paper); color: var(--ink); box-shadow: 0 24px 90px #15102f4d; }
 .nas-dialog::backdrop { background: #15102f88; }
