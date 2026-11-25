@@ -93,3 +93,11 @@ summary.nas-workspace-heading::-webkit-details-marker { display: none; }
   .nas-tree-pane { margin-inline: 10px; }
   .nas-tree-branch { margin-inline-start: 5px; padding-inline-start: 7px; }
 }
+.nas-history { margin-top: 1.25rem; }
+.nas-history > header, .nas-history-meta { display: flex; align-items: center; justify-content: space-between; gap: .5rem; flex-wrap: wrap; }
+.nas-history-list { display: grid; gap: .6rem; padding: 0; list-style: none; max-height: 28rem; overflow: auto; }
+.nas-history-list li { display: grid; gap: .35rem; min-width: 0; overflow-wrap: anywhere; padding: .75rem; border: 1px solid var(--line); border-radius: .75rem; }
+.nas-history-list time, .nas-history-list li > span { font-size: .85rem; }
+.nas-job-status { border: 1px solid currentColor; border-radius: 999px; padding: .15rem .55rem; font-size: .78rem; font-weight: 600; }
+.nas-job-status[data-status="completed"] { color: var(--nas-success); }
+.nas-job-status[data-status="failed"], .nas-job-error { color: var(--nas-error); }

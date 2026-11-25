@@ -1,9 +1,12 @@
 import { act, cleanup, fireEvent, render, screen, within } from '@testing-library/react'
 import { afterEach, beforeEach, expect, it, vi } from 'vitest'
-import { api } from '../../lib/api'
+import { api, type NasConversion } from '../../lib/api'
 import { NasMediaForm } from './NasMediaForm'
 
-vi.mock('../../lib/api', () => ({ api: { nasEntries: vi.fn(), nasConvert: vi.fn(), nasRename: vi.fn() } }))
+vi.mock('../../lib/api', async (importOriginal) => ({
+  ...await importOriginal<typeof import('../../lib/api')>(),
+  api: { nasEntries: vi.fn(), nasConvert: vi.fn(), nasRename: vi.fn(), nasConversions: vi.fn() },
+}))
 
 beforeEach(() => {
   // jsdom exposes <dialog> but does not implement its modal actions.
@@ -22,7 +25,7 @@ afterEach(() => {
   vi.resetAllMocks()
 })
 
-it('mixes file and folder selections, including nested videos once, and continues after a conversion fails', async () => {
+it('queues unique nested videos, continues after a submission error and renders server-side results', async () => {
   vi.mocked(api.nasEntries).mockImplementation(async (path, kind) => {
     if (path === '.') return kind === 'folder' ? [{ name: 'Music', directory: true }]
       : [{ name: 'a.mp4', directory: false }, { name: 'Videos', directory: true }]
@@ -31,9 +34,14 @@ it('mixes file and folder selections, including nested videos once, and continue
     return []
   })
   let finishFirst = () => {}
+  const first: NasConversion = { id: 1, source: 'a.mp4', directory: 'Music', status: 'queued', createdAt: '2026-11-25T03:00:00Z' }
+  const last: NasConversion = { ...first, id: 2, source: 'Videos/Nested/c.mp4', status: 'running' }
+  vi.mocked(api.nasConversions).mockResolvedValueOnce([]).mockResolvedValueOnce([last, first]).mockResolvedValue([
+    { ...last, status: 'failed', error: '目标文件已存在' }, { ...first, status: 'completed', path: 'Music/a.mp3' },
+  ])
   vi.mocked(api.nasConvert).mockImplementationOnce(() => new Promise((resolve) => {
-    finishFirst = () => resolve({ path: 'Music/a.mp3' })
-  })).mockRejectedValueOnce(new Error('目标文件已存在')).mockResolvedValueOnce({ path: 'Music/c.mp3' })
+    finishFirst = () => resolve(first)
+  })).mockRejectedValueOnce(new Error('提交失败')).mockResolvedValueOnce({ ...last, status: 'queued' })
 
   render(<NasMediaForm mode="convert" />)
   fireEvent.click(screen.getByRole('button', { name: /浏览 NAS NAS 视频/ }))
@@ -49,14 +57,19 @@ it('mixes file and folder selections, including nested videos once, and continue
   const output = within(screen.getByRole('dialog'))
   fireEvent.click(await output.findByRole('button', { name: 'Music' }))
   fireEvent.click(output.getByRole('button', { name: '确认选择' }))
-  fireEvent.click(screen.getByRole('button', { name: '转换并保存到 NAS' }))
-  await screen.findByText(/正在转换 1\/3：a.mp4/)
+  fireEvent.click(screen.getByRole('button', { name: '提交转换任务' }))
+  await screen.findByText(/正在提交 1\/3：a.mp4/)
   expect(vi.mocked(api.nasConvert).mock.calls.map(([path, directory]) => [path, directory])).toEqual([['a.mp4', 'Music']])
   await act(async () => { finishFirst() })
 
-  expect(await screen.findByText('已保存 2/3 个 MP3 到 NAS：Music')).toBeInTheDocument()
+  expect(await screen.findByText(/已提交 2\/3 个转换任务/)).toBeInTheDocument()
   expect(screen.getByText('Videos/b.mkv')).toBeInTheDocument()
   expect(vi.mocked(api.nasConvert).mock.calls.map(([path, directory]) => [path, directory])).toEqual([
     ['a.mp4', 'Music'], ['Videos/b.mkv', 'Music'], ['Videos/Nested/c.mp4', 'Music'],
   ])
+  expect(await screen.findByText('排队中')).toBeInTheDocument()
+  expect(screen.getByText('转换中')).toBeInTheDocument()
+  fireEvent.click(screen.getByRole('button', { name: '刷新记录' }))
+  expect(await screen.findByText('已保存：Music/a.mp3')).toBeInTheDocument()
+  expect(screen.getByText('目标文件已存在')).toBeInTheDocument()
 })

@@ -2,6 +2,11 @@ export type User = { id: number; username: string; role: 'admin' | 'member'; dis
 export type VideoEpisode = { id: string; name: string }
 export type NasEntry = { name: string; directory: boolean }
 export type NasKind = 'video' | 'audio' | 'folder'
+/** A persisted server-side NAS conversion. */
+export type NasConversion = {
+  id: number; source: string; directory: string; status: 'queued' | 'running' | 'completed' | 'failed'
+  path?: string; error?: string; createdAt: string
+}
 type Envelope<T> = { data: T }
 type ErrorEnvelope = { error?: { code?: string; message?: string } }
 
@@ -57,7 +62,8 @@ export const api = {
   nasEntries: (path: string, kind: NasKind, signal: AbortSignal) =>
     request<NasEntry[]>(`/api/v1/nas/entries?${new URLSearchParams({ path, kind })}`, { signal }),
   nasConvert: (source: string, directory: string, signal: AbortSignal) =>
-    mutate<{ path: string }>('/api/v1/nas/convert', { source, directory }, signal),
+    mutate<NasConversion>('/api/v1/nas/convert', { source, directory }, signal),
+  nasConversions: (signal: AbortSignal) => request<NasConversion[]>('/api/v1/nas/conversions', { signal }),
   nasRename: (source: string, signal: AbortSignal) =>
     mutate<{ path: string }>('/api/v1/nas/rename', { source }, signal),
   resolveVideo: (url: string, signal: AbortSignal) => mutate<VideoEpisode[]>('/api/v1/video/resolve', { url }, signal),
