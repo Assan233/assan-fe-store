@@ -1,0 +1,23 @@
+src/pages/AudioRenamePage.tsx
+  s_9a3e8dfc4aef55::t_0bd902f1d42bb9 2,4,12-16
+src/pages/AudioConverterPage.tsx
+  s_9a3e8dfc4aef55::t_0bd902f1d42bb9 3,120-125
+src/features/nas/nas.css
+  s_9a3e8dfc4aef55::t_317b01c66e8563 1-92
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "2e94f0251179da94977b49356204bda45105d33e",
+  "prompts": {},
+  "sessions": {
+    "s_9a3e8dfc4aef55": {
+      "agent_id": {
+        "tool": "opencode",
+        "id": "ses_df2ddd0d2ffewqL2zw7fB9RfH1",
+        "model": "gpt-6-astra"
+      },
+      "human_author": "caorongsen <caorongsen@zuoyebang.com>"
+    }
+  }
+}
