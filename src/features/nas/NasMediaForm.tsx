@@ -11,7 +11,7 @@ function errorMessage(cause: unknown) {
 }
 
 /** Selects NAS media and runs the chosen operation on the server. */
-export function NasMediaForm({ mode }: { mode: 'convert' | 'rename' }) {
+export function NasMediaForm({ mode }: { mode: 'convert' | 'title' }) {
   const [sources, setSources] = useState<NasSelection[]>([])
   const [directory, setDirectory] = useState('')
   const [busy, setBusy] = useState(false)
@@ -19,7 +19,7 @@ export function NasMediaForm({ mode }: { mode: 'convert' | 'rename' }) {
   const [error, setError] = useState('')
   const [progress, setProgress] = useState('')
   const [failures, setFailures] = useState<NasBatchFailure[]>([])
-  const [renamed, setRenamed] = useState<{ source: string; path: string }[]>([])
+  const [updated, setUpdated] = useState<{ path: string; title: string }[]>([])
   const [historyVersion, setHistoryVersion] = useState(0)
   const request = useRef<AbortController | null>(null)
   const convert = mode === 'convert'
@@ -33,24 +33,24 @@ export function NasMediaForm({ mode }: { mode: 'convert' | 'rename' }) {
     setStatus('')
     setError('')
     setFailures([])
-    setRenamed([])
+    setUpdated([])
     setProgress(`正在查找所选来源中的${convert ? '视频' : '音频'}…`)
     try {
       const { files, failures: scanFailures } = await collectNasFiles(sources, convert ? 'video' : 'audio', controller.signal)
       const batchFailures = [...scanFailures]
-      const changes: typeof renamed = []
+      const changes: typeof updated = []
       let succeeded = 0
       let unchanged = 0
       for (const [index, file] of files.entries()) {
         controller.signal.throwIfAborted()
-        setProgress(`${convert ? '正在提交' : '正在重命名'} ${index + 1}/${files.length}：${file}`)
+        setProgress(`${convert ? '正在提交' : '正在写入标题'} ${index + 1}/${files.length}：${file}`)
         try {
           if (convert) {
             await api.nasConvert(file, directory, controller.signal)
           } else {
-            const { path } = await api.nasRename(file, controller.signal)
-            if (path === file) unchanged++
-            else changes.push({ source: file, path })
+            const result = await api.nasSetTitle(file, controller.signal)
+            if (result.changed) changes.push(result)
+            else unchanged++
           }
           succeeded++
         } catch (cause) {
@@ -70,12 +70,10 @@ export function NasMediaForm({ mode }: { mode: 'convert' | 'rename' }) {
           setHistoryVersion((version) => version + 1)
         }
       } else if (!succeeded) {
-        setError('没有成功重命名的文件。')
+        setError('没有成功写入歌曲标题的文件。')
       } else {
-        setStatus(`已重命名 ${changes.length} 个文件，${unchanged} 个文件名已与歌曲标题一致。`)
-        setRenamed(changes)
-        const oldPaths = new Set(changes.map(({ source }) => source))
-        setSources((current) => current.filter((entry) => entry.directory || !oldPaths.has(entry.path)))
+        setStatus(`已更新 ${changes.length} 个歌曲标题，${unchanged} 个标题已与文件名一致。`)
+        setUpdated(changes)
       }
     } catch (cause) {
       if (!controller.signal.aborted) setError(errorMessage(cause))
@@ -90,7 +88,7 @@ export function NasMediaForm({ mode }: { mode: 'convert' | 'rename' }) {
     setStatus('')
     setError('')
     setFailures([])
-    setRenamed([])
+    setUpdated([])
   }
 
   return <><form className="nas-media-form" onSubmit={(event) => { event.preventDefault(); void submit() }}>
@@ -98,18 +96,18 @@ export function NasMediaForm({ mode }: { mode: 'convert' | 'rename' }) {
     {convert && <NasPicker label="NAS 输出文件夹" kind="folder" selected={directory} onSelect={(value) => choose(setDirectory, value)} disabled={busy} />}
     <div className="nas-form-actions">
       <button type="submit" className="nas-button nas-button-primary" disabled={busy || !sources.length || (convert && !directory)}>
-        {convert ? '提交转换任务' : '按歌曲名重命名'}
+        {convert ? '提交转换任务' : '写入歌曲标题'}
         {busy ? <LoaderCircle size={16} className="nas-spinner" aria-hidden="true" /> : <ArrowRight size={16} aria-hidden="true" />}
       </button>
     </div>
     <div role="status" className="nas-feedback" data-success={!!status}>{busy ? <span>{progress}</span> : status && <><CheckCircle2 size={17} aria-hidden="true" /><span>{status}</span></>}</div>
     {error && <p role="alert" className="nas-feedback nas-feedback-error">{error}</p>}
-    {renamed.length > 0 && <details className="nas-feedback nas-batch-results">
-      <summary>查看重命名结果</summary>
-      <ul>{renamed.map(({ source, path }) => <li key={source}>{source} → <strong>{path}</strong></li>)}</ul>
+    {updated.length > 0 && <details className="nas-feedback nas-batch-results">
+      <summary>查看标题写入结果</summary>
+      <ul>{updated.map(({ path, title }) => <li key={path}>{path}：<strong>{title}</strong></li>)}</ul>
     </details>}
-    {failures.length > 0 && <section className="nas-feedback nas-feedback-error nas-batch-results" aria-label={convert ? '批量转换问题' : '批量重命名问题'}>
-      <p role="alert">有 {failures.length} 项未能读取或{convert ? '提交' : '重命名'}：</p>
+    {failures.length > 0 && <section className="nas-feedback nas-feedback-error nas-batch-results" aria-label={convert ? '批量转换问题' : '标题写入问题'}>
+      <p role="alert">有 {failures.length} 项未能读取或{convert ? '提交' : '写入标题'}：</p>
       <ul>{failures.map(({ path, message }) => <li key={path}><strong>{path === '.' ? 'NAS 根目录' : path}</strong>：{message}</li>)}</ul>
     </section>}
   </form>{convert && <NasConversionHistory version={historyVersion} />}</>

@@ -74,8 +74,8 @@ export const tools: Tool[] = [
   },
   {
     id: 'audio-rename',
-    name: '按歌曲名重命名',
-    description: '读取 NAS 音频的歌曲标题标签，将文件改为歌曲名。',
+    name: '按文件名设置歌曲标题',
+    description: '将 NAS 音频的文件名写入内嵌歌曲标题。',
     category: '音频',
     icon: '♫',
     accent: 'amber',

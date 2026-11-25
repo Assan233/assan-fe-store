@@ -5,7 +5,7 @@ import { NasMediaForm } from './NasMediaForm'
 
 vi.mock('../../lib/api', async (importOriginal) => ({
   ...await importOriginal<typeof import('../../lib/api')>(),
-  api: { nasEntries: vi.fn(), nasConvert: vi.fn(), nasRename: vi.fn(), nasConversions: vi.fn() },
+  api: { nasEntries: vi.fn(), nasConvert: vi.fn(), nasSetTitle: vi.fn(), nasConversions: vi.fn() },
 }))
 
 beforeEach(() => {
@@ -74,7 +74,7 @@ it('queues unique nested videos, continues after a submission error and renders 
   expect(screen.getByText('目标文件已存在')).toBeInTheDocument()
 })
 
-it('renames selected audio and nested folders once, showing changes and failures', async () => {
+it('writes titles for selected audio and nested folders once, showing changes and failures', async () => {
   vi.mocked(api.nasEntries).mockImplementation(async (path, kind) => {
     if (kind !== 'audio') return []
     switch (path) {
@@ -84,12 +84,12 @@ it('renames selected audio and nested folders once, showing changes and failures
       default: throw new Error('目录不可读')
     }
   })
-  vi.mocked(api.nasRename).mockImplementation(async (source) => {
-    if (source === 'Music/untitled.flac') throw new Error('没有歌曲标题')
-    return { path: source === 'track.mp3' ? '新歌.mp3' : source }
+  vi.mocked(api.nasSetTitle).mockImplementation(async (source) => {
+    if (source === 'Music/untitled.flac') throw new Error('无法写入标签')
+    return { path: source, title: source === 'track.mp3' ? 'track' : 'Song', changed: source === 'track.mp3' }
   })
 
-  render(<NasMediaForm mode="rename" />)
+  render(<NasMediaForm mode="title" />)
   fireEvent.click(screen.getByRole('button', { name: /浏览 NAS NAS 音频/ }))
   const picker = within(screen.getByRole('dialog'))
   fireEvent.click(await picker.findByRole('button', { name: 'track.mp3' }))
@@ -97,14 +97,14 @@ it('renames selected audio and nested folders once, showing changes and failures
   fireEvent.click(picker.getByRole('button', { name: '展开 Music' }))
   fireEvent.click(await picker.findByRole('button', { name: 'untitled.flac' }))
   fireEvent.click(picker.getByRole('button', { name: '确认选择' }))
-  fireEvent.click(screen.getByRole('button', { name: '按歌曲名重命名' }))
+  fireEvent.click(screen.getByRole('button', { name: '写入歌曲标题' }))
 
-  expect(await screen.findByText('已重命名 1 个文件，1 个文件名已与歌曲标题一致。')).toBeInTheDocument()
-  fireEvent.click(screen.getByText('查看重命名结果'))
-  expect(screen.getByText('新歌.mp3')).toBeVisible()
-  expect(screen.getByText(/没有歌曲标题/)).toBeInTheDocument()
+  expect(await screen.findByText('已更新 1 个歌曲标题，1 个标题已与文件名一致。')).toBeInTheDocument()
+  fireEvent.click(screen.getByText('查看标题写入结果'))
+  expect(screen.getByText('track')).toBeVisible()
+  expect(screen.getByText(/无法写入标签/)).toBeInTheDocument()
   expect(screen.getByText(/目录不可读/)).toBeInTheDocument()
-  expect(vi.mocked(api.nasRename).mock.calls.map(([source]) => source)).toEqual([
+  expect(vi.mocked(api.nasSetTitle).mock.calls.map(([source]) => source)).toEqual([
     'track.mp3', 'Music/untitled.flac', 'Music/Album/Song.m4a',
   ])
 })

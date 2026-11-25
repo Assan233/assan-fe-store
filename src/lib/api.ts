@@ -64,8 +64,8 @@ export const api = {
   nasConvert: (source: string, directory: string, signal: AbortSignal) =>
     mutate<NasConversion>('/api/v1/nas/convert', { source, directory }, signal),
   nasConversions: (signal: AbortSignal) => request<NasConversion[]>('/api/v1/nas/conversions', { signal }),
-  nasRename: (source: string, signal: AbortSignal) =>
-    mutate<{ path: string }>('/api/v1/nas/rename', { source }, signal),
+  nasSetTitle: (source: string, signal: AbortSignal) =>
+    mutate<{ path: string; title: string; changed: boolean }>('/api/v1/nas/title', { source }, signal),
   resolveVideo: (url: string, signal: AbortSignal) => mutate<VideoEpisode[]>('/api/v1/video/resolve', { url }, signal),
   prepareVideo: (episodeId: string, signal: AbortSignal) => mutate<{ id: string }>('/api/v1/video/prepare', { episodeId }, signal),
   musicCredentialStatus: () => request<{ configured: boolean }>('/api/v1/music/credential'),

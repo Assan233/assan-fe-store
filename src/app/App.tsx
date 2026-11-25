@@ -9,7 +9,7 @@ import { UsersPage } from '../pages/UsersPage'
 import { BrandMark } from '../components/BrandMark'
 
 const AudioConverterPage = lazy(() => import('../pages/AudioConverterPage'))
-const AudioRenamePage = lazy(() => import('../pages/AudioRenamePage'))
+const AudioTitlePage = lazy(() => import('../pages/AudioTitlePage'))
 const VideoDownloaderPage = lazy(() => import('../pages/VideoDownloaderPage'))
 const MusicPage = lazy(() => import('../pages/MusicPage'))
 const AtmospherePage = lazy(() => import('../pages/AtmospherePage'))
@@ -58,7 +58,7 @@ export function App() {
         <Route path="/users" element={user?.role === 'admin' ? <UsersPage /> : <Navigate to="/" replace />} />
         <Route path="/tools/m4a-to-flac" element={<Suspense fallback={<LoadingScreen />}><AudioConverterPage key="flac" /></Suspense>} />
         <Route path="/tools/video-to-mp3" element={<Suspense fallback={<LoadingScreen />}><AudioConverterPage key="mp3" video allowNas={user?.role === 'admin'} /></Suspense>} />
-        <Route path="/tools/audio-rename" element={user?.role === 'admin' ? <Suspense fallback={<LoadingScreen />}><AudioRenamePage /></Suspense> : <Navigate to="/" replace />} />
+        <Route path="/tools/audio-rename" element={user?.role === 'admin' ? <Suspense fallback={<LoadingScreen />}><AudioTitlePage /></Suspense> : <Navigate to="/" replace />} />
         <Route path="/tools/video-downloader" element={<Suspense fallback={<LoadingScreen />}><VideoDownloaderPage /></Suspense>} />
         <Route path="/tools/atmosphere" element={<Suspense fallback={<LoadingScreen />}><AtmospherePage /></Suspense>} />
         <Route path="/tools/tower-defense" element={<Suspense fallback={<LoadingScreen />}><TowerDefensePage /></Suspense>} />
