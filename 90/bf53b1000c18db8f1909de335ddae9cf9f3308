@@ -1,0 +1,31 @@
+README.md
+  s_9a3e8dfc4aef55::t_9c85f0ea200c92 48
+src/features/nas/NasMediaForm.test.tsx
+  s_9a3e8dfc4aef55::t_9c85f0ea200c92 76-110
+src/features/nas/NasMediaForm.tsx
+  s_9a3e8dfc4aef55::t_9fae3f0a4dd9e5 6,15,22,29,36-37,39-48,50-53,55-58,60-67,69,72-73,75-78,93,97,100,107-112
+src/features/nas/NasPicker.tsx
+  s_9a3e8dfc4aef55::t_9fae3f0a4dd9e5 4,102,123
+src/features/nas/mediaBatch.ts
+  s_9a3e8dfc4aef55::t_9fae3f0a4dd9e5 1,11-12,27
+src/features/nas/nas.css
+  s_9a3e8dfc4aef55::t_9fae3f0a4dd9e5 52-55
+src/pages/AudioRenamePage.tsx
+  s_9a3e8dfc4aef55::t_9fae3f0a4dd9e5 11
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "90bf53b1000c18db8f1909de335ddae9cf9f3308",
+  "prompts": {},
+  "sessions": {
+    "s_9a3e8dfc4aef55": {
+      "agent_id": {
+        "tool": "opencode",
+        "id": "ses_df2ddd0d2ffewqL2zw7fB9RfH1",
+        "model": "gpt-6-astra"
+      },
+      "human_author": "caorongsen <caorongsen@zuoyebang.com>"
+    }
+  }
+}
