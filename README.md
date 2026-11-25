@@ -45,7 +45,7 @@
 
 ## 按歌曲名重命名
 
-管理员可在「音频」分类打开工具，从 NAS 选择文件。工具读取歌曲标题标签，在原目录重命名并保留扩展名，音频内容和元数据保持原样。支持 MP3、FLAC、M4A、AAC、WAV、Ogg、Opus、WMA、AIFF 和 APE；没有可用标题或存在同名文件时保留原文件。启用这两项 NAS 功能前，请在 `compose.yaml` 的 `services.api.volumes` 中[挂载媒体目录](docs/docker-deployment.md#启用-nas-媒体工具)，例如 `/volume2/music:/nas-media/music:rw`。
+管理员可在「音频」分类打开工具，在 NAS 目录树中同时选择多个文件或文件夹。选中文件夹会递归查找音频，同一个文件一批只处理一次。工具读取歌曲标题标签，在原目录重命名并保留扩展名，音频内容和元数据保持原样。支持 MP3、FLAC、M4A、AAC、WAV、Ogg、Opus、WMA、AIFF 和 APE；没有可用标题或存在同名文件时保留原文件，并在结果中显示原因。启用这两项 NAS 功能前，请在 `compose.yaml` 的 `services.api.volumes` 中[挂载媒体目录](docs/docker-deployment.md#启用-nas-媒体工具)，例如 `/volume2/music:/nas-media/music:rw`。
 
 ## 视频下载助手
 

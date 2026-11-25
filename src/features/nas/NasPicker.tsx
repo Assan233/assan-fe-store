@@ -1,7 +1,7 @@
 import { useEffect, useId, useRef, useState } from 'react'
 import { Check, ChevronDown, ChevronRight, FileAudio, Film, Folder, FolderOpen, HardDrive, LoaderCircle, Square, SquareCheck, X } from 'lucide-react'
 import { api, type NasEntry, type NasKind } from '../../lib/api'
-import { nasChildPath, type NasSelection } from './videoBatch'
+import { nasChildPath, type NasSelection } from './mediaBatch'
 
 type TreeSelection = {
   kind: NasKind
@@ -99,7 +99,7 @@ function PickerDialog({ id, label, kind, multiple, initial, onConfirm, onClose }
     <div className="nas-dialog-layout">
       <header className="nas-dialog-header">
         <span className="nas-icon-chip"><HardDrive size={22} aria-hidden="true" /></span>
-        <div><h2 id={`${id}-title`}>选择{label}</h2><p id={`${id}-help`}>{multiple ? '点箭头展开，点名称可多选文件和文件夹。选择文件夹会包含其子文件夹中的视频。' : kind === 'folder' ? '点箭头展开，点文件夹名称选中。多个挂载目录时，请选择其中一个可写目录。' : '展开文件夹，选择文件后点击确认。'}</p></div>
+        <div><h2 id={`${id}-title`}>选择{label}</h2><p id={`${id}-help`}>{multiple ? `点箭头展开，点名称可多选文件和文件夹。选择文件夹会包含所有子文件夹中的${kind === 'audio' ? '音频' : '视频'}。` : kind === 'folder' ? '点箭头展开，点文件夹名称选中。多个挂载目录时，请选择其中一个可写目录。' : '展开文件夹，选择文件后点击确认。'}</p></div>
         <button type="button" className="nas-close" aria-label="关闭 NAS 选择器" onClick={() => dialog.current?.close()}><X size={20} aria-hidden="true" /></button>
       </header>
       <div className="nas-tree-pane">
@@ -120,7 +120,7 @@ function PickerDialog({ id, label, kind, multiple, initial, onConfirm, onClose }
 }
 
 type PickerProps = { label: string; disabled: boolean } & (
-  { kind: 'video'; multiple: true; selected: NasSelection[]; onSelect: (entries: NasSelection[]) => void }
+  { kind: 'video' | 'audio'; multiple: true; selected: NasSelection[]; onSelect: (entries: NasSelection[]) => void }
   | { kind: NasKind; multiple?: false; selected: string; onSelect: (path: string) => void }
 )
 

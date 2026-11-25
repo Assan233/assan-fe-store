@@ -1,4 +1,4 @@
-import { api } from '../../lib/api'
+import { api, type NasKind } from '../../lib/api'
 
 export type NasSelection = { path: string; directory: boolean }
 export type NasBatchFailure = { path: string; message: string }
@@ -8,8 +8,8 @@ export function nasChildPath(parent: string, name: string) {
   return parent === '.' ? name : `${parent}/${name}`
 }
 
-/** Expands selected folders recursively, collecting each supported video only once. */
-export async function collectNasVideos(selections: NasSelection[], signal: AbortSignal) {
+/** Expands selected folders recursively, collecting each supported media file only once. */
+export async function collectNasFiles(selections: NasSelection[], kind: Exclude<NasKind, 'folder'>, signal: AbortSignal) {
   const pending = [...selections].reverse()
   const visited = new Set<string>()
   const files: string[] = []
@@ -24,7 +24,7 @@ export async function collectNasVideos(selections: NasSelection[], signal: Abort
       continue
     }
     try {
-      const entries = await api.nasEntries(path, 'video', signal)
+      const entries = await api.nasEntries(path, kind, signal)
       for (let index = entries.length - 1; index >= 0; index--) {
         const entry = entries[index]
         pending.push({ path: nasChildPath(path, entry.name), directory: entry.directory })

@@ -73,3 +73,38 @@ it('queues unique nested videos, continues after a submission error and renders 
   expect(await screen.findByText('已保存：Music/a.mp3')).toBeInTheDocument()
   expect(screen.getByText('目标文件已存在')).toBeInTheDocument()
 })
+
+it('renames selected audio and nested folders once, showing changes and failures', async () => {
+  vi.mocked(api.nasEntries).mockImplementation(async (path, kind) => {
+    if (kind !== 'audio') return []
+    switch (path) {
+      case '.': return [{ name: 'track.mp3', directory: false }, { name: 'Music', directory: true }]
+      case 'Music': return [{ name: 'untitled.flac', directory: false }, { name: 'Album', directory: true }, { name: 'Restricted', directory: true }]
+      case 'Music/Album': return [{ name: 'Song.m4a', directory: false }]
+      default: throw new Error('目录不可读')
+    }
+  })
+  vi.mocked(api.nasRename).mockImplementation(async (source) => {
+    if (source === 'Music/untitled.flac') throw new Error('没有歌曲标题')
+    return { path: source === 'track.mp3' ? '新歌.mp3' : source }
+  })
+
+  render(<NasMediaForm mode="rename" />)
+  fireEvent.click(screen.getByRole('button', { name: /浏览 NAS NAS 音频/ }))
+  const picker = within(screen.getByRole('dialog'))
+  fireEvent.click(await picker.findByRole('button', { name: 'track.mp3' }))
+  fireEvent.click(picker.getByRole('button', { name: 'Music' }))
+  fireEvent.click(picker.getByRole('button', { name: '展开 Music' }))
+  fireEvent.click(await picker.findByRole('button', { name: 'untitled.flac' }))
+  fireEvent.click(picker.getByRole('button', { name: '确认选择' }))
+  fireEvent.click(screen.getByRole('button', { name: '按歌曲名重命名' }))
+
+  expect(await screen.findByText('已重命名 1 个文件，1 个文件名已与歌曲标题一致。')).toBeInTheDocument()
+  fireEvent.click(screen.getByText('查看重命名结果'))
+  expect(screen.getByText('新歌.mp3')).toBeVisible()
+  expect(screen.getByText(/没有歌曲标题/)).toBeInTheDocument()
+  expect(screen.getByText(/目录不可读/)).toBeInTheDocument()
+  expect(vi.mocked(api.nasRename).mock.calls.map(([source]) => source)).toEqual([
+    'track.mp3', 'Music/untitled.flac', 'Music/Album/Song.m4a',
+  ])
+})
